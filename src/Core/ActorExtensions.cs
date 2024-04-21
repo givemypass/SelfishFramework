@@ -37,7 +37,7 @@
             return pool.Has(actor.Id);
         } 
         /// <summary>
-        /// Remove a component of type T to the specified actor.
+        /// Remove a component of type T from the specified actor.
         /// </summary>
         /// <typeparam name="T">The type of component to remove.</typeparam>
         /// <param name="actor">The actor to remove the component from. </param>
@@ -46,6 +46,50 @@
             var pool = actor.World.GetComponentPool<T>();
             pool.Remove(actor.Id);
         } 
+#endregion
+
+#region Systems
+        /// <summary>
+        /// Adds a system of type T to the specified actor.
+        /// </summary>
+        /// <typeparam name="T">The type of system to add.</typeparam>
+        /// <param name="actor">The actor to add the system to.</param>
+        /// <returns>A reference to the added system.</returns>
+        public static void AddSystem<T>(this Actor actor) where T : BaseSystem, new()
+        {
+            var system = actor.World.GetSystemPool<T>().Add(actor.Id);
+            system.Owner = actor;
+        }
+
+        /// <summary>
+        /// Try get a system of type T to the specified actor.
+        /// </summary>
+        /// <typeparam name="T">The type of system.</typeparam>
+        /// <param name="actor">The actor owner of the system.</param>
+        /// <param name="system">The reference to the system.</param>
+        /// <returns>True if the actor has the system.</returns>
+        public static bool TryGetSystem<T>(this Actor actor, out T system) where T : BaseSystem, new()
+        {
+            var systemPool = actor.World.GetSystemPool<T>();
+            if (!systemPool.Has(actor.Id))
+            {
+                system = default; 
+                return false;
+            }
+            system = systemPool.Get(actor.Id);
+            return true;
+        }
+
+        /// <summary>
+        /// Remove a system of type T from the specified actor.
+        /// </summary>
+        /// <typeparam name="T">The type of system.</typeparam>
+        /// <param name="actor">The actor to remove the system from.</param>
+        public static void RemoveSystem<T>(this Actor actor) where T : BaseSystem, new()
+        {
+            var systemPool = actor.World.GetSystemPool<T>();
+            systemPool.Remove(actor.Id); 
+        }
 #endregion
     }
 }
