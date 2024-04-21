@@ -9,9 +9,9 @@ namespace SelfishFramework.Core
     {
         private Dictionary<Type, IComponentPool> componentPools = new();
         
-        private Actor[] actors = new Actor[Constants.StartEntitiesCount];
+        private Actor[] actors = new Actor[Constants.StartActorsCount];
         private int actorsCount = 0;
-        private Queue<int> recycledIndices = new(Constants.StartEntitiesCount); 
+        private Queue<int> recycledIndices = new(Constants.StartActorsCount); 
 
         public bool IsActorAlive(int id)
         {
@@ -29,7 +29,7 @@ namespace SelfishFramework.Core
             
             actor.Generation++;
             var idx = recycledIndices.Count > 0 ? recycledIndices.Dequeue() : actorsCount++;
-            actor.Id = idx;
+            actor.Id = idx + Constants.ActorsIndexShift;
             actors[idx] = actor;
         }
         /// <summary>
@@ -76,9 +76,9 @@ namespace SelfishFramework.Core
         {
             this.world = world;
             denseCount = 1;
-            denseItems = new T[Constants.StartEntitiesCount];
-            sparseItems = new int[Constants.StartEntitiesCount];
-            recycledItems = new int[Constants.StartEntitiesCount];
+            denseItems = new T[Constants.StartActorsCount];
+            sparseItems = new int[Constants.StartActorsCount];
+            recycledItems = new int[Constants.StartActorsCount];
         }
 
         public ref T Add(int actorId)
