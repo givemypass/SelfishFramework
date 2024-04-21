@@ -18,8 +18,8 @@ namespace SelfishFramework.Core
         private int sparseCount;
         private int[] recycledItems;
         private int recycledCount;
-        
-        private UpdateDefaultModule updateModule;
+
+        private readonly UpdateDefaultModule updateModule = new();
         
         public SystemPool(World world)
         {

@@ -1,14 +1,17 @@
+using System.Collections;
 using NUnit.Framework;
 using SelfishFramework.Core;
+using SelfishFramework.src.Unity;
 using SelfishFramework.tests.TestSystems;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace SelfishFramework.tests
 {
     public class ActorSystemsTests
     {
-        private Actor actor; 
-       
+        private Actor actor;
+
         [SetUp]
         public void SetUp()
         {
@@ -32,8 +35,18 @@ namespace SelfishFramework.tests
             Assert.True(system != null);
             Assert.True(system.Owner == actor);
         }
+
         [Test]
         [Order(1)]
+        public void UpdateSystem()
+        {
+            actor.AddSystem<TestSystemA>();
+            ActorsManager.Default.Update();
+            actor.TryGetSystem(out TestSystemA system);
+            Assert.True(system.TestValue > 0);
+        }
+        [Test]
+        [Order(2)]
         public void RemoveSystem()
         {
             actor.AddSystem<TestSystemA>();
