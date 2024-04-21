@@ -12,7 +12,7 @@ namespace SelfishFramework.Core
         
         private Actor[] actors = new Actor[Constants.StartActorsCount];
         private int actorsCount = 0;
-        private Queue<int> recycledIndices = new(Constants.StartActorsCount); 
+        private Queue<int> recycledIndices = new(Constants.StartActorsCount);
 
         public bool IsActorAlive(int id)
         {
@@ -64,6 +64,14 @@ namespace SelfishFramework.Core
             var pool = new SystemPool<T>(this);
             systemPools.Add(type, pool);
             return pool;
+        }
+
+        public void Update()
+        {
+            foreach (var systemPool in systemPools.Values)
+            {
+                systemPool.Update();
+            }
         }
 
         public void Dispose()

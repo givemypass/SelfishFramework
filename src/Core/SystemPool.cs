@@ -2,7 +2,10 @@
 
 namespace SelfishFramework.Core
 {
-    public interface ISystemPool{}
+    public interface ISystemPool
+    {
+        void Update();
+    }
 
     public class SystemPool<T> : ISystemPool where T : BaseSystem, new()
     {
@@ -15,6 +18,8 @@ namespace SelfishFramework.Core
         private int sparseCount;
         private int[] recycledItems;
         private int recycledCount;
+        
+        private UpdateDefaultModule updateModule;
         
         public SystemPool(World world)
         {
@@ -46,6 +51,12 @@ namespace SelfishFramework.Core
             var system = new T();
             denseItems[idx] = system;
             sparseItems[actorId] = idx;
+
+            if (system is IUpdatable updatable)
+            {
+                updateModule.Register(updatable);
+            }
+            
             return system;
         }
         
@@ -66,12 +77,23 @@ namespace SelfishFramework.Core
             var idx = sparseItems[id];
             sparseItems[id] = 0;
             recycledItems[recycledCount++] = idx;
+            var system = denseItems[sparseItems[id]];
+            
+            if (system is IUpdatable updatable)
+            {
+                updateModule.Unregister(updatable);
+            }
             denseItems[sparseItems[id]] = default;
         }
 
         public bool Has(int id)
         {
             return sparseItems[id] > 0;
+        }
+
+        public void Update()
+        {
+            updateModule.Update();
         }
     }
 }
