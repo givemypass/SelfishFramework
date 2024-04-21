@@ -2,7 +2,7 @@
 
 namespace SelfishFramework.Core.Collections
 {
-    public sealed class SelfishList<T> : List<T>
+    public sealed class FastList<T> : List<T>
     {
         
     }

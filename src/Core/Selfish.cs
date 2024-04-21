@@ -5,14 +5,13 @@ namespace SelfishFramework.Core
 {
     public interface IComponent{}
 
-    public class World
+    public class World : IDisposable
     {
-        private Dictionary<Type, IComponentPool> componentPools;
-
-        public World()
-        {
-            componentPools = new();
-        }
+        private Dictionary<Type, IComponentPool> componentPools = new();
+        
+        private Actor[] actors = new Actor[Constants.StartEntitiesCount];
+        private int actorsCount = 0;
+        private Queue<int> recycledIndices = new(Constants.StartEntitiesCount); 
 
         public bool IsActorAlive(int id)
         {
@@ -21,7 +20,19 @@ namespace SelfishFramework.Core
 
         public void RegisterActor(Actor actor)
         {
-             
+            if(actors.Length == actorsCount)
+                Array.Resize(ref actors, actorsCount << 1);
+            
+            actor.Generation++;
+            var idx = recycledIndices.Count > 0 ? recycledIndices.Dequeue() : actorsCount++;
+            actor.Id = idx;
+            actors[idx] = actor;
+        }
+        public void UnregisterActor(Actor actor)
+        {
+            recycledIndices.Enqueue(actor.Id);
+            actors[actor.Id] = default;
+            actorsCount--;
         }
 
         public ComponentPool<T> GetComponentPool<T>() where T : struct, IComponent
@@ -33,6 +44,11 @@ namespace SelfishFramework.Core
             var pool = new ComponentPool<T>(this);
             componentPools.Add(type, pool);
             return pool;
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 

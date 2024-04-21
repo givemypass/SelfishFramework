@@ -4,26 +4,29 @@ using UnityEngine.TestTools;
 using SelfishFramework.Core;
 using Tests.TestComponents;
 
-public class CollectionPoolTests
+namespace SelfishFramework.tests
 {
-    [SetUp]
-    public void SetUp()
+    public class CollectionPoolTests
     {
-         
-    }
-    // A Test behaves as an ordinary method
-    [Test]
-    public void AddGetHasRemove()
-    {
-        var world = new World();
-        var pool = new ComponentPool<TestComponentA>(world);
-        var actorIdx = 1;
-        ref var component = ref pool.Add(actorIdx);
-        component.TestInt = 1;
-        Assert.True(pool.Has(actorIdx));
-        ref var component2 = ref pool.Get(actorIdx);
-        Assert.True(component2.TestInt == 1);
-        pool.Remove(actorIdx);
-        Assert.False(pool.Has(actorIdx));
+        [SetUp]
+        public void SetUp()
+        {
+            ActorsManager.RecreateInstance();
+        }
+
+        // A Test behaves as an ordinary method
+        [Test]
+        public void AddGetHasRemove()
+        {
+            var pool = new ComponentPool<TestComponentA>(ActorsManager.Default);
+            var actorIdx = 1;
+            ref var component = ref pool.Add(actorIdx);
+            component.TestInt = 1;
+            Assert.True(pool.Has(actorIdx));
+            ref var component2 = ref pool.Get(actorIdx);
+            Assert.True(component2.TestInt == 1);
+            pool.Remove(actorIdx);
+            Assert.False(pool.Has(actorIdx));
+        }
     }
 }
