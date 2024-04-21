@@ -2,26 +2,50 @@
 {
     public static class ActorExtensions
     {
-        public static ref T Add<T>(this Actor actor) where T : struct, IComponent
+#region Components
+        /// <summary>
+        /// Add a component of type T to the specified actor.
+        /// </summary>
+        /// <typeparam name="T">The type of component to add.</typeparam>
+        /// <param name="actor">The actor to add the component to.</param>
+        /// <returns>A reference to the added component.</returns>
+        public static ref T AddComponent<T>(this Actor actor) where T : struct, IComponent
         {
             var pool = actor.World.GetComponentPool<T>();
             return ref pool.Add(actor.Id);
         } 
-        
-        public static ref T Get<T>(this Actor actor) where T : struct, IComponent
+        /// <summary>
+        /// Get a component of type T to the specified actor.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <param name="actor">The actor owner of the component to.</param>
+        /// <returns>A reference to the component.</returns>
+        public static ref T GetComponent<T>(this Actor actor) where T : struct, IComponent
         {
             var pool = actor.World.GetComponentPool<T>();
             return ref pool.Get(actor.Id);
         } 
-        public static bool Has<T>(this Actor actor) where T : struct, IComponent
+        /// <summary>
+        /// Check if the specified actor has a component of type T.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <param name="actor">The actor of the component to check. </param>
+        /// <returns>True if the actor has the component.</returns>
+        public static bool ContainMask<T>(this Actor actor) where T : struct, IComponent
         {
             var pool = actor.World.GetComponentPool<T>();
             return pool.Has(actor.Id);
         } 
-        public static void Remove<T>(this Actor actor) where T : struct, IComponent
+        /// <summary>
+        /// Remove a component of type T to the specified actor.
+        /// </summary>
+        /// <typeparam name="T">The type of component to remove.</typeparam>
+        /// <param name="actor">The actor to remove the component from. </param>
+        public static void RemoveComponent<T>(this Actor actor) where T : struct, IComponent
         {
             var pool = actor.World.GetComponentPool<T>();
             pool.Remove(actor.Id);
         } 
+#endregion
     }
 }
