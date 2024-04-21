@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SelfishFramework.Core
 {
@@ -15,6 +16,8 @@ namespace SelfishFramework.Core
         }
 
         public static World Default => instance.worlds[0];
+        
+        //todo return read only collection
         public static World[] Worlds => instance.worlds;
 
         public ActorsManager()

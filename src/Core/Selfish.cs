@@ -18,6 +18,10 @@ namespace SelfishFramework.Core
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Registers a new actor in the system.
+        /// </summary>
+        /// <param name="actor">The actor to register.</param>
         public void RegisterActor(Actor actor)
         {
             if(actors.Length == actorsCount)
@@ -28,6 +32,10 @@ namespace SelfishFramework.Core
             actor.Id = idx;
             actors[idx] = actor;
         }
+        /// <summary>
+        /// Unregisters an actor in the system.
+        /// </summary>
+        /// <param name="actor">The actor to unregister.</param>
         public void UnregisterActor(Actor actor)
         {
             recycledIndices.Enqueue(actor.Id);
@@ -48,7 +56,7 @@ namespace SelfishFramework.Core
 
         public void Dispose()
         {
-            
+            //todo dispose all
         }
     }
 
