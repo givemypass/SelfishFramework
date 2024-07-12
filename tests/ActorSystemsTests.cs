@@ -1,7 +1,6 @@
 using System.Collections;
 using NUnit.Framework;
 using SelfishFramework.Core;
-using SelfishFramework.src.Unity;
 using SelfishFramework.tests.TestSystems;
 using UnityEngine;
 using UnityEngine.TestTools;
