@@ -13,6 +13,8 @@ namespace SelfishFramework.Core
         private Actor[] actors = new Actor[Constants.StartActorsCount];
         private int actorsCount = 0;
         private Queue<int> recycledIndices = new(Constants.StartActorsCount);
+        
+        public readonly UpdateDefaultModule UpdateModule = new();
 
         public bool IsActorAlive(int id)
         {
@@ -72,6 +74,7 @@ namespace SelfishFramework.Core
             {
                 systemPool.Update();
             }
+            UpdateModule.Update();
         }
 
         public void Dispose()
