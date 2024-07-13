@@ -27,9 +27,21 @@ namespace SelfishFramework.Core
         /// <param name="actor">The actor to register.</param>
         public void RegisterActor(Actor actor)
         {
-            if(actors.Length == actorsCount)
-                Array.Resize(ref actors, actorsCount << 1);
-            
+            if (actors.Length == actorsCount + Constants.ActorsIndexShift)
+            {
+                var newSize = (actorsCount + Constants.ActorsIndexShift) << 1;
+                Array.Resize(ref actors, newSize);
+                foreach (var componentPool in componentPools)
+                {
+                    componentPool.Value.Resize(newSize);
+                }
+
+                foreach (var systemPool in systemPools)
+                {
+                    systemPool.Value.Resize(newSize);
+                }
+            }
+
             actor.Generation++;
             var idx = recycledIndices.Count > 0 ? recycledIndices.Dequeue() : actorsCount++;
             actor.Id = idx + Constants.ActorsIndexShift;
@@ -52,7 +64,7 @@ namespace SelfishFramework.Core
             if (componentPools.TryGetValue(type, out var rawPool))
                 return (ComponentPool<T>)rawPool;
             
-            var pool = new ComponentPool<T>(this);
+            var pool = new ComponentPool<T>(this, actors.Length);
             componentPools.Add(type, pool);
             return pool;
         }

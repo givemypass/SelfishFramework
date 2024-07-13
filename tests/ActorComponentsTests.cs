@@ -33,25 +33,25 @@ namespace SelfishFramework.tests
         [Order(1)]
         public void AddGetComponent()
         {
-            ref var component = ref actor.AddComponent<TestComponentA>();
+            ref var component = ref actor.Add<TestComponentA>();
             component.TestInt = 1;
-            ref var component2 = ref ActorExtensions.GetComponent<TestComponentA>(actor);
+            ref var component2 = ref ActorExtensions.Get<TestComponentA>(actor);
             Assert.True(component2.TestInt == 1);           
         }
         [Test]
         [Order(2)]
         public void HasComponent()
         {
-            actor.AddComponent<TestComponentA>();
-            Assert.True(actor.ContainMask<TestComponentA>());
+            actor.Add<TestComponentA>();
+            Assert.True(actor.Contains<TestComponentA>());
         }
         [Test]
         [Order(3)]
         public void RemoveComponent()
         {
-            actor.AddComponent<TestComponentA>();
-            actor.RemoveComponent<TestComponentA>();
-            Assert.False(actor.ContainMask<TestComponentA>());
+            actor.Add<TestComponentA>();
+            actor.Remove<TestComponentA>();
+            Assert.False(actor.Contains<TestComponentA>());
         }
     }
 }

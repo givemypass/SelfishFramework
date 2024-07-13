@@ -9,7 +9,7 @@
         /// <typeparam name="T">The type of component to add.</typeparam>
         /// <param name="actor">The actor to add the component to.</param>
         /// <returns>A reference to the added component.</returns>
-        public static ref T AddComponent<T>(this Actor actor) where T : struct, IComponent
+        public static ref T Add<T>(this Actor actor) where T : struct, IComponent
         {
             var pool = actor.World.GetComponentPool<T>();
             return ref pool.Add(actor.Id);
@@ -20,7 +20,7 @@
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="actor">The actor owner of the component to.</param>
         /// <returns>A reference to the component.</returns>
-        public static ref T GetComponent<T>(this Actor actor) where T : struct, IComponent
+        public static ref T Get<T>(this Actor actor) where T : struct, IComponent
         {
             var pool = actor.World.GetComponentPool<T>();
             return ref pool.Get(actor.Id);
@@ -31,7 +31,7 @@
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="actor">The actor of the component to check. </param>
         /// <returns>True if the actor has the component.</returns>
-        public static bool ContainMask<T>(this Actor actor) where T : struct, IComponent
+        public static bool Contains<T>(this Actor actor) where T : struct, IComponent
         {
             var pool = actor.World.GetComponentPool<T>();
             return pool.Has(actor.Id);
@@ -41,7 +41,7 @@
         /// </summary>
         /// <typeparam name="T">The type of component to remove.</typeparam>
         /// <param name="actor">The actor to remove the component from. </param>
-        public static void RemoveComponent<T>(this Actor actor) where T : struct, IComponent
+        public static void Remove<T>(this Actor actor) where T : struct, IComponent
         {
             var pool = actor.World.GetComponentPool<T>();
             pool.Remove(actor.Id);

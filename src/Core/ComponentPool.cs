@@ -2,7 +2,10 @@ using System;
 
 namespace SelfishFramework.Core
 {
-    public interface IComponentPool{}
+    public interface IComponentPool
+    {
+        void Resize(int capacity);
+    }
     public class ComponentPool<T> : IComponentPool where T : struct, IComponent
     {
         private readonly World world;
@@ -15,13 +18,13 @@ namespace SelfishFramework.Core
         private int[] recycledItems;
         private int recycledCount;
 
-        public ComponentPool(World world)
+        public ComponentPool(World world, int length)
         {
             this.world = world;
             denseCount = 1;
-            denseItems = new T[Constants.StartActorsCount];
-            sparseItems = new int[Constants.StartActorsCount];
-            recycledItems = new int[Constants.StartActorsCount];
+            denseItems = new T[length];
+            sparseItems = new int[length];
+            recycledItems = new int[length];
         }
 
         public ref T Add(int actorId)
@@ -67,6 +70,11 @@ namespace SelfishFramework.Core
         public bool Has(int id)
         {
             return sparseItems[id] > 0;
+        }
+
+        public void Resize(int capacity)
+        {
+            Array.Resize(ref sparseItems, capacity); 
         }
     }
 }

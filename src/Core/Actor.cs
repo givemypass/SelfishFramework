@@ -8,8 +8,11 @@ namespace SelfishFramework.Core
     [Serializable]
     public partial class Actor
     {
+        [NonSerialized]
         public int Id;
+        [NonSerialized]
         public int Generation;
+        [NonSerialized]
         public bool IsInitted;
         public World World { get; private set; }
 

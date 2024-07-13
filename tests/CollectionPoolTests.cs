@@ -18,7 +18,7 @@ namespace SelfishFramework.tests
         [Test]
         public void AddGetHasRemove()
         {
-            var pool = new ComponentPool<TestComponentA>(ActorsManager.Default);
+            var pool = new ComponentPool<TestComponentA>(ActorsManager.Default, 32);
             var actorIdx = 1;
             ref var component = ref pool.Add(actorIdx);
             component.TestInt = 1;

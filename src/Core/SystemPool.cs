@@ -5,6 +5,7 @@ namespace SelfishFramework.Core
     public interface ISystemPool
     {
         void Update();
+        void Resize(int newSize);
     }
 
     public class SystemPool<T> : ISystemPool where T : BaseSystem, new()
@@ -94,6 +95,11 @@ namespace SelfishFramework.Core
         public void Update()
         {
             updateModule.Update();
+        }
+
+        public void Resize(int newSize)
+        {
+            Array.Resize(ref sparseItems, newSize);
         }
     }
 }
