@@ -4,7 +4,7 @@ namespace SelfishFramework.Core
 {
     public abstract class BaseUpdateModule<T>
     {
-        protected FastList<T> updatables = new();
+        protected readonly FastList<T> updatables = new();
         public void Register(T updatable)
         {
             updatables.Add(updatable); 
@@ -20,10 +20,10 @@ namespace SelfishFramework.Core
     {
         public void Update()
         {
-            foreach (var updatable in updatables)
+            for (var i = 0; i < updatables.Count; i++)
             {
-                updatable.Update();
-            } 
+                updatables[i].Update();
+            }
         }
     }
 }
