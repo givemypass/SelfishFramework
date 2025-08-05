@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SelfishFramework.Src.Unity
 {
-    public class SelfishBootstrapper : MonoBehaviour
+    public class SBootstrapper : MonoBehaviour
     {
         private void Awake()
         {

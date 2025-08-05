@@ -3,16 +3,18 @@
     public static class ActorExtensions
     {
 #region Components
+
         /// <summary>
         /// Add a component of type T to the specified actor.
         /// </summary>
-        /// <typeparam name="T">The type of component to add.</typeparam>
-        /// <param name="actor">The actor to add the component to.</param>
-        /// <returns>A reference to the added component.</returns>
-        public static ref T Add<T>(this Actor actor) where T : struct, IComponent
+        /// <typeparam name="T">The type of component to set.</typeparam>
+        /// <param name="actor">The actor to set the component to.</param>
+        /// <param name="component">component to set</param>
+        /// <returns>A reference to the set component.</returns>
+        public static void Set<T>(this Actor actor, in T component) where T : struct, IComponent
         {
             var pool = actor.World.GetComponentPool<T>();
-            return ref pool.Add(actor.Id);
+            pool.Set(actor.Id, component);
         } 
         /// <summary>
         /// Get a component of type T to the specified actor.

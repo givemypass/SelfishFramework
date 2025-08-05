@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using SelfishFramework.Src.Core.Collections;
 using SelfishFramework.Src.SLogs;
 using UnityEngine;
 
@@ -10,13 +11,16 @@ namespace SelfishFramework.Src.Core
     {
         [NonSerialized]
         public int Id;
+        
         [NonSerialized]
         public int Generation;
+        
         [NonSerialized]
         public bool IsInitted;
-        public World World { get; private set; }
 
-        //systems
+        private readonly FastList<ISystem> _systems = new();
+        
+        public World World { get; private set; }
     }
 
     public partial class Actor : MonoBehaviour, IDisposable

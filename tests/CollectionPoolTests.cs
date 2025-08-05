@@ -18,11 +18,13 @@ namespace SelfishFramework.Tests
         {
             var pool = new ComponentPool<TestComponentA>(ActorsManager.Default, 32);
             var actorIdx = 1;
-            ref var component = ref pool.Add(actorIdx);
-            component.TestInt = 1;
+            pool.Set(actorIdx, new TestComponentA
+            {
+                TestInt = 1,
+            });
             Assert.True(pool.Has(actorIdx));
-            ref var component2 = ref pool.Get(actorIdx);
-            Assert.True(component2.TestInt == 1);
+            ref var component = ref pool.Get(actorIdx);
+            Assert.True(component.TestInt == 1);
             pool.Remove(actorIdx);
             Assert.False(pool.Has(actorIdx));
         }

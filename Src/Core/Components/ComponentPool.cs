@@ -27,10 +27,16 @@ namespace SelfishFramework.Src.Core
             recycledItems = new int[length];
         }
 
-        public ref T Add(int actorId)
+        public void Set(int actorId, in T component)
         {
-            if(Has(actorId)) throw new Exception("Already added");
-            int idx;
+            int idx = sparseItems[actorId];
+            //already exists
+            if (idx > 0)
+            {
+                denseItems[idx] = component;
+                return;
+            }
+            
             if (recycledCount > 0)
             {
                 idx = recycledItems[--recycledCount];
@@ -44,7 +50,7 @@ namespace SelfishFramework.Src.Core
                 idx = denseCount++;
             }
             sparseItems[actorId] = idx;
-            return ref denseItems[idx];
+            denseItems[idx] = component;
         }
         
         public ref T Get(int actorId)

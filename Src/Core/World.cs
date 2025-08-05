@@ -3,16 +3,14 @@ using System.Collections.Generic;
 
 namespace SelfishFramework.Src.Core
 {
-    public interface IComponent{}
-
     public class World : IDisposable
     {
-        private Dictionary<Type, IComponentPool> componentPools = new();
-        private Dictionary<Type, ISystemPool> systemPools = new();
+        private readonly Dictionary<Type, IComponentPool> _componentPools = new();
+        private readonly Dictionary<Type, ISystemPool> _systemPools = new();
         
-        private Actor[] actors = new Actor[Constants.StartActorsCount];
-        private int actorsCount = 0;
-        private Queue<int> recycledIndices = new(Constants.StartActorsCount);
+        private Actor[] _actors = new Actor[Constants.StartActorsCount];
+        private int _actorsCount = 0;
+        private readonly Queue<int> _recycledIndices = new(Constants.StartActorsCount);
         
         public readonly UpdateDefaultModule UpdateModule = new();
 
@@ -27,25 +25,25 @@ namespace SelfishFramework.Src.Core
         /// <param name="actor">The actor to register.</param>
         public void RegisterActor(Actor actor)
         {
-            if (actors.Length == actorsCount + Constants.ActorsIndexShift)
+            if (_actors.Length == _actorsCount + Constants.ActorsIndexShift)
             {
-                var newSize = (actorsCount + Constants.ActorsIndexShift) << 1;
-                Array.Resize(ref actors, newSize);
-                foreach (var componentPool in componentPools)
+                var newSize = (_actorsCount + Constants.ActorsIndexShift) << 1;
+                Array.Resize(ref _actors, newSize);
+                foreach (var componentPool in _componentPools)
                 {
                     componentPool.Value.Resize(newSize);
                 }
 
-                foreach (var systemPool in systemPools)
+                foreach (var systemPool in _systemPools)
                 {
                     systemPool.Value.Resize(newSize);
                 }
             }
 
             actor.Generation++;
-            var idx = recycledIndices.Count > 0 ? recycledIndices.Dequeue() : actorsCount++;
+            var idx = _recycledIndices.Count > 0 ? _recycledIndices.Dequeue() : _actorsCount++;
             actor.Id = idx + Constants.ActorsIndexShift;
-            actors[idx] = actor;
+            _actors[idx] = actor;
         }
         /// <summary>
         /// Unregisters an actor in the system.
@@ -53,36 +51,36 @@ namespace SelfishFramework.Src.Core
         /// <param name="actor">The actor to unregister.</param>
         public void UnregisterActor(Actor actor)
         {
-            recycledIndices.Enqueue(actor.Id);
-            actors[actor.Id] = default;
-            actorsCount--;
+            _recycledIndices.Enqueue(actor.Id);
+            _actors[actor.Id] = default;
+            _actorsCount--;
         }
 
         public ComponentPool<T> GetComponentPool<T>() where T : struct, IComponent
         {
             var type = typeof(T);
-            if (componentPools.TryGetValue(type, out var rawPool))
+            if (_componentPools.TryGetValue(type, out var rawPool))
                 return (ComponentPool<T>)rawPool;
             
-            var pool = new ComponentPool<T>(this, actors.Length);
-            componentPools.Add(type, pool);
+            var pool = new ComponentPool<T>(this, _actors.Length);
+            _componentPools.Add(type, pool);
             return pool;
         }
 
         public SystemPool<T> GetSystemPool<T>() where T : BaseSystem, new()
         {
             var type = typeof(T);
-            if (systemPools.TryGetValue(type, out var rawPool))
+            if (_systemPools.TryGetValue(type, out var rawPool))
                 return (SystemPool<T>)rawPool;
             
             var pool = new SystemPool<T>(this);
-            systemPools.Add(type, pool);
+            _systemPools.Add(type, pool);
             return pool;
         }
 
         public void Update()
         {
-            foreach (var systemPool in systemPools.Values)
+            foreach (var systemPool in _systemPools.Values)
             {
                 systemPool.Update();
             }
@@ -94,5 +92,4 @@ namespace SelfishFramework.Src.Core
             //todo dispose all
         }
     }
-
 }
