@@ -12,7 +12,6 @@ namespace SelfishFramework.Src.Core
 
         private T[] denseItems;
         private int denseCount;
-        //todo make resize
         private int[] sparseItems;
         private int sparseCount;
         private int[] recycledItems;
@@ -29,27 +28,27 @@ namespace SelfishFramework.Src.Core
 
         public void Set(int actorId, in T component)
         {
-            int idx = sparseItems[actorId];
-            //already exists
-            if (idx > 0)
+            var idx = sparseItems[actorId];
+
+            if(idx == 0)
             {
-                denseItems[idx] = component;
-                return;
+                if (recycledCount > 0)
+                {
+                    idx = recycledItems[--recycledCount];
+                }
+                else
+                {
+                    if (denseCount == denseItems.Length)
+                    {
+                        Array.Resize(ref denseItems, denseCount << 1);
+                    }
+
+                    idx = denseCount++;
+                }
+
+                sparseItems[actorId] = idx;
             }
             
-            if (recycledCount > 0)
-            {
-                idx = recycledItems[--recycledCount];
-            }
-            else
-            {
-                if (denseCount == denseItems.Length)
-                {
-                    Array.Resize(ref denseItems, denseCount << 1);
-                }
-                idx = denseCount++;
-            }
-            sparseItems[actorId] = idx;
             denseItems[idx] = component;
         }
         
