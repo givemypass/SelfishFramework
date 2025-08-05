@@ -10,8 +10,7 @@ namespace SelfishFramework.Src.Core
         
         public static void Init()
         {
-            if(instance == null)
-                instance = new ActorsManager();
+            instance ??= new ActorsManager();
         }
 
         public static World Default => instance.worlds[0];

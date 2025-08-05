@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
-using SelfishFramework.tests.TestSystems;
-using Tests.TestComponents;
+using SelfishFramework.Tests.TestComponents;
+using SelfishFramework.Tests.TestSystems;
 using UnityEngine;
 
-namespace SelfishFramework.tests
+namespace SelfishFramework.Tests
 {
     public class PerformanceTests
     {

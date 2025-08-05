@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using SelfishFramework.src.Logs;
+using SelfishFramework.Src.SLogs;
 using UnityEngine;
 
 namespace SelfishFramework.Src.Core

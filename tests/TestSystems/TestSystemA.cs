@@ -1,7 +1,7 @@
 ﻿using SelfishFramework.Src.Core;
-using Tests.TestComponents;
+using SelfishFramework.Tests.TestComponents;
 
-namespace SelfishFramework.tests.TestSystems
+namespace SelfishFramework.Tests.TestSystems
 {
     public class TestSystemA : BaseSystem, IUpdatable
     {

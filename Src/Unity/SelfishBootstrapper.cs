@@ -1,8 +1,7 @@
-﻿using System;
-using SelfishFramework.Src.Core;
+﻿using SelfishFramework.Src.Core;
 using UnityEngine;
 
-namespace SelfishFramework.src.Unity
+namespace SelfishFramework.Src.Unity
 {
     public class SelfishBootstrapper : MonoBehaviour
     {

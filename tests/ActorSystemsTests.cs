@@ -1,9 +1,9 @@
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
-using SelfishFramework.tests.TestSystems;
+using SelfishFramework.Tests.TestSystems;
 using UnityEngine;
 
-namespace SelfishFramework.tests
+namespace SelfishFramework.Tests
 {
     public class ActorSystemsTests
     {

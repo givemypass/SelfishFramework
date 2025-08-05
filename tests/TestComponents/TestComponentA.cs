@@ -1,6 +1,6 @@
 ﻿using SelfishFramework.Src.Core;
 
-namespace Tests.TestComponents
+namespace SelfishFramework.Tests.TestComponents
 {
     public struct TestComponentA : IComponent
     {
