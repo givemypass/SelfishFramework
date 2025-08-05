@@ -1,4 +1,6 @@
 ﻿using SelfishFramework.Src.Core;
+using SelfishFramework.Src.Core.Systems;
+using SelfishFramework.Src.Core.Update;
 using SelfishFramework.Tests.TestComponents;
 
 namespace SelfishFramework.Tests.TestSystems

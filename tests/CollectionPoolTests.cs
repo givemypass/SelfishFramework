@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
+using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Tests.TestComponents;
 
 namespace SelfishFramework.Tests

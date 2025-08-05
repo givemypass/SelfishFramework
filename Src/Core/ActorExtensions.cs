@@ -1,4 +1,7 @@
-﻿namespace SelfishFramework.Src.Core
+﻿using SelfishFramework.Src.Core.Components;
+using SelfishFramework.Src.Core.Systems;
+
+namespace SelfishFramework.Src.Core
 {
     public static class ActorExtensions
     {

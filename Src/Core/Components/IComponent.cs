@@ -1,4 +1,4 @@
-namespace SelfishFramework.Src.Core
+namespace SelfishFramework.Src.Core.Components
 {
     public interface IComponent{}
 }

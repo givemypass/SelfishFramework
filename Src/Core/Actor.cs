@@ -18,8 +18,6 @@ namespace SelfishFramework.Src.Core
         [NonSerialized]
         public bool IsInitted;
 
-        private readonly FastList<ISystem> _systems = new();
-        
         public World World { get; private set; }
     }
 

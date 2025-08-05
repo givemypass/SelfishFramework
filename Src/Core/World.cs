@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using SelfishFramework.Src.Core.Components;
+using SelfishFramework.Src.Core.Systems;
+using SelfishFramework.Src.Core.Update;
 
 namespace SelfishFramework.Src.Core
 {
@@ -80,10 +83,6 @@ namespace SelfishFramework.Src.Core
 
         public void Update()
         {
-            foreach (var systemPool in _systemPools.Values)
-            {
-                systemPool.Update();
-            }
             UpdateModule.Update();
         }
 

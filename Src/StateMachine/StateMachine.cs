@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.Collections;
+using SelfishFramework.Src.Core.Update;
 
 namespace SelfishFramework.Src.StateMachine
 {

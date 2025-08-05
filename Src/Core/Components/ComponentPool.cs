@@ -1,11 +1,7 @@
 using System;
 
-namespace SelfishFramework.Src.Core
+namespace SelfishFramework.Src.Core.Components
 {
-    public interface IComponentPool
-    {
-        void Resize(int capacity);
-    }
     public class ComponentPool<T> : IComponentPool where T : struct, IComponent
     {
         private readonly World world;
