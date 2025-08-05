@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SelfishFramework.Core.Collections
+namespace SelfishFramework.Src.Core.Collections
 {
     public sealed class FastList<T> : List<T>
     {

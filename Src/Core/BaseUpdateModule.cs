@@ -1,6 +1,6 @@
-﻿using SelfishFramework.Core.Collections;
+﻿using SelfishFramework.Src.Core.Collections;
 
-namespace SelfishFramework.Core
+namespace SelfishFramework.Src.Core
 {
     public abstract class BaseUpdateModule<T>
     {

@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using SelfishFramework.Core;
+using SelfishFramework.Src.Core;
 using Tests.TestComponents;
 using UnityEngine;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SelfishFramework.Core
+namespace SelfishFramework.Src.Core
 {
     public interface IComponent{}
 

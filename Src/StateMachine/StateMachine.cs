@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using SelfishFramework.Core.Collections;
+using SelfishFramework.Src.Core.Collections;
 
-namespace SelfishFramework.Core.StateMachine
+namespace SelfishFramework.Src.Core.StateMachine
 {
     public partial class StateMachine : IUpdatable, IDisposable
     {

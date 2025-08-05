@@ -1,4 +1,4 @@
-﻿namespace SelfishFramework.Core
+﻿namespace SelfishFramework.Src.Core
 {
     public static class Constants
     {

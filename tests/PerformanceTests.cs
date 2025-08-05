@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using SelfishFramework.Core;
+using SelfishFramework.Src.Core;
 using SelfishFramework.tests.TestSystems;
 using Tests.TestComponents;
 using UnityEngine;

@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using SelfishFramework.src.Logs;
 using UnityEngine;
 
-namespace SelfishFramework.Core
+namespace SelfishFramework.Src.Core
 {
     [Serializable]
     public partial class Actor
@@ -58,7 +58,7 @@ namespace SelfishFramework.Core
         {
             if (IsInitted)
             {
-                Debug.LogError("Actor already initted");
+                SLog.LogError("Actor already initted");
                 return;
             }
             if (initModule.InitWhen == InitModule.InitWhenMode.OnAwake)
@@ -71,7 +71,7 @@ namespace SelfishFramework.Core
         {
             if (IsInitted)
             {
-                Debug.LogError("Actor already initted");
+                SLog.LogError("Actor already initted");
                 return;
             }
             if (initModule.InitWhen == InitModule.InitWhenMode.OnStart)

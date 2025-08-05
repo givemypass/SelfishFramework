@@ -1,9 +1,7 @@
-using System.Collections;
 using NUnit.Framework;
-using SelfishFramework.Core;
+using SelfishFramework.Src.Core;
 using SelfishFramework.tests.TestSystems;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace SelfishFramework.tests
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using SelfishFramework.Core;
+using SelfishFramework.Src.Core;
 using UnityEngine;
 
 namespace SelfishFramework.src.Unity

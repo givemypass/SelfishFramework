@@ -1,4 +1,4 @@
-﻿using SelfishFramework.Core;
+﻿using SelfishFramework.Src.Core;
 using Tests.TestComponents;
 
 namespace SelfishFramework.tests.TestSystems

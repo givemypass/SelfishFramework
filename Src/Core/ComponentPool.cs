@@ -1,6 +1,6 @@
 using System;
 
-namespace SelfishFramework.Core
+namespace SelfishFramework.Src.Core
 {
     public interface IComponentPool
     {

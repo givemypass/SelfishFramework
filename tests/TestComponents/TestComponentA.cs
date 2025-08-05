@@ -1,4 +1,4 @@
-﻿using IComponent = SelfishFramework.Core.IComponent;
+﻿using SelfishFramework.Src.Core;
 
 namespace Tests.TestComponents
 {
