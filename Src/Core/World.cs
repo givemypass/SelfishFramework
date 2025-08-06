@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using SelfishFramework.Src.Core.Components;
+using SelfishFramework.Src.Core.DefaultUpdates;
 using SelfishFramework.Src.Core.Systems;
-using SelfishFramework.Src.Core.Update;
 
 namespace SelfishFramework.Src.Core
 {
@@ -83,7 +83,7 @@ namespace SelfishFramework.Src.Core
 
         public void Dispose()
         {
-            //todo dispose all
+            SystemModuleRegistry.Dispose();
         }
     }
 }

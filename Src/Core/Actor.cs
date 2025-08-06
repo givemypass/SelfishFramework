@@ -24,7 +24,7 @@ namespace SelfishFramework.Src.Core
     public partial class Actor : MonoBehaviour, IDisposable
     {
         [Serializable]
-        private class InitModule
+        public class InitModule
         {
             public enum InitWhenMode
             {
@@ -36,11 +36,16 @@ namespace SelfishFramework.Src.Core
             [SerializeField] private InitWhenMode initWhen;
             [SerializeField] private int worldIndex;
 
-            public InitWhenMode InitWhen => initWhen;
+            public InitWhenMode InitWhen
+            {
+                get => initWhen;
+                set => initWhen = value;
+            }
+
             public int WorldIndex => worldIndex;
         }
 
-        [SerializeField] private InitModule initModule = new();
+        public InitModule InitMode = new();
         public void Init([NotNull]World world)
         {
             World = world;
@@ -58,27 +63,27 @@ namespace SelfishFramework.Src.Core
 
         private void Awake()
         {
-            if (IsInitted)
+            if (InitMode.InitWhen == InitModule.InitWhenMode.OnAwake)
             {
-                SLog.LogError("Actor already initted");
-                return;
-            }
-            if (initModule.InitWhen == InitModule.InitWhenMode.OnAwake)
-            {
-                Init(ActorsManager.Worlds[initModule.WorldIndex]);
+                if (IsInitted)
+                {
+                    SLog.LogError("Actor already initted");
+                    return;
+                }
+                Init(ActorsManager.Worlds[InitMode.WorldIndex]);
             }       
         }
 
         private void Start()
         {
-            if (IsInitted)
+            if (InitMode.InitWhen == InitModule.InitWhenMode.OnStart)
             {
-                SLog.LogError("Actor already initted");
-                return;
-            }
-            if (initModule.InitWhen == InitModule.InitWhenMode.OnStart)
-            {
-                Init(ActorsManager.Worlds[initModule.WorldIndex]);
+                if (IsInitted)
+                {
+                    SLog.LogError("Actor already initted");
+                    return;
+                }
+                Init(ActorsManager.Worlds[InitMode.WorldIndex]);
             }
         }
 

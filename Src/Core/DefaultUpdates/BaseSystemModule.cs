@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SelfishFramework.Src.Core.Systems;
 
-namespace SelfishFramework.Src.Core.Update
+namespace SelfishFramework.Src.Core.DefaultUpdates
 {
     public abstract class BaseSystemModule<T> : ISystemModule<T> where T : ISystemAction
     {
@@ -33,7 +33,6 @@ namespace SelfishFramework.Src.Core.Update
             }
         }
 
-        public abstract void UpdateAll();
         public virtual void Dispose()
         {
             executors.Clear();

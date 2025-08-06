@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
-using SelfishFramework.Src.Core.Update;
+using SelfishFramework.Src.Core.DefaultUpdates;
+using SelfishFramework.Src.Unity.CustomUpdate;
 using SelfishFramework.Tests.TestSystems;
 using UnityEngine;
 
@@ -22,6 +23,7 @@ namespace SelfishFramework.Tests
         [TearDown]
         public void TearDown()
         {
+            ActorsManager.Default.Dispose();
             Object.DestroyImmediate(actor.gameObject);
         }
 

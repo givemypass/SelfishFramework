@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SelfishFramework.Src.Core.Systems;
 
-namespace SelfishFramework.Src.Core.Update
+namespace SelfishFramework.Src.Core.DefaultUpdates
 {
     public interface ISystemAction { }
 
@@ -58,6 +58,10 @@ namespace SelfishFramework.Src.Core.Update
         
         public void Dispose()
         {
+            foreach (var module in _systemModules.Values)
+            {
+                module.Dispose(); 
+            }
             _systemModules.Clear();     
         }
     }

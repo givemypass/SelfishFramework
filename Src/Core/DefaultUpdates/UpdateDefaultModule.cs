@@ -1,4 +1,4 @@
-namespace SelfishFramework.Src.Core.Update
+namespace SelfishFramework.Src.Core.DefaultUpdates
 {
     public interface IUpdatable : ISystemAction
     {
@@ -7,7 +7,7 @@ namespace SelfishFramework.Src.Core.Update
     
     public class UpdateDefaultModule : BaseSystemModule<IUpdatable>
     {
-        public override void UpdateAll()
+        public void UpdateAll()
         {
             foreach (var executor in executors)
             {
