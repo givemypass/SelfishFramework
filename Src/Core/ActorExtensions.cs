@@ -64,6 +64,7 @@ namespace SelfishFramework.Src.Core
         {
             var system = actor.World.GetSystemPool<T>().Add(actor.Id);
             system.Owner = actor;
+            actor.World.SystemModuleRegistry.Register(system);
         }
 
         /// <summary>
@@ -93,7 +94,9 @@ namespace SelfishFramework.Src.Core
         public static void RemoveSystem<T>(this Actor actor) where T : BaseSystem, new()
         {
             var systemPool = actor.World.GetSystemPool<T>();
+            var system = systemPool.Get(actor.Id);
             systemPool.Remove(actor.Id); 
+            actor.World.SystemModuleRegistry.Register(system);
         }
 #endregion
     }

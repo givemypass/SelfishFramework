@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
+using SelfishFramework.Src.Core.Update;
 using SelfishFramework.Tests.TestSystems;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace SelfishFramework.Tests
         public void SetUp()
         {
             ActorsManager.RecreateInstance();
+            ActorsManager.Default.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             actor = new GameObject().AddComponent<Actor>();
             actor.Init(ActorsManager.Default);
         }
@@ -38,10 +40,11 @@ namespace SelfishFramework.Tests
         public void UpdateSystem()
         {
             actor.AddSystem<TestSystemA>();
-            ActorsManager.Default.Update();
+            ActorsManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
             actor.TryGetSystem(out TestSystemA system);
             Assert.True(system.TestValue > 0);
         }
+        
         [Test]
         [Order(2)]
         public void RemoveSystem()

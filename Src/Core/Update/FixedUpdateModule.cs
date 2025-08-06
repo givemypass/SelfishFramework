@@ -1,17 +1,17 @@
 namespace SelfishFramework.Src.Core.Update
 {
-    public interface IUpdatable : ISystemAction
+    public interface IFixedUpdatable : ISystemAction
     {
-        void Update();
+        void FixedUpdate();
     }
     
-    public class UpdateDefaultModule : BaseSystemModule<IUpdatable>
+    public class FixedUpdateModule : BaseSystemModule<IFixedUpdatable>
     {
         public override void UpdateAll()
         {
             foreach (var executor in executors)
             {
-                executor.Update(); 
+                executor.FixedUpdate(); 
             }
         }
     }

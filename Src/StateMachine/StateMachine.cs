@@ -20,7 +20,7 @@ namespace SelfishFramework.Src.StateMachine
         public StateMachine(Actor owner)
         {
             this.owner = owner;
-            this.owner.World.UpdateModule.Register(this);
+            this.owner.World.SystemModuleRegistry.GetModule<UpdateDefaultModule>().Register(this);
         }
 
         public int CurrentState { get => currentState; }
@@ -139,7 +139,7 @@ namespace SelfishFramework.Src.StateMachine
 
         public void Dispose()
         {
-            owner.World.UpdateModule.Unregister(this);
+            owner.World.SystemModuleRegistry.GetModule<UpdateDefaultModule>().Unregister(this);
             foreach (var state in states.Values)
             {
                 state.Dispose();

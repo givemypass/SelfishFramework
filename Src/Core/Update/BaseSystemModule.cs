@@ -1,18 +1,42 @@
-﻿using SelfishFramework.Src.Core.Collections;
+﻿using System.Collections.Generic;
+using SelfishFramework.Src.Core.Systems;
 
 namespace SelfishFramework.Src.Core.Update
 {
-    public abstract class BaseSystemModule<T>
+    public abstract class BaseSystemModule<T> : ISystemModule<T> where T : ISystemAction
     {
-        protected readonly FastList<T> systems = new();
-        public void Register(T updatable)
+        protected readonly HashSet<T> executors = new();
+
+        public void Register(T executor)
         {
-            systems.Add(updatable); 
+            executors.Add(executor); 
         }
 
-        public void Unregister(T updatable)
+        public void Unregister(T executor)
         {
-            systems.Remove(updatable); 
+            executors.Remove(executor); 
+        }
+
+        public void TryRegister(ISystem system)
+        {
+            if (system is T executor)
+            {
+                executors.Add(executor);
+            }
+        }
+
+        public void TryUnregister(ISystem system)
+        {
+            if(system is T executor)
+            {
+                executors.Remove(executor);
+            }
+        }
+
+        public abstract void UpdateAll();
+        public virtual void Dispose()
+        {
+            executors.Clear();
         }
     }
 }

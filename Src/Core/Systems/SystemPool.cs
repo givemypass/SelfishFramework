@@ -43,11 +43,9 @@ namespace SelfishFramework.Src.Core.Systems
 
         public void Remove(int id)
         {
-            if (!Has(id))
-                return;
-
             sparseItems[id] = 0;
-            denseItems[sparseItems[id]] = default;
+            var idx = sparseItems[id];
+            denseItems[idx] = default;
         }
 
         public bool Has(int id)

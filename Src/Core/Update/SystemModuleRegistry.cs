@@ -1,49 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
+using SelfishFramework.Src.Core.Systems;
 
 namespace SelfishFramework.Src.Core.Update
 {
     public interface ISystemAction { }
 
-    public interface ISystemModule
+    public interface ISystemModule : IDisposable
     {
-        
+        void TryRegister(ISystem system);
+        void TryUnregister(ISystem system);
     }
     
-    public interface ISystemModule<T> : ISystemModule where T : ISystemAction
+    public interface ISystemModule<in T> : ISystemModule where T : ISystemAction
     {
-        void ExecuteAll();
         void Register(T system);
         void Unregister(T system);
     }
     
     public class SystemModuleRegistry : IDisposable
     {
-        private readonly Dictionary<Type, ISystemModule> _systemModules = new();
+        private readonly Dictionary<int, ISystemModule> _systemModules = new();
 
-        public void RegisterModule<T>(ISystemModule module) where T : ISystemAction
+        public void RegisterModule<T>(T module) where T : ISystemModule
         {
-            if(!_systemModules.TryAdd(typeof(T), module))
+            var index = SystemModuleIndex<T>.Index;
+            if(!_systemModules.TryAdd(index, module))
             {
                 throw new InvalidOperationException($"Module for type {typeof(T)} is already registered.");
             }
         }
 
-        public void Register<T>(T system) where T : ISystemAction
+        public void Register(ISystem system)
         {
-            GetModule<T>().Register(system);
+            foreach (var module in _systemModules.Values)
+            {
+                module.TryRegister(system);
+            }
         }
         
-        public void Unregister<T>(T system) where T : ISystemAction
+        public void Unregister(ISystem system)
         {
-            GetModule<T>().Unregister(system);
+            foreach (var module in _systemModules.Values)
+            {
+                module.TryUnregister(system);
+            }
         }
 
-        private ISystemModule<T> GetModule<T>() where T : ISystemAction
+        public T GetModule<T>() where T : ISystemModule
         {
-            var type = typeof(T);
-            if (_systemModules.TryGetValue(type, out var rawModule))
-                return (ISystemModule<T>)rawModule;
+            var index = SystemModuleIndex<T>.Index;
+            if (_systemModules.TryGetValue(index, out var rawModule))
+                return (T)rawModule;
             
             throw new InvalidOperationException($"No module registered for type {typeof(T)}.");
         }

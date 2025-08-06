@@ -15,7 +15,7 @@ namespace SelfishFramework.Src.Core
         private int _actorsCount = 0;
         private readonly Queue<int> _recycledIndices = new(Constants.StartActorsCount);
         
-        public readonly UpdateDefaultModule UpdateModule = new();
+        public readonly SystemModuleRegistry SystemModuleRegistry = new();
 
         public bool IsActorAlive(int id)
         {
@@ -79,11 +79,6 @@ namespace SelfishFramework.Src.Core
             var pool = new SystemPool<T>(this);
             _systemPools.Add(type, pool);
             return pool;
-        }
-
-        public void Update()
-        {
-            UpdateModule.Update();
         }
 
         public void Dispose()
