@@ -7,10 +7,19 @@ namespace SelfishFramework.Tests
 {
     public class CollectionPoolTests
     {
+        private ActorsManager _actorsManager;
+        
         [SetUp]
         public void SetUp()
         {
-            ActorsManager.RecreateInstance();
+            _actorsManager?.Dispose();
+            _actorsManager = new();
+        }
+        
+        [TearDown]
+        public void TearDown()
+        {
+            _actorsManager?.Dispose();
         }
 
         // A Test behaves as an ordinary method

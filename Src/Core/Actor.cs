@@ -34,15 +34,12 @@ namespace SelfishFramework.Src.Core
             }
 
             [SerializeField] private InitWhenMode initWhen;
-            [SerializeField] private int worldIndex;
 
             public InitWhenMode InitWhen
             {
                 get => initWhen;
                 set => initWhen = value;
             }
-
-            public int WorldIndex => worldIndex;
         }
 
         public InitModule InitMode = new();
@@ -70,7 +67,7 @@ namespace SelfishFramework.Src.Core
                     SLog.LogError("Actor already initted");
                     return;
                 }
-                Init(ActorsManager.Worlds[InitMode.WorldIndex]);
+                Init(ActorsManager.Default);
             }       
         }
 
@@ -83,7 +80,7 @@ namespace SelfishFramework.Src.Core
                     SLog.LogError("Actor already initted");
                     return;
                 }
-                Init(ActorsManager.Worlds[InitMode.WorldIndex]);
+                Init(ActorsManager.Default);
             }
         }
 

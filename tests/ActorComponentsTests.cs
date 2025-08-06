@@ -7,12 +7,14 @@ namespace SelfishFramework.Tests
 {
     public class ActorComponentsTests
     {
+        private ActorsManager _actorsManager;
         private Actor actor;
 
         [SetUp]
         public void SetUp()
         {
-            ActorsManager.RecreateInstance();
+            _actorsManager?.Dispose();
+            _actorsManager = new ActorsManager();
             actor = new GameObject().AddComponent<Actor>();
             actor.Init(ActorsManager.Default);
         }
@@ -20,6 +22,7 @@ namespace SelfishFramework.Tests
         [TearDown]
         public void TearDown()
         {
+            _actorsManager?.Dispose();
             Object.DestroyImmediate(actor.gameObject);
         }
         

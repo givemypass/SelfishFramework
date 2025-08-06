@@ -11,14 +11,16 @@ namespace SelfishFramework.Tests
 {
     public class ActorSystemsTests
     {
+        private ActorsManager _actorsManager;
         private MonoBehaviour coroutineRunner;
         private Actor actor;
 
         [SetUp]
         public void SetUp()
         {
-            ActorsManager.RecreateInstance();
-            ActorsManager.Default.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
+            _actorsManager?.Dispose();
+            _actorsManager = new ActorsManager();
+            _actorsManager.World.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             var gameObject = new GameObject();
             coroutineRunner = gameObject.AddComponent<Actor>();
             var customUpdateModule = new CustomUpdateModule(coroutineRunner);

@@ -8,26 +8,27 @@ namespace SelfishFramework.Src.Unity
 {
     public class SBootstrapper : MonoBehaviour
     {
+        private ActorsManager _actorsManager;
+        
         private event Action OnUpdate;
+        
         private event Action OnFixedUpdate;
         
         private void Awake()
         {
-            ActorsManager.RecreateInstance();
+            _actorsManager = new ActorsManager();
+
+            var world = _actorsManager.World;
+            var updateDefaultModule = new UpdateDefaultModule();
+            OnUpdate += updateDefaultModule.UpdateAll;
+            world.SystemModuleRegistry.RegisterModule(updateDefaultModule);
             
-            foreach (var world in ActorsManager.Worlds)
-            {
-                var updateDefaultModule = new UpdateDefaultModule();
-                OnUpdate += updateDefaultModule.UpdateAll;
-                world?.SystemModuleRegistry.RegisterModule(updateDefaultModule);
-                
-                var fixedUpdateModule = new FixedUpdateModule();
-                OnFixedUpdate += fixedUpdateModule.UpdateAll;
-                world?.SystemModuleRegistry.RegisterModule(fixedUpdateModule);
-                
-                var customUpdateModule = new CustomUpdateModule(this);
-                world?.SystemModuleRegistry.RegisterModule(customUpdateModule);
-            }
+            var fixedUpdateModule = new FixedUpdateModule();
+            OnFixedUpdate += fixedUpdateModule.UpdateAll;
+            world.SystemModuleRegistry.RegisterModule(fixedUpdateModule);
+            
+            var customUpdateModule = new CustomUpdateModule(this);
+            world.SystemModuleRegistry.RegisterModule(customUpdateModule);
         }
 
         private void Update()
@@ -38,6 +39,11 @@ namespace SelfishFramework.Src.Unity
         private void FixedUpdate()
         {
             OnFixedUpdate?.Invoke();
+        }
+
+        private void OnDestroy()
+        {
+            _actorsManager.Dispose();
         }
     }
 }

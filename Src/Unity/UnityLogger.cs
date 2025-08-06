@@ -1,6 +1,7 @@
 using System;
+using SelfishFramework.Src.SLogs;
 
-namespace SelfishFramework.Src.SLogs
+namespace SelfishFramework.Src.Unity
 {
     public class UnityLogger : ILogger
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SelfishFramework.Src.Unity;
 
 namespace SelfishFramework.Src.SLogs
 {
