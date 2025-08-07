@@ -1,9 +1,9 @@
 ﻿using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.DefaultUpdates;
 using SelfishFramework.Src.Core.Systems;
-using SelfishFramework.Tests.TestComponents;
+using SelfishFramework.Tests.EditMode.TestComponents;
 
-namespace SelfishFramework.Tests.TestSystems
+namespace SelfishFramework.Tests.EditMode.TestSystems
 {
     public class TestSystemB : BaseSystem, IUpdatable
     {

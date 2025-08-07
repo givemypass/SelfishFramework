@@ -2,7 +2,7 @@ using SelfishFramework.Src.Core.Systems;
 using SelfishFramework.Src.Unity.CustomUpdate;
 using UnityEngine;
 
-namespace SelfishFramework.Tests.TestSystems
+namespace SelfishFramework.Tests.PlayMode
 {
     public class TestCustomUpdateSystem : BaseSystem, ICustomUpdatable
     {

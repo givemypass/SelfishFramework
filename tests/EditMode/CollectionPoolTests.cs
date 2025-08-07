@@ -1,9 +1,9 @@
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.Components;
-using SelfishFramework.Tests.TestComponents;
+using SelfishFramework.Tests.EditMode.TestComponents;
 
-namespace SelfishFramework.Tests
+namespace SelfishFramework.Tests.EditMode
 {
     public class CollectionPoolTests
     {

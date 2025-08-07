@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
 using SelfishFramework.Src.Core;
-using SelfishFramework.Tests.TestComponents;
+using SelfishFramework.Tests.EditMode.TestComponents;
 using UnityEngine;
 
-namespace SelfishFramework.Tests
+namespace SelfishFramework.Tests.EditMode
 {
     public class ActorComponentsTests
     {
