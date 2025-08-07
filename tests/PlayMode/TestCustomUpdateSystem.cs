@@ -14,5 +14,10 @@ namespace SelfishFramework.Tests.PlayMode
         {
             TestValue++;
         }
+
+        public override void InitSystem()
+        {
+            
+        }
     }
 }

@@ -11,27 +11,27 @@ namespace SelfishFramework.Src.Core
         private readonly Dictionary<Type, IComponentPool> _componentPools = new();
         private readonly Dictionary<Type, ISystemPool> _systemPools = new();
         
-        private Actor[] _actors = new Actor[Constants.StartActorsCount];
-        private int _actorsCount = 0;
-        private readonly Queue<int> _recycledIndices = new(Constants.StartActorsCount);
+        private Entity[] _entities = new Entity[Constants.StartEntityCount];
+        private int _entitiesCount = 0;
+        private readonly Queue<int> _recycledIndices = new(Constants.StartEntityCount);
         
         public readonly SystemModuleRegistry SystemModuleRegistry = new();
 
-        public bool IsActorAlive(int id)
+        public bool IsEntityAlive(int id)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// Registers a new actor in the system.
+        /// Registers a new entity in the system.
         /// </summary>
-        /// <param name="actor">The actor to register.</param>
-        public void RegisterActor(Actor actor)
+        /// <param name="entity">The entity to register.</param>
+        public void RegisterEntity(Entity entity)
         {
-            if (_actors.Length == _actorsCount + Constants.ActorsIndexShift)
+            if (_entities.Length == _entitiesCount + Constants.EntityIndexShift)
             {
-                var newSize = (_actorsCount + Constants.ActorsIndexShift) << 1;
-                Array.Resize(ref _actors, newSize);
+                var newSize = (_entitiesCount + Constants.EntityIndexShift) << 1;
+                Array.Resize(ref _entities, newSize);
                 foreach (var componentPool in _componentPools)
                 {
                     componentPool.Value.Resize(newSize);
@@ -43,21 +43,21 @@ namespace SelfishFramework.Src.Core
                 }
             }
 
-            actor.Generation++;
-            var idx = _recycledIndices.Count > 0 ? _recycledIndices.Dequeue() : _actorsCount++;
-            actor.Id = idx + Constants.ActorsIndexShift;
-            _actors[idx] = actor;
+            entity.Generation++;
+            var idx = _recycledIndices.Count > 0 ? _recycledIndices.Dequeue() : _entitiesCount++;
+            entity.Id = idx + Constants.EntityIndexShift;
+            _entities[idx] = entity;
         }
         
         /// <summary>
-        /// Unregisters an actor in the system.
+        /// Unregisters an entity in the system.
         /// </summary>
-        /// <param name="actor">The actor to unregister.</param>
-        public void UnregisterActor(Actor actor)
+        /// <param name="entity">The entity to unregister.</param>
+        public void UnregisterEntity(Entity entity)
         {
-            _recycledIndices.Enqueue(actor.Id);
-            _actors[actor.Id] = default;
-            _actorsCount--;
+            _recycledIndices.Enqueue(entity.Id);
+            _entities[entity.Id] = default;
+            _entitiesCount--;
         }
 
         public ComponentPool<T> GetComponentPool<T>() where T : struct, IComponent
@@ -66,7 +66,7 @@ namespace SelfishFramework.Src.Core
             if (_componentPools.TryGetValue(type, out var rawPool))
                 return (ComponentPool<T>)rawPool;
             
-            var pool = new ComponentPool<T>(this, _actors.Length);
+            var pool = new ComponentPool<T>(this, _entities.Length);
             _componentPools.Add(type, pool);
             return pool;
         }

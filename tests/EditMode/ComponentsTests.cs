@@ -5,58 +5,58 @@ using UnityEngine;
 
 namespace SelfishFramework.Tests.EditMode
 {
-    public class ActorComponentsTests
+    public class ComponentsTests
     {
         private SManager _sManager;
-        private Actor actor;
+        private Entity _entity;
 
         [SetUp]
         public void SetUp()
         {
             _sManager?.Dispose();
             _sManager = new SManager();
-            actor = new GameObject().AddComponent<Actor>();
-            actor.Init(SManager.Default);
+            _entity = new GameObject().AddComponent<Entity>();
+            _entity.Init(SManager.Default);
         }
 
         [TearDown]
         public void TearDown()
         {
             _sManager?.Dispose();
-            Object.DestroyImmediate(actor.gameObject);
+            Object.DestroyImmediate(_entity.gameObject);
         }
         
         [Test]
         [Order(0)]
-        public void InitActor()
+        public void InitEntity()
         {
-            Assert.True(actor.Id > 0 && actor.Generation > 0 && actor.World != null);  
+            Assert.True(_entity.Id > 0 && _entity.Generation > 0 && _entity.World != null);  
         }
         [Test]
         [Order(1)]
         public void AddGetComponent()
         {
-            actor.Set(new TestComponentA
+            _entity.Set(new TestComponentA
             {
                 TestInt = 1,
             });
-            ref var component2 = ref actor.Get<TestComponentA>();
+            ref var component2 = ref _entity.Get<TestComponentA>();
             Assert.True(component2.TestInt == 1);           
         }
         [Test]
         [Order(2)]
         public void HasComponent()
         {
-            actor.Set(new TestComponentA());
-            Assert.True(actor.Contains<TestComponentA>());
+            _entity.Set(new TestComponentA());
+            Assert.True(_entity.Contains<TestComponentA>());
         }
         [Test]
         [Order(3)]
         public void RemoveComponent()
         {
-            actor.Set(new TestComponentA());
-            actor.Remove<TestComponentA>();
-            Assert.False(actor.Contains<TestComponentA>());
+            _entity.Set(new TestComponentA());
+            _entity.Remove<TestComponentA>();
+            Assert.False(_entity.Contains<TestComponentA>());
         }
     }
 }

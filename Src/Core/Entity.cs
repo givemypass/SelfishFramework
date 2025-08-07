@@ -8,7 +8,7 @@ namespace SelfishFramework.Src.Core
 {
     //todo separate Actor and Entity to be able use ecs potential in bottlenecks
     [Serializable]
-    public partial class Actor
+    public partial class Entity
     {
         [NonSerialized]
         public int Id;
@@ -22,7 +22,7 @@ namespace SelfishFramework.Src.Core
         public World World { get; private set; }
     }
 
-    public partial class Actor : MonoBehaviour, IDisposable
+    public partial class Entity : MonoBehaviour, IDisposable
     {
         [Serializable]
         public class InitModule
@@ -47,7 +47,7 @@ namespace SelfishFramework.Src.Core
         public void Init([NotNull]World world)
         {
             World = world;
-            World.RegisterActor(this);
+            World.RegisterEntity(this);
             IsInitted = true;
         }
 
@@ -55,7 +55,7 @@ namespace SelfishFramework.Src.Core
         {
             if (!IsInitted)
                 return;
-            World.UnregisterActor(this);
+            World.UnregisterEntity(this);
             IsInitted = false; 
         }
 
@@ -65,7 +65,7 @@ namespace SelfishFramework.Src.Core
             {
                 if (IsInitted)
                 {
-                    SLog.LogError("Actor already initted");
+                    SLog.LogError("Entity already initted");
                     return;
                 }
                 Init(SManager.Default);
@@ -78,7 +78,7 @@ namespace SelfishFramework.Src.Core
             {
                 if (IsInitted)
                 {
-                    SLog.LogError("Actor already initted");
+                    SLog.LogError("Entity already initted");
                     return;
                 }
                 Init(SManager.Default);

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SelfishFramework.Src.Unity
 {
-    public class SBootstrapper : MonoBehaviour
+    public class SDefaultBootstrapper : MonoBehaviour
     {
         private SManager _sManager;
         

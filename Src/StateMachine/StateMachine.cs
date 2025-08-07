@@ -11,13 +11,13 @@ namespace SelfishFramework.Src.StateMachine
         private readonly Dictionary<int, BaseFSMState> states = new Dictionary<int, BaseFSMState>(8);
         private readonly Dictionary<int, FastList<ITransition>> transitions = new(2);
         private readonly Queue<int> changeState = new Queue<int>(1);
-        private readonly Actor owner;
+        private readonly Entity owner;
 
         private int currentState;
         private int previousState;
         private bool isPaused;
 
-        public StateMachine(Actor owner)
+        public StateMachine(Entity owner)
         {
             this.owner = owner;
             this.owner.World.SystemModuleRegistry.GetModule<UpdateDefaultModule>().Register(this);
@@ -154,16 +154,16 @@ namespace SelfishFramework.Src.StateMachine
 
         protected StateMachine stateMachine;
 
-        public abstract void Enter(Actor entity);
-        public abstract void Exit(Actor entity);
-        public abstract void Update(Actor entity);
+        public abstract void Enter(Entity entity);
+        public abstract void Exit(Entity entity);
+        public abstract void Update(Entity entity);
 
-        public virtual void Enable(Actor entity)
+        public virtual void Enable(Entity entity)
         {
             
         }
         
-        public virtual void Disable(Actor entity)
+        public virtual void Disable(Entity entity)
         {
             
         }
@@ -191,6 +191,6 @@ namespace SelfishFramework.Src.StateMachine
     public interface ITransition
     {
         int ToState { get; }
-        bool IsReady(Actor entity);
+        bool IsReady(Entity entity);
     }
 }

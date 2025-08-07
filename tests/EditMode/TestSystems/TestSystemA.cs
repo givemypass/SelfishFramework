@@ -10,15 +10,19 @@ namespace SelfishFramework.Tests.EditMode.TestSystems
         public int TestValue { get; set; }
         public void Update()
         {
-            var actor = Owner;
-            Run(actor);
+            var entity = Owner;
+            Run(entity);
         }
 
-        public void Run(Actor actor)
+        public void Run(Entity entity)
         {
-            ref var component = ref actor.Get<TestComponentA>();
+            ref var component = ref entity.Get<TestComponentA>();
             component.TestInt++;
             TestValue++;
+        }
+
+        public override void InitSystem()
+        {
         }
     }
 }

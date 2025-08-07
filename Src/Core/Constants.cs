@@ -2,7 +2,7 @@
 {
     public static class Constants
     {
-        internal const int StartActorsCount = 32; 
-        internal const int ActorsIndexShift = 1; 
+        internal const int StartEntityCount = 32; 
+        internal const int EntityIndexShift = 1; 
     }
 }

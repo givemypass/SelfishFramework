@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace SelfishFramework.Tests.EditMode
 {
-    public class ActorSystemsTests
+    public class SystemsTests
     {
         private SManager _sManager;
-        private Actor actor;
+        private Entity _entity;
 
         [SetUp]
         public void SetUp()
@@ -17,34 +17,34 @@ namespace SelfishFramework.Tests.EditMode
             _sManager?.Dispose();
             _sManager = new();
             SManager.Default.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
-            actor = new GameObject().AddComponent<Actor>();
-            actor.Init(SManager.Default);
+            _entity = new GameObject().AddComponent<Entity>();
+            _entity.Init(SManager.Default);
         }
 
         [TearDown]
         public void TearDown()
         {
             _sManager?.Dispose();
-            Object.DestroyImmediate(actor.gameObject);
+            Object.DestroyImmediate(_entity.gameObject);
         }
 
         [Test]
         [Order(0)]
         public void AddGetSystem()
         {
-            actor.AddSystem<TestSystemA>();
-            Assert.True(actor.TryGetSystem<TestSystemA>(out var system));
+            _entity.AddSystem<TestSystemA>();
+            Assert.True(_entity.TryGetSystem<TestSystemA>(out var system));
             Assert.True(system != null);
-            Assert.True(system.Owner == actor);
+            Assert.True(system.Owner == _entity);
         }
 
         [Test]
         [Order(1)]
         public void UpdateSystem()
         {
-            actor.AddSystem<TestSystemA>();
+            _entity.AddSystem<TestSystemA>();
             SManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
-            actor.TryGetSystem(out TestSystemA system);
+            _entity.TryGetSystem(out TestSystemA system);
             Assert.True(system.TestValue > 0);
         }
         
@@ -52,9 +52,9 @@ namespace SelfishFramework.Tests.EditMode
         [Order(2)]
         public void RemoveSystem()
         {
-            actor.AddSystem<TestSystemA>();
-            actor.RemoveSystem<TestSystemA>();
-            Assert.False(actor.TryGetSystem<TestSystemA>(out _));
+            _entity.AddSystem<TestSystemA>();
+            _entity.RemoveSystem<TestSystemA>();
+            Assert.False(_entity.TryGetSystem<TestSystemA>(out _));
         }
     }
 }

@@ -27,16 +27,16 @@ namespace SelfishFramework.Tests.EditMode
         public void AddGetHasRemove()
         {
             var pool = new ComponentPool<TestComponentA>(SManager.Default, 32);
-            var actorIdx = 1;
-            pool.Set(actorIdx, new TestComponentA
+            var entityId = 1;
+            pool.Set(entityId, new TestComponentA
             {
                 TestInt = 1,
             });
-            Assert.True(pool.Has(actorIdx));
-            ref var component = ref pool.Get(actorIdx);
+            Assert.True(pool.Has(entityId));
+            ref var component = ref pool.Get(entityId);
             Assert.True(component.TestInt == 1);
-            pool.Remove(actorIdx);
-            Assert.False(pool.Has(actorIdx));
+            pool.Remove(entityId);
+            Assert.False(pool.Has(entityId));
         }
     }
 }

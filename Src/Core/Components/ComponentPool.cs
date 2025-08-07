@@ -22,9 +22,9 @@ namespace SelfishFramework.Src.Core.Components
             recycledItems = new int[length];
         }
 
-        public void Set(int actorId, in T component)
+        public void Set(int entityId, in T component)
         {
-            var idx = sparseItems[actorId];
+            var idx = sparseItems[entityId];
 
             if(idx == 0)
             {
@@ -42,15 +42,15 @@ namespace SelfishFramework.Src.Core.Components
                     idx = denseCount++;
                 }
 
-                sparseItems[actorId] = idx;
+                sparseItems[entityId] = idx;
             }
             
             denseItems[idx] = component;
         }
         
-        public ref T Get(int actorId)
+        public ref T Get(int entityId)
         {
-            return ref denseItems[sparseItems[actorId]];
+            return ref denseItems[sparseItems[entityId]];
         }
 
         public void Remove(int id)

@@ -15,8 +15,8 @@ namespace SelfishFramework.Src.Core.Systems
         {
             this.world = world;
             denseCount = 1;
-            denseItems = new T[Constants.StartActorsCount];
-            sparseItems = new int[Constants.StartActorsCount];
+            denseItems = new T[Constants.StartEntityCount];
+            sparseItems = new int[Constants.StartEntityCount];
         }
 
         public T Add(int actorId)
