@@ -7,26 +7,26 @@ namespace SelfishFramework.Tests.EditMode
 {
     public class CollectionPoolTests
     {
-        private ActorsManager _actorsManager;
+        private SManager _sManager;
         
         [SetUp]
         public void SetUp()
         {
-            _actorsManager?.Dispose();
-            _actorsManager = new();
+            _sManager?.Dispose();
+            _sManager = new();
         }
         
         [TearDown]
         public void TearDown()
         {
-            _actorsManager?.Dispose();
+            _sManager?.Dispose();
         }
 
         // A Test behaves as an ordinary method
         [Test]
         public void AddGetHasRemove()
         {
-            var pool = new ComponentPool<TestComponentA>(ActorsManager.Default, 32);
+            var pool = new ComponentPool<TestComponentA>(SManager.Default, 32);
             var actorIdx = 1;
             pool.Set(actorIdx, new TestComponentA
             {

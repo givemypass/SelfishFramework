@@ -1,4 +1,4 @@
-namespace SelfishFramework.Src.Core.DefaultUpdates
+namespace SelfishFramework.Src.Core.SystemModules
 {
     public interface IFixedUpdatable : ISystemAction
     {
@@ -7,6 +7,8 @@ namespace SelfishFramework.Src.Core.DefaultUpdates
     
     public class FixedUpdateModule : BaseSystemModule<IFixedUpdatable>
     {
+        public override int Priority => 600;
+
         public void UpdateAll()
         {
             foreach (var executor in executors)

@@ -96,7 +96,7 @@ namespace SelfishFramework.Src.Core
             var systemPool = actor.World.GetSystemPool<T>();
             var system = systemPool.Get(actor.Id);
             systemPool.Remove(actor.Id); 
-            actor.World.SystemModuleRegistry.Register(system);
+            actor.World.SystemModuleRegistry.Unregister(system);
         }
 #endregion
     }

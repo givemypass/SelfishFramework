@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace SelfishFramework.Src.Core
 {
+    //todo separate Actor and Entity to be able use ecs potential in bottlenecks
     [Serializable]
     public partial class Actor
     {
@@ -67,7 +68,7 @@ namespace SelfishFramework.Src.Core
                     SLog.LogError("Actor already initted");
                     return;
                 }
-                Init(ActorsManager.Default);
+                Init(SManager.Default);
             }       
         }
 
@@ -80,7 +81,7 @@ namespace SelfishFramework.Src.Core
                     SLog.LogError("Actor already initted");
                     return;
                 }
-                Init(ActorsManager.Default);
+                Init(SManager.Default);
             }
         }
 

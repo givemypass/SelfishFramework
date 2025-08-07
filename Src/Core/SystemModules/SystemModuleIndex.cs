@@ -1,4 +1,4 @@
-﻿namespace SelfishFramework.Src.Core.DefaultUpdates
+﻿namespace SelfishFramework.Src.Core.SystemModules
 {
     public static class SystemModuleIndex<T> where T : ISystemModule
     {

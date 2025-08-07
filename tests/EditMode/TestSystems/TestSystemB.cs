@@ -1,5 +1,5 @@
 ﻿using SelfishFramework.Src.Core;
-using SelfishFramework.Src.Core.DefaultUpdates;
+using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.Systems;
 using SelfishFramework.Tests.EditMode.TestComponents;
 

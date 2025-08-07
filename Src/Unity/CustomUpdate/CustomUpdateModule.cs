@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using SelfishFramework.Src.Core.DefaultUpdates;
+using SelfishFramework.Src.Core;
+using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.Systems;
 using UnityEngine;
 
@@ -17,6 +18,8 @@ namespace SelfishFramework.Src.Unity.CustomUpdate
         private readonly Dictionary<ICustomUpdatable, Coroutine> _coroutines = new(8);
         private readonly MonoBehaviour _runner;
 
+        public int Priority { get; } = 1000;
+        
         public CustomUpdateModule(MonoBehaviour runner)
         {
             _runner = runner;  

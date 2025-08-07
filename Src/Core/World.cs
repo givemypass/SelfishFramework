@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SelfishFramework.Src.Core.Components;
-using SelfishFramework.Src.Core.DefaultUpdates;
+using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.Systems;
 
 namespace SelfishFramework.Src.Core
@@ -48,6 +48,7 @@ namespace SelfishFramework.Src.Core
             actor.Id = idx + Constants.ActorsIndexShift;
             _actors[idx] = actor;
         }
+        
         /// <summary>
         /// Unregisters an actor in the system.
         /// </summary>

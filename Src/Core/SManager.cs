@@ -2,19 +2,19 @@
 
 namespace SelfishFramework.Src.Core
 {
-    public class ActorsManager : IDisposable
+    public class SManager : IDisposable
     {
-        private static ActorsManager instance;
+        private static SManager instance;
 
         public static World Default => instance.World;
 
         public readonly World World;
 
-        public ActorsManager()
+        public SManager()
         {
             if (instance != null)
             {
-                throw new Exception($"{nameof(ActorsManager)} instance already created");
+                throw new Exception($"{nameof(SManager)} instance already created");
             }
             
             instance = this;

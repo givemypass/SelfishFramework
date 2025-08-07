@@ -1,6 +1,6 @@
 ﻿using System;
 using SelfishFramework.Src.Core;
-using SelfishFramework.Src.Core.DefaultUpdates;
+using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Unity.CustomUpdate;
 using UnityEngine;
 
@@ -8,17 +8,17 @@ namespace SelfishFramework.Src.Unity
 {
     public class SBootstrapper : MonoBehaviour
     {
-        private ActorsManager _actorsManager;
+        private SManager _sManager;
         
         private event Action OnUpdate;
-        
         private event Action OnFixedUpdate;
+        private event Action OnGlobalStart;
         
         private void Awake()
         {
-            _actorsManager = new ActorsManager();
+            _sManager = new SManager();
 
-            var world = _actorsManager.World;
+            var world = _sManager.World;
             var updateDefaultModule = new UpdateDefaultModule();
             OnUpdate += updateDefaultModule.UpdateAll;
             world.SystemModuleRegistry.RegisterModule(updateDefaultModule);
@@ -29,6 +29,15 @@ namespace SelfishFramework.Src.Unity
             
             var customUpdateModule = new CustomUpdateModule(this);
             world.SystemModuleRegistry.RegisterModule(customUpdateModule);
+            
+            var globalStartModule = new GlobalStartModule();
+            OnGlobalStart += globalStartModule.GlobalStartAll;
+            world.SystemModuleRegistry.RegisterModule(globalStartModule);
+        }
+
+        private void Start()
+        {
+            OnGlobalStart?.Invoke();
         }
 
         private void Update()
@@ -43,7 +52,7 @@ namespace SelfishFramework.Src.Unity
 
         private void OnDestroy()
         {
-            _actorsManager.Dispose();
+            _sManager.Dispose();
         }
     }
 }

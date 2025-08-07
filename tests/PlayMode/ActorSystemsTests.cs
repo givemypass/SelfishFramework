@@ -1,7 +1,7 @@
 using System.Collections;
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
-using SelfishFramework.Src.Core.DefaultUpdates;
+using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Unity.CustomUpdate;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -10,29 +10,29 @@ namespace SelfishFramework.Tests.PlayMode
 {
     public class ActorSystemsTests
     {
-        private ActorsManager _actorsManager;
+        private SManager _sManager;
         private MonoBehaviour coroutineRunner;
         private Actor actor;
 
         [SetUp]
         public void SetUp()
         {
-            _actorsManager?.Dispose();
-            _actorsManager = new ActorsManager();
-            _actorsManager.World.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
+            _sManager?.Dispose();
+            _sManager = new SManager();
+            _sManager.World.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             var gameObject = new GameObject();
             coroutineRunner = gameObject.AddComponent<Actor>();
             var customUpdateModule = new CustomUpdateModule(coroutineRunner);
-            ActorsManager.Default.SystemModuleRegistry.RegisterModule(customUpdateModule);
+            SManager.Default.SystemModuleRegistry.RegisterModule(customUpdateModule);
             actor = new GameObject().AddComponent<Actor>();
             actor.InitMode.InitWhen = Actor.InitModule.InitWhenMode.Manually;
-            actor.Init(ActorsManager.Default);
+            actor.Init(SManager.Default);
         }
 
         [TearDown]
         public void TearDown()
         {
-            ActorsManager.Default.Dispose();
+            SManager.Default.Dispose();
             if (actor != null) Object.DestroyImmediate(actor.gameObject);
             if (coroutineRunner != null) Object.DestroyImmediate(coroutineRunner.gameObject);
         }

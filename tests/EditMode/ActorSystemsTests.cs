@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
-using SelfishFramework.Src.Core.DefaultUpdates;
+using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Tests.EditMode.TestSystems;
 using UnityEngine;
 
@@ -8,23 +8,23 @@ namespace SelfishFramework.Tests.EditMode
 {
     public class ActorSystemsTests
     {
-        private ActorsManager _actorsManager;
+        private SManager _sManager;
         private Actor actor;
 
         [SetUp]
         public void SetUp()
         {
-            _actorsManager?.Dispose();
-            _actorsManager = new();
-            ActorsManager.Default.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
+            _sManager?.Dispose();
+            _sManager = new();
+            SManager.Default.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             actor = new GameObject().AddComponent<Actor>();
-            actor.Init(ActorsManager.Default);
+            actor.Init(SManager.Default);
         }
 
         [TearDown]
         public void TearDown()
         {
-            _actorsManager?.Dispose();
+            _sManager?.Dispose();
             Object.DestroyImmediate(actor.gameObject);
         }
 
@@ -43,7 +43,7 @@ namespace SelfishFramework.Tests.EditMode
         public void UpdateSystem()
         {
             actor.AddSystem<TestSystemA>();
-            ActorsManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
+            SManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
             actor.TryGetSystem(out TestSystemA system);
             Assert.True(system.TestValue > 0);
         }

@@ -7,22 +7,22 @@ namespace SelfishFramework.Tests.EditMode
 {
     public class ActorComponentsTests
     {
-        private ActorsManager _actorsManager;
+        private SManager _sManager;
         private Actor actor;
 
         [SetUp]
         public void SetUp()
         {
-            _actorsManager?.Dispose();
-            _actorsManager = new ActorsManager();
+            _sManager?.Dispose();
+            _sManager = new SManager();
             actor = new GameObject().AddComponent<Actor>();
-            actor.Init(ActorsManager.Default);
+            actor.Init(SManager.Default);
         }
 
         [TearDown]
         public void TearDown()
         {
-            _actorsManager?.Dispose();
+            _sManager?.Dispose();
             Object.DestroyImmediate(actor.gameObject);
         }
         
