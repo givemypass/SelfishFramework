@@ -31,7 +31,7 @@ namespace SelfishFramework.Tests.EditMode
         [Order(0)]
         public void InitEntity()
         {
-            Assert.True(_actor.Entity.Id > 0 && _actor.Entity.Generation > 0 && _actor.Entity.World != null);  
+            Assert.True(_actor.Entity.Id > 0 && _actor.Entity.Generation > 0);  
         }
         
         [Test]

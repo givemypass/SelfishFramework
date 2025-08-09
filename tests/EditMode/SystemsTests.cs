@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.SystemModules;
+using SelfishFramework.Src.Unity;
 using SelfishFramework.Tests.EditMode.TestSystems;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace SelfishFramework.Tests.EditMode
     public class SystemsTests
     {
         private SManager _sManager;
-        private Entity _entity;
+        private Actor _actor;
 
         [SetUp]
         public void SetUp()
@@ -17,34 +18,34 @@ namespace SelfishFramework.Tests.EditMode
             _sManager?.Dispose();
             _sManager = new();
             SManager.Default.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
-            _entity = new GameObject().AddComponent<Entity>();
-            _entity.Init(SManager.Default);
+            _actor = new GameObject().AddComponent<Actor>();
+            _actor.Init(SManager.Default);
         }
 
         [TearDown]
         public void TearDown()
         {
             _sManager?.Dispose();
-            Object.DestroyImmediate(_entity.gameObject);
+            Object.DestroyImmediate(_actor.gameObject);
         }
 
         [Test]
         [Order(0)]
         public void AddGetSystem()
         {
-            _entity.AddSystem<TestSystemA>();
-            Assert.True(_entity.TryGetSystem<TestSystemA>(out var system));
+            _actor.Entity.AddSystem<TestSystemA>();
+            Assert.True(_actor.Entity.TryGetSystem<TestSystemA>(out var system));
             Assert.True(system != null);
-            Assert.True(system.Owner == _entity);
+            Assert.True(system.Owner == _actor.Entity);
         }
 
         [Test]
         [Order(1)]
         public void UpdateSystem()
         {
-            _entity.AddSystem<TestSystemA>();
+            _actor.Entity.AddSystem<TestSystemA>();
             SManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
-            _entity.TryGetSystem(out TestSystemA system);
+            _actor.Entity.TryGetSystem(out TestSystemA system);
             Assert.True(system.TestValue > 0);
         }
         
@@ -52,9 +53,9 @@ namespace SelfishFramework.Tests.EditMode
         [Order(2)]
         public void RemoveSystem()
         {
-            _entity.AddSystem<TestSystemA>();
-            _entity.RemoveSystem<TestSystemA>();
-            Assert.False(_entity.TryGetSystem<TestSystemA>(out _));
+            _actor.Entity.AddSystem<TestSystemA>();
+            _actor.Entity.RemoveSystem<TestSystemA>();
+            Assert.False(_actor.Entity.TryGetSystem<TestSystemA>(out _));
         }
     }
 }

@@ -12,7 +12,7 @@ namespace SelfishFramework.Tests.PlayMode
     public class EntitySystemsTests
     {
         private SManager _sManager;
-        private MonoBehaviour coroutineRunner;
+        private MonoBehaviour _coroutineRunner;
         private Actor _actor;
 
         [SetUp]
@@ -22,8 +22,8 @@ namespace SelfishFramework.Tests.PlayMode
             _sManager = new SManager();
             _sManager.World.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             var gameObject = new GameObject();
-            coroutineRunner = gameObject.AddComponent<Actor>();
-            var customUpdateModule = new CustomUpdateModule(coroutineRunner);
+            _coroutineRunner = gameObject.AddComponent<Actor>();
+            var customUpdateModule = new CustomUpdateModule(_coroutineRunner);
             SManager.Default.SystemModuleRegistry.RegisterModule(customUpdateModule);
             _actor = new GameObject().AddComponent<Actor>();
             _actor.InitMode.InitWhen = InitModule.InitWhenMode.Manually;
@@ -35,7 +35,7 @@ namespace SelfishFramework.Tests.PlayMode
         {
             SManager.Default.Dispose();
             if (_actor != null) Object.DestroyImmediate(_actor.gameObject);
-            if (coroutineRunner != null) Object.DestroyImmediate(coroutineRunner.gameObject);
+            if (_coroutineRunner != null) Object.DestroyImmediate(_coroutineRunner.gameObject);
         }
 
         [UnityTest]

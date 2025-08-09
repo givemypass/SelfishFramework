@@ -12,8 +12,9 @@ namespace SelfishFramework.Src.Core
         private readonly Dictionary<int, IComponentPool> _componentPools = new();
         private readonly Dictionary<int, ISystemPool> _systemPools = new();
         
-        private Entity[] _entities = new Entity[Constants.START_ENTITY_COUNT];
+        private int[] _entitiesGenerations = new int[Constants.START_ENTITY_COUNT];
         private int _entitiesCount;
+        private int _entitiesCapacity = Constants.START_ENTITY_COUNT;
         private readonly Queue<int> _recycledIndices = new(Constants.START_ENTITY_COUNT);
         
         public readonly SystemModuleRegistry SystemModuleRegistry = new();
@@ -21,22 +22,20 @@ namespace SelfishFramework.Src.Core
         public FilterBuilder Filter => FilterBuilder.Create(this);
         internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
         
-        public bool IsEntityAlive(int id)
+        public bool IsEntityAlive(Entity entity)
         {
-            var entity = _entities[id];
-            return entity != null;
+            return entity.Id > 0 && entity.Id < _entitiesCount && _entitiesGenerations[entity.Id] == entity.Generation;
         }
 
         /// <summary>
         /// Registers a new entity in the system.
         /// </summary>
-        /// <param name="entity">The entity to register.</param>
-        public void RegisterEntity(Entity entity)
+        public Entity NewEntity()
         {
-            if (_entities.Length == _entitiesCount + Constants.ENTITY_INDEX_SHIFT)
+            if (_entitiesCapacity <= _entitiesCount)
             {
-                var newSize = (_entitiesCount + Constants.ENTITY_INDEX_SHIFT) << 1;
-                Array.Resize(ref _entities, newSize);
+                var newSize = _entitiesCount << 1;
+                Array.Resize(ref _entitiesGenerations, newSize);
                 foreach (var componentPool in _componentPools)
                 {
                     componentPool.Value.Resize(newSize);
@@ -48,10 +47,19 @@ namespace SelfishFramework.Src.Core
                 }
             }
 
-            entity.Generation++;
-            var idx = _recycledIndices.Count > 0 ? _recycledIndices.Dequeue() : _entitiesCount++;
-            entity.Id = idx + Constants.ENTITY_INDEX_SHIFT;
-            _entities[idx] = entity;
+            int index;
+            if (_recycledIndices.Count > 0)
+            {
+                index = _recycledIndices.Dequeue();
+            }
+            else
+            {
+                index = _entitiesCount;
+                _entitiesCount++;
+            }
+
+            var entity = new Entity(index, (ushort)(_entitiesGenerations[index] + 1));
+            return entity;
         }
         
         /// <summary>
@@ -61,7 +69,7 @@ namespace SelfishFramework.Src.Core
         public void UnregisterEntity(Entity entity)
         {
             _recycledIndices.Enqueue(entity.Id);
-            _entities[entity.Id] = default;
+            _entitiesGenerations[entity.Id]++;
             _entitiesCount--;
         }
 
@@ -71,7 +79,7 @@ namespace SelfishFramework.Src.Core
             if (_componentPools.TryGetValue(index, out var rawPool))
                 return (ComponentPool<T>)rawPool;
             
-            var pool = new ComponentPool<T>(_entities.Length);
+            var pool = new ComponentPool<T>(_entitiesCapacity);
             _componentPools.Add(index, pool);
             return pool;
         }

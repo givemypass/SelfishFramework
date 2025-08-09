@@ -16,7 +16,7 @@ namespace SelfishFramework.Src.Core
         /// <returns>A reference to the set component.</returns>
         public static void Set<T>(this Entity entity, in T component) where T : struct, IComponent
         {
-            var pool = entity.World.GetComponentPool<T>();
+            var pool = SManager.Default.GetComponentPool<T>();
             pool.Set(entity.Id, component);
         } 
         /// <summary>
@@ -27,7 +27,7 @@ namespace SelfishFramework.Src.Core
         /// <returns>A reference to the component.</returns>
         public static ref T Get<T>(this Entity entity) where T : struct, IComponent
         {
-            var pool = entity.World.GetComponentPool<T>();
+            var pool = SManager.Default.GetComponentPool<T>();
             return ref pool.Get(entity.Id);
         } 
         /// <summary>
@@ -38,7 +38,7 @@ namespace SelfishFramework.Src.Core
         /// <returns>True if the entity has the component.</returns>
         public static bool Has<T>(this Entity entity) where T : struct, IComponent
         {
-            var pool = entity.World.GetComponentPool<T>();
+            var pool = SManager.Default.GetComponentPool<T>();
             return pool.Has(entity.Id);
         } 
         /// <summary>
@@ -48,7 +48,7 @@ namespace SelfishFramework.Src.Core
         /// <param name="entity">The entity to remove the component from. </param>
         public static void Remove<T>(this Entity entity) where T : struct, IComponent
         {
-            var pool = entity.World.GetComponentPool<T>();
+            var pool = SManager.Default.GetComponentPool<T>();
             pool.Remove(entity.Id);
         } 
 #endregion
@@ -62,9 +62,10 @@ namespace SelfishFramework.Src.Core
         /// <returns>A reference to the added system.</returns>
         public static void AddSystem<T>(this Entity entity) where T : BaseSystem, new()
         {
-            var system = entity.World.GetSystemPool<T>().Add(entity.Id);
+            var world = SManager.Default;
+            var system = world.GetSystemPool<T>().Add(entity.Id);
             system.Owner = entity;
-            entity.World.SystemModuleRegistry.Register(system);
+            world.SystemModuleRegistry.Register(system);
             entity.Systems.Add(SystemPool<T>.Index);
         }
 
@@ -77,7 +78,7 @@ namespace SelfishFramework.Src.Core
         /// <returns>True if the entity has the system.</returns>
         public static bool TryGetSystem<T>(this Entity entity, out T system) where T : BaseSystem, new()
         {
-            var systemPool = entity.World.GetSystemPool<T>();
+            var systemPool = SManager.Default.GetSystemPool<T>();
             if (!systemPool.Has(entity.Id))
             {
                 system = default; 
@@ -94,10 +95,10 @@ namespace SelfishFramework.Src.Core
         /// <param name="entity">The entity to remove the system from.</param>
         public static void RemoveSystem<T>(this Entity entity) where T : BaseSystem, new()
         {
-            var systemPool = entity.World.GetSystemPool<T>();
+            var systemPool = SManager.Default.GetSystemPool<T>();
             var system = systemPool.Get(entity.Id);
             systemPool.Remove(entity.Id); 
-            entity.World.SystemModuleRegistry.Unregister(system);
+            SManager.Default.SystemModuleRegistry.Unregister(system);
             entity.Systems.Remove(SystemPool<T>.Index);
         }
 #endregion

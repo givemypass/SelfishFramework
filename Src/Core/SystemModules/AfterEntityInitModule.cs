@@ -11,8 +11,7 @@ namespace SelfishFramework.Src.Core.SystemModules
 
     public class AfterEntityInitModule : ISystemModule<IAfterEntityInit>
     {
-        //todo maybe need to use with generation
-        private readonly HashSet<int> _entities = new();
+        private readonly HashSet<Entity> _entities = new();
         public int Priority { get; } = 100;
 
         public void TryRegister(ISystem system)
@@ -22,11 +21,11 @@ namespace SelfishFramework.Src.Core.SystemModules
                 return;
             }
 
-            if (system.Owner.IsInitted)
-            {
-                afterEntityInit.AfterEntityInit();
-                return;
-            }
+            // if (system.Owner.IsInitted)
+            // {
+            //     afterEntityInit.AfterEntityInit();
+            //     return;
+            // }
 
             // Register(system.Owner.Id);
         }

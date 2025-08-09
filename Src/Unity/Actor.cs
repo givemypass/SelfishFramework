@@ -8,50 +8,48 @@ namespace SelfishFramework.Src.Unity
 {
     public class Actor : MonoBehaviour, IDisposable
     {
-        internal Entity _entity;
+        private Entity _entity;
         public readonly InitModule InitMode = new();
 
         public Entity Entity => _entity;
 
         public void Init([NotNull]World world)
         {
-            // World = world;
-            // _entity = World.RegisterEntity(this);
-            // IsInitted = true;
+            _entity = world.NewEntity();
         }
 
         public void Dispose()
         {
-            // if (!IsInitted)
-            //     return;
-            // World.UnregisterEntity(this);
-            // IsInitted = false; 
+            if (SManager.Default.IsEntityAlive(_entity))
+            {
+                SManager.Default.UnregisterEntity(_entity);
+                _entity = default;
+            }
         }
 
         private void Awake()
         {
-            if (InitMode.InitWhen == InitModule.InitWhenMode.OnAwake)
-            {
-                if (_entity.IsInitted)
-                {
-                    SLog.LogError("Entity already initted");
-                    return;
-                }
-                Init(SManager.Default);
-            }       
+            if (InitMode.InitWhen != InitModule.InitWhenMode.OnAwake)
+                return;
+            TryInitialize();
         }
 
         private void Start()
         {
-            if (InitMode.InitWhen == InitModule.InitWhenMode.OnStart)
+            if (InitMode.InitWhen != InitModule.InitWhenMode.OnStart)
+                return;
+            TryInitialize();
+        }
+
+        private void TryInitialize()
+        {
+            var world = SManager.Default;
+            if (world.IsEntityAlive(_entity))
             {
-                if (_entity.IsInitted)
-                {
-                    SLog.LogError("Entity already initted");
-                    return;
-                }
-                Init(SManager.Default);
+                SLog.LogError("Entity already initialized");
+                return;
             }
+            Init(world);
         }
 
         private void OnDestroy()
