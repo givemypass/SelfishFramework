@@ -65,6 +65,7 @@ namespace SelfishFramework.Src.Core
             var system = entity.World.GetSystemPool<T>().Add(entity.Id);
             system.Owner = entity;
             entity.World.SystemModuleRegistry.Register(system);
+            entity.Systems.Add(SystemPool<T>.Index);
         }
 
         /// <summary>
@@ -97,6 +98,7 @@ namespace SelfishFramework.Src.Core
             var system = systemPool.Get(entity.Id);
             systemPool.Remove(entity.Id); 
             entity.World.SystemModuleRegistry.Unregister(system);
+            entity.Systems.Remove(SystemPool<T>.Index);
         }
 #endregion
     }

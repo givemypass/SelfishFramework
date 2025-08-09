@@ -4,58 +4,38 @@ namespace SelfishFramework.Src.Core.Systems
 {
     public class SystemPool<T> : ISystemPool where T : BaseSystem, new()
     {
-        private readonly World world;
-        
-        private T[] denseItems;
-        private int denseCount;
-        private int[] sparseItems;
-        private int sparseCount;
+        private T[] denseItems = new T[Constants.StartEntityCount];
 
-        public SystemPool(World world)
+        public static readonly int Index = IndexGenerator.GetIndexForType(typeof(T));
+
+        public T Add(int entityId)
         {
-            this.world = world;
-            denseCount = 1;
-            denseItems = new T[Constants.StartEntityCount];
-            sparseItems = new int[Constants.StartEntityCount];
-        }
-
-        public T Add(int actorId)
-        {
-            if(Has(actorId)) throw new Exception("Already added");
-
-            if (denseCount == denseItems.Length)
-            {
-                Array.Resize(ref denseItems, denseCount << 1);
-            }
-            var idx = denseCount++;
+            if(Has(entityId)) throw new Exception("Already added");
 
             var system = new T();
-            denseItems[idx] = system;
-            sparseItems[actorId] = idx;
+            denseItems[entityId] = system;
             
             return system;
         }
         
-        public T Get(int actorId)
+        public T Get(int entityId)
         {
-            return denseItems[sparseItems[actorId]];
+            return denseItems[entityId];
         }
 
-        public void Remove(int id)
+        public void Remove(int entityId)
         {
-            sparseItems[id] = 0;
-            var idx = sparseItems[id];
-            denseItems[idx] = default;
+            denseItems[entityId] = null;
         }
 
         public bool Has(int id)
         {
-            return sparseItems[id] > 0;
+            return denseItems[id] != null;
         }
 
         public void Resize(int newSize)
         {
-            Array.Resize(ref sparseItems, newSize);
+            Array.Resize(ref denseItems, newSize);
         }
     }
 }

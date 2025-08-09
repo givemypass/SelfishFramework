@@ -26,7 +26,7 @@ namespace SelfishFramework.Tests.EditMode
         [Test]
         public void AddGetHasRemove()
         {
-            var pool = new ComponentPool<TestComponentA>(SManager.Default, 32);
+            var pool = new ComponentPool<TestComponentA>(32);
             var entityId = 1;
             pool.Set(entityId, new TestComponentA
             {

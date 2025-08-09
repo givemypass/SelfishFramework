@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SelfishFramework.Src.Core.Components;
+using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.Systems;
 
@@ -8,16 +9,18 @@ namespace SelfishFramework.Src.Core
 {
     public class World : IDisposable
     {
-        private readonly Dictionary<Type, IComponentPool> _componentPools = new();
-        private readonly Dictionary<Type, ISystemPool> _systemPools = new();
+        private readonly Dictionary<int, IComponentPool> _componentPools = new();
+        private readonly Dictionary<int, ISystemPool> _systemPools = new();
         
         private Entity[] _entities = new Entity[Constants.StartEntityCount];
-        private int _entitiesCount = 0;
+        private int _entitiesCount;
         private readonly Queue<int> _recycledIndices = new(Constants.StartEntityCount);
         
         public readonly SystemModuleRegistry SystemModuleRegistry = new();
 
-        public bool IsEntityAlive(int id)
+        public FilterBuilder Filter => new(this);
+        
+        public bool IsEntityAlive(Entity entity)
         {
             throw new NotImplementedException();
         }
@@ -62,23 +65,23 @@ namespace SelfishFramework.Src.Core
 
         public ComponentPool<T> GetComponentPool<T>() where T : struct, IComponent
         {
-            var type = typeof(T);
-            if (_componentPools.TryGetValue(type, out var rawPool))
+            var index = ComponentPool<T>.Index;
+            if (_componentPools.TryGetValue(index, out var rawPool))
                 return (ComponentPool<T>)rawPool;
             
-            var pool = new ComponentPool<T>(this, _entities.Length);
-            _componentPools.Add(type, pool);
+            var pool = new ComponentPool<T>(_entities.Length);
+            _componentPools.Add(index, pool);
             return pool;
         }
 
         public SystemPool<T> GetSystemPool<T>() where T : BaseSystem, new()
         {
-            var type = typeof(T);
-            if (_systemPools.TryGetValue(type, out var rawPool))
+            var index = SystemPool<T>.Index;
+            if (_systemPools.TryGetValue(index, out var rawPool))
                 return (SystemPool<T>)rawPool;
             
-            var pool = new SystemPool<T>(this);
-            _systemPools.Add(type, pool);
+            var pool = new SystemPool<T>();
+            _systemPools.Add(index, pool);
             return pool;
         }
 

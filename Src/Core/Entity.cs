@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using SelfishFramework.Src.Core.Collections;
 using SelfishFramework.Src.SLogs;
 using UnityEngine;
 
@@ -20,6 +20,9 @@ namespace SelfishFramework.Src.Core
         public bool IsInitted;
 
         public World World { get; private set; }
+
+        //todo move to custom type with allocator
+        public readonly HashSet<int> Systems = new();
     }
 
     public partial class Entity : MonoBehaviour, IDisposable

@@ -4,8 +4,8 @@ namespace SelfishFramework.Src.Core.Components
 {
     public class ComponentPool<T> : IComponentPool where T : struct, IComponent
     {
-        private readonly World world;
-
+        public static readonly int Index = IndexGenerator.GetIndexForType(typeof(T));
+        
         private T[] denseItems;
         private int denseCount;
         private int[] sparseItems;
@@ -13,9 +13,8 @@ namespace SelfishFramework.Src.Core.Components
         private int[] recycledItems;
         private int recycledCount;
 
-        public ComponentPool(World world, int length)
+        public ComponentPool(int length)
         {
-            this.world = world;
             denseCount = 1;
             denseItems = new T[length];
             sparseItems = new int[length];
