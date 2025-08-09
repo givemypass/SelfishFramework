@@ -36,7 +36,7 @@ namespace SelfishFramework.Src.Core
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="entity">The entity of the component to check. </param>
         /// <returns>True if the entity has the component.</returns>
-        public static bool Contains<T>(this Entity entity) where T : struct, IComponent
+        public static bool Has<T>(this Entity entity) where T : struct, IComponent
         {
             var pool = entity.World.GetComponentPool<T>();
             return pool.Has(entity.Id);

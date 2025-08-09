@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections.Generic;
 using SelfishFramework.Src.Core.Components;
 
 namespace SelfishFramework.Src.Core.Filter
 {
     public struct FilterBuilder
     {
-        internal World _world;
-        internal LongHash _includes;
-        internal LongHash _excludes;
-        internal int[] _includedComponents;
-        internal int[] _excludedComponents;
+        private World _world;
+        private LongHash _includes;
+        private LongHash _excludes;
+        private int[] _includedComponents;
+        private int[] _excludedComponents;
 
         public static FilterBuilder Create(World world)
         {
@@ -26,8 +27,7 @@ namespace SelfishFramework.Src.Core.Filter
 
         public FilterBuilder With<T>() where T : struct, IComponent
         {
-            var id = ComponentPool<T>.Info.Index;
-            Check(id);
+            Validate<T>();
 
             return new FilterBuilder
             {
@@ -41,20 +41,40 @@ namespace SelfishFramework.Src.Core.Filter
 
         public FilterBuilder Without<T>() where T : struct, IComponent
         {
-            var id = ComponentPool<T>.Info.Index;
-            Check(id);
-            _excludes = LongHash.Combine(_excludes, ComponentPool<T>.Info.Hash);
-            return this;
+            Validate<T>();
+            
+            return new FilterBuilder
+            {
+                _world = _world,
+                _includes = _includes,
+                _excludes = LongHash.Combine(_excludes, ComponentPool<T>.Info.Hash),
+                _includedComponents = _includedComponents,
+                _excludedComponents = _excludedComponents,
+            };
         }
 
         public Filter Build()
         {
+            if (!_world.filters.TryGetValue(_includes.Value, out var excludesFilters))
+            {
+                excludesFilters = new Dictionary<long, Filter>();
+                _world.filters.Add(_includes.Value, excludesFilters);
+            }
+            if(!excludesFilters.TryGetValue(_excludes.Value, out var filter))
+            {
+                filter = new Filter(_world);
+                //todo init filter
+                excludesFilters.Add(_excludes.Value, filter);
+            }
+            
             ArrayPool<int>.Shared.Return(_includedComponents);
             ArrayPool<int>.Shared.Return(_excludedComponents);
+            return filter;
         }
 
-        private void Check(int componentId)
+        private void Validate<T>() where T : struct, IComponent
         {
+            var componentId = ComponentPool<T>.Info.Index;
             for (int i = 0; i < Constants.MAX_INCLUDES; i++)
             {
                 if (_includedComponents[i] == componentId)

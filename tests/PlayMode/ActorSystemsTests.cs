@@ -2,6 +2,7 @@ using System.Collections;
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.SystemModules;
+using SelfishFramework.Src.Unity;
 using SelfishFramework.Src.Unity.CustomUpdate;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -12,7 +13,7 @@ namespace SelfishFramework.Tests.PlayMode
     {
         private SManager _sManager;
         private MonoBehaviour coroutineRunner;
-        private Entity _entity;
+        private Actor _actor;
 
         [SetUp]
         public void SetUp()
@@ -21,19 +22,19 @@ namespace SelfishFramework.Tests.PlayMode
             _sManager = new SManager();
             _sManager.World.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             var gameObject = new GameObject();
-            coroutineRunner = gameObject.AddComponent<Entity>();
+            coroutineRunner = gameObject.AddComponent<Actor>();
             var customUpdateModule = new CustomUpdateModule(coroutineRunner);
             SManager.Default.SystemModuleRegistry.RegisterModule(customUpdateModule);
-            _entity = new GameObject().AddComponent<Entity>();
-            _entity.InitMode.InitWhen = Entity.InitModule.InitWhenMode.Manually;
-            _entity.Init(SManager.Default);
+            _actor = new GameObject().AddComponent<Actor>();
+            _actor.InitMode.InitWhen = InitModule.InitWhenMode.Manually;
+            _actor.Init(SManager.Default);
         }
 
         [TearDown]
         public void TearDown()
         {
             SManager.Default.Dispose();
-            if (_entity != null) Object.DestroyImmediate(_entity.gameObject);
+            if (_actor != null) Object.DestroyImmediate(_actor.gameObject);
             if (coroutineRunner != null) Object.DestroyImmediate(coroutineRunner.gameObject);
         }
 
@@ -41,8 +42,8 @@ namespace SelfishFramework.Tests.PlayMode
         [Order(3)]
         public IEnumerator CustomUpdateSystem()
         {
-            _entity.AddSystem<TestCustomUpdateSystem>();
-            _entity.TryGetSystem(out TestCustomUpdateSystem system);
+            _actor.Entity.AddSystem<TestCustomUpdateSystem>();
+            _actor.Entity.TryGetSystem(out TestCustomUpdateSystem system);
             
             yield return new WaitForSeconds(2);
             Assert.True(system != null);

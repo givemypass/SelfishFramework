@@ -19,10 +19,12 @@ namespace SelfishFramework.Src.Core
         public readonly SystemModuleRegistry SystemModuleRegistry = new();
 
         public FilterBuilder Filter => FilterBuilder.Create(this);
+        internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
         
-        public bool IsEntityAlive(Entity entity)
+        public bool IsEntityAlive(int id)
         {
-            throw new NotImplementedException();
+            var entity = _entities[id];
+            return entity != null;
         }
 
         /// <summary>
