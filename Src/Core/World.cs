@@ -12,13 +12,13 @@ namespace SelfishFramework.Src.Core
         private readonly Dictionary<int, IComponentPool> _componentPools = new();
         private readonly Dictionary<int, ISystemPool> _systemPools = new();
         
-        private Entity[] _entities = new Entity[Constants.StartEntityCount];
+        private Entity[] _entities = new Entity[Constants.START_ENTITY_COUNT];
         private int _entitiesCount;
-        private readonly Queue<int> _recycledIndices = new(Constants.StartEntityCount);
+        private readonly Queue<int> _recycledIndices = new(Constants.START_ENTITY_COUNT);
         
         public readonly SystemModuleRegistry SystemModuleRegistry = new();
 
-        public FilterBuilder Filter => new(this);
+        public FilterBuilder Filter => FilterBuilder.Create(this);
         
         public bool IsEntityAlive(Entity entity)
         {
@@ -31,9 +31,9 @@ namespace SelfishFramework.Src.Core
         /// <param name="entity">The entity to register.</param>
         public void RegisterEntity(Entity entity)
         {
-            if (_entities.Length == _entitiesCount + Constants.EntityIndexShift)
+            if (_entities.Length == _entitiesCount + Constants.ENTITY_INDEX_SHIFT)
             {
-                var newSize = (_entitiesCount + Constants.EntityIndexShift) << 1;
+                var newSize = (_entitiesCount + Constants.ENTITY_INDEX_SHIFT) << 1;
                 Array.Resize(ref _entities, newSize);
                 foreach (var componentPool in _componentPools)
                 {
@@ -48,7 +48,7 @@ namespace SelfishFramework.Src.Core
 
             entity.Generation++;
             var idx = _recycledIndices.Count > 0 ? _recycledIndices.Dequeue() : _entitiesCount++;
-            entity.Id = idx + Constants.EntityIndexShift;
+            entity.Id = idx + Constants.ENTITY_INDEX_SHIFT;
             _entities[idx] = entity;
         }
         
@@ -65,7 +65,7 @@ namespace SelfishFramework.Src.Core
 
         public ComponentPool<T> GetComponentPool<T>() where T : struct, IComponent
         {
-            var index = ComponentPool<T>.Index;
+            var index = ComponentPool<T>.Info.Index;
             if (_componentPools.TryGetValue(index, out var rawPool))
                 return (ComponentPool<T>)rawPool;
             

@@ -6,35 +6,41 @@ namespace SelfishFramework.Src.Core
     {
         public static int GenerateIndex(this string data)
         {
-            return GetIndexForType(data);
+            return GetIndexForTypeName(data);
         }
 
-        public static int GetIndexForType(Type c)
+        public static int GetIndexForType<T>()
         {
-            if (c == null)
-                return 0;
-
-            var typeName = c.Name;
-            return GetIndexForType(typeName);
+            var type = typeof(T);
+            var typeName = type.Name;
+            return GetIndexForTypeName(typeName);
         }
 
-        public static int GetIndexForType(string typeName)
+        public static int GetIndexForTypeName(string typeName)
         {
             if (string.IsNullOrEmpty(typeName))
-                return 0;
-
-            var lenght = typeName.Length;
-
-            int index = lenght + typeName[0].GetHashCode() + typeName[^1].GetHashCode();
-            int hash = 10070531;
-
-            for (int i = 0; i < lenght; i++)
             {
-                int charC = typeName[i].GetHashCode()*i;
-                index += (charC + (101161*(i+3)) + (hash ^ (charC*i)));
+                throw new ArgumentException("Type name cannot be null or empty.", nameof(typeName));
             }
 
-            return index;
+            unchecked
+            {
+                const int p = 16777619;
+                var hash = (int)2166136261;
+
+                for (int i = 0; i < typeName.Length; i++)
+                {
+                    hash = (hash ^ typeName[i]) * p;
+                }
+
+                hash += hash << 13;
+                hash ^= hash >> 7;
+                hash += hash << 3;
+                hash ^= hash >> 17;
+                hash += hash << 5;
+
+                return hash;
+            }
         }
     }
 

@@ -4,7 +4,7 @@ namespace SelfishFramework.Src.Core.Components
 {
     public class ComponentPool<T> : IComponentPool where T : struct, IComponent
     {
-        public static readonly int Index = IndexGenerator.GetIndexForType(typeof(T));
+        public static readonly ComponentInfo Info = ComponentInfo.Create();
         
         private T[] denseItems;
         private int denseCount;
