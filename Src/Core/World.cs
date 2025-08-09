@@ -20,11 +20,12 @@ namespace SelfishFramework.Src.Core
         public readonly SystemModuleRegistry SystemModuleRegistry = new();
 
         public FilterBuilder Filter => FilterBuilder.Create(this);
+        
         internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
         
         public bool IsEntityAlive(Entity entity)
         {
-            return entity.Id > 0 && entity.Id < _entitiesCount && _entitiesGenerations[entity.Id] == entity.Generation;
+            return entity.Id > 0 && entity.Id < _entitiesCapacity && _entitiesGenerations[entity.Id] == entity.Generation;
         }
 
         /// <summary>
@@ -32,21 +33,6 @@ namespace SelfishFramework.Src.Core
         /// </summary>
         public Entity NewEntity()
         {
-            if (_entitiesCapacity <= _entitiesCount)
-            {
-                var newSize = _entitiesCount << 1;
-                Array.Resize(ref _entitiesGenerations, newSize);
-                foreach (var componentPool in _componentPools)
-                {
-                    componentPool.Value.Resize(newSize);
-                }
-
-                foreach (var systemPool in _systemPools)
-                {
-                    systemPool.Value.Resize(newSize);
-                }
-            }
-
             int index;
             if (_recycledIndices.Count > 0)
             {
@@ -54,11 +40,26 @@ namespace SelfishFramework.Src.Core
             }
             else
             {
-                index = _entitiesCount;
-                _entitiesCount++;
+                //we need to skip 0 index, because it is reserved for default entity
+                index = ++_entitiesCount;
+            }
+            
+            if (_entitiesCapacity <= _entitiesCount)
+            {
+                _entitiesCapacity = _entitiesCount << 1;
+                Array.Resize(ref _entitiesGenerations, _entitiesCapacity);
+                foreach (var componentPool in _componentPools)
+                {
+                    componentPool.Value.Resize(_entitiesCapacity);
+                }
+
+                foreach (var systemPool in _systemPools)
+                {
+                    systemPool.Value.Resize(_entitiesCapacity);
+                }
             }
 
-            var entity = new Entity(index, (ushort)(_entitiesGenerations[index] + 1));
+            var entity = new Entity(index, (ushort)_entitiesGenerations[index]);
             return entity;
         }
         

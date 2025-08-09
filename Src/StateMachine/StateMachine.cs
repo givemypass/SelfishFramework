@@ -6,98 +6,98 @@ using SelfishFramework.Src.Core.SystemModules;
 
 namespace SelfishFramework.Src.StateMachine
 {
-    public partial class StateMachine : IUpdatable, IDisposable
+    public class StateMachine : IUpdatable, IDisposable
     {
-        private readonly Dictionary<int, BaseFSMState> states = new Dictionary<int, BaseFSMState>(8);
-        private readonly Dictionary<int, FastList<ITransition>> transitions = new(2);
-        private readonly Queue<int> changeState = new Queue<int>(1);
-        private readonly Entity owner;
+        private readonly Dictionary<int, BaseFSMState> _states = new(8);
+        private readonly Dictionary<int, FastList<ITransition>> _transitions = new(2);
+        private readonly Queue<int> _changeState = new(1);
+        private readonly Entity _owner;
 
-        private int currentState;
-        private int previousState;
-        private bool isPaused;
+        private int _currentState;
+        private int _previousState;
+        private bool _isPaused;
 
         public StateMachine(Entity owner)
         {
-            this.owner = owner;
-            this.owner.World.SystemModuleRegistry.GetModule<UpdateDefaultModule>().Register(this);
+            _owner = owner;
+            SManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().Register(this);
         }
 
-        public int CurrentState { get => currentState; }
-        public int PreviousState { get => previousState; }
-        public bool IsPaused { get => isPaused; }
+        public int CurrentState => _currentState;
+        public int PreviousState => _previousState;
+        public bool IsPaused => _isPaused;
 
         public void Update()
         {
-            if (isPaused)
+            if (_isPaused)
                 return;
             
-            if (changeState.TryDequeue(out var state))
+            if (_changeState.TryDequeue(out var state))
             {
                 ProcessChangeState(state);
             }
 
             if (CurrentState != 0)
             {
-                states[CurrentState].Update(owner);
+                _states[CurrentState].Update(_owner);
             }
         }
 
         public void ChangeState(int toState)
         {
-            if (isPaused)
+            if (_isPaused)
                 return;
             
-            changeState.Enqueue(toState);
+            _changeState.Enqueue(toState);
         }
 
         public void Pause(bool enable)
         {
-            if (isPaused == enable)
+            if (_isPaused == enable)
                 return;
             
-            isPaused = enable;
+            _isPaused = enable;
 
-            if(currentState == 0)
+            if(_currentState == 0)
                 return;
             
             if (enable)
             {
-                states[currentState].Disable(owner);
+                _states[_currentState].Disable(_owner);
             }
             else
             {
-                states[currentState].Enable(owner);
+                _states[_currentState].Enable(_owner);
             }
         }
 
         private void ProcessChangeState(int toState)
         {
-            if (currentState != 0)
+            if (_currentState != 0)
             {
-                states[currentState].Disable(owner);
-                states[currentState].Exit(owner);
+                _states[_currentState].Disable(_owner);
+                _states[_currentState].Exit(_owner);
             }
 
-            previousState = currentState;
-            currentState = toState;
+            _previousState = _currentState;
+            _currentState = toState;
             if (TryGetState(toState, out var state))
             {
-                state.Enter(owner);
-                state.Enable(owner);
+                state.Enter(_owner);
+                state.Enable(_owner);
             }
         }
 
         public void NextState()
         {
-            if (currentState == 0)
+            if (_currentState == 0)
                 return;
 
-            if (this.transitions.TryGetValue(currentState, out var transitionsOfState))
+            if (this._transitions.TryGetValue(_currentState, out var transitionsOfState))
             {
                 foreach (var t in transitionsOfState)
                 {
-                    if (t.IsReady(owner))
+                    if (t.IsReady(_owner))
                     {
                         ChangeState(t.ToState);
                         return;
@@ -105,42 +105,42 @@ namespace SelfishFramework.Src.StateMachine
                 }
             }
          
-            ChangeState(states[currentState].NextStateID);
+            ChangeState(_states[_currentState].NextStateID);
         }
 
         public void AddState(BaseFSMState state)
         {
-            if (!states.TryAdd(state.StateID, state))
-                states[state.StateID] = state;
+            if (!_states.TryAdd(state.StateID, state))
+                _states[state.StateID] = state;
         }
 
         public bool RemoveState(BaseFSMState state)
         {
-            return states.Remove(state.StateID);
+            return _states.Remove(state.StateID);
         }
 
         public bool TryGetState(int id, out BaseFSMState state)
         {
-            return states.TryGetValue(id, out state);
+            return _states.TryGetValue(id, out state);
         }
 
         public void AddStateTransition(int stateId, ITransition transition)
         {
-            if (transitions.TryGetValue(stateId, out var stateTransitions))
+            if (_transitions.TryGetValue(stateId, out var stateTransitions))
             {
                 stateTransitions.Add(transition);
             }
             else
             {
-                transitions.Add(stateId,new FastList<ITransition>());
-                transitions[stateId].Add(transition);
+                _transitions.Add(stateId,new FastList<ITransition>());
+                _transitions[stateId].Add(transition);
             }
         }
 
         public void Dispose()
         {
-            owner.World.SystemModuleRegistry.GetModule<UpdateDefaultModule>().Unregister(this);
-            foreach (var state in states.Values)
+            SManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().Unregister(this);
+            foreach (var state in _states.Values)
             {
                 state.Dispose();
             }
