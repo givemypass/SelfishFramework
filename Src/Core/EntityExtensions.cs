@@ -5,6 +5,16 @@ namespace SelfishFramework.Src.Core
 {
     public static class EntityExtensions
     {
+        /// <summary>
+        /// Check if the specified entity is disposed.
+        /// </summary>
+        public static bool IsDisposed(this World world, Entity entity)
+        {
+            return entity.Id <= 0 ||
+                   entity.Id >= world.entitiesCapacity ||
+                   world.entitiesGenerations[entity.Id] != entity.Generation;
+        }
+        
 #region Components
 
         /// <summary>

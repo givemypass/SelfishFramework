@@ -8,8 +8,8 @@ namespace SelfishFramework.Src.Core.Filter
     public struct FilterBuilder
     {
         private World _world;
-        private LongHash _includes;
-        private LongHash _excludes;
+        private LongHash _includesHash;
+        private LongHash _excludesHash;
         private int[] _includedComponents;
         private int[] _excludedComponents;
 
@@ -18,8 +18,8 @@ namespace SelfishFramework.Src.Core.Filter
             return new FilterBuilder
             {
                 _world = world,
-                _includes = default,
-                _excludes = default,
+                _includesHash = default,
+                _excludesHash = default,
                 _includedComponents = ArrayPool<int>.Shared.Rent(Constants.MAX_INCLUDES),
                 _excludedComponents = ArrayPool<int>.Shared.Rent(Constants.MAX_EXCLUDES),
             };
@@ -32,8 +32,8 @@ namespace SelfishFramework.Src.Core.Filter
             return new FilterBuilder
             {
                 _world = _world,
-                _includes = LongHash.Combine(_includes, ComponentPool<T>.Info.Hash),
-                _excludes = _excludes,
+                _includesHash = LongHash.Combine(_includesHash, ComponentPool<T>.Info.Hash),
+                _excludesHash = _excludesHash,
                 _includedComponents = _includedComponents,
                 _excludedComponents = _excludedComponents
             };
@@ -46,8 +46,8 @@ namespace SelfishFramework.Src.Core.Filter
             return new FilterBuilder
             {
                 _world = _world,
-                _includes = _includes,
-                _excludes = LongHash.Combine(_excludes, ComponentPool<T>.Info.Hash),
+                _includesHash = _includesHash,
+                _excludesHash = LongHash.Combine(_excludesHash, ComponentPool<T>.Info.Hash),
                 _includedComponents = _includedComponents,
                 _excludedComponents = _excludedComponents,
             };
@@ -55,16 +55,15 @@ namespace SelfishFramework.Src.Core.Filter
 
         public Filter Build()
         {
-            if (!_world.filters.TryGetValue(_includes.Value, out var excludesFilters))
+            if (!_world.filters.TryGetValue(_includesHash.Value, out var excludesFilters))
             {
                 excludesFilters = new Dictionary<long, Filter>();
-                _world.filters.Add(_includes.Value, excludesFilters);
+                _world.filters.Add(_includesHash.Value, excludesFilters);
             }
-            if(!excludesFilters.TryGetValue(_excludes.Value, out var filter))
+            if(!excludesFilters.TryGetValue(_excludesHash.Value, out var filter))
             {
-                filter = new Filter(_world);
-                //todo init filter
-                excludesFilters.Add(_excludes.Value, filter);
+                filter = new Filter(_world, _includedComponents, _excludedComponents);
+                excludesFilters.Add(_excludesHash.Value, filter);
             }
             
             ArrayPool<int>.Shared.Return(_includedComponents);

@@ -31,7 +31,7 @@ namespace SelfishFramework.Tests.EditMode
         [Order(0)]
         public void InitEntity()
         {
-            Assert.True(_sManager.World.IsEntityAlive(_actor.Entity));  
+            Assert.True(!_sManager.World.IsDisposed(_actor.Entity));  
         }
         
         [Test]

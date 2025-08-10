@@ -20,7 +20,7 @@ namespace SelfishFramework.Src.Unity
 
         public void Dispose()
         {
-            if (SManager.Default.IsEntityAlive(_entity))
+            if (!SManager.Default.IsDisposed(_entity))
             {
                 SManager.Default.UnregisterEntity(_entity);
                 _entity = default;
@@ -44,12 +44,13 @@ namespace SelfishFramework.Src.Unity
         private void TryInitialize()
         {
             var world = SManager.Default;
-            if (world.IsEntityAlive(_entity))
+            if (world.IsDisposed(_entity))
             {
-                SLog.LogError("Entity already initialized");
+                Init(world);
                 return;
             }
-            Init(world);
+
+            SLog.LogError("Entity already initialized");
         }
 
         private void OnDestroy()
