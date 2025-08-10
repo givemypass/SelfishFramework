@@ -20,7 +20,6 @@ namespace SelfishFramework.Tests.PlayMode
         {
             _sManager?.Dispose();
             _sManager = new SManager();
-            _sManager.World.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             var gameObject = new GameObject();
             _coroutineRunner = gameObject.AddComponent<Actor>();
             var customUpdateModule = new CoroutineUpdateModule(_coroutineRunner);

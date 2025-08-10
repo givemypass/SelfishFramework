@@ -4,77 +4,77 @@ namespace SelfishFramework.Src.Core.Components
 {
     public class ComponentPool<T> : IComponentPool where T : struct, IComponent
     {
-        public static readonly ComponentInfo Info = ComponentInfo.Create();
+        public static readonly ComponentInfo Info = ComponentInfo.Create<T>();
         
-        private T[] denseItems;
-        private int denseCount;
-        private int[] sparseItems;
-        private int sparseCount;
-        private int[] recycledItems;
-        private int recycledCount;
+        private T[] _denseItems;
+        private int _denseCount;
+        private int[] _sparseItems;
+        private int _sparseCount;
+        private int[] _recycledItems;
+        private int _recycledCount;
 
         public ComponentPool(int length)
         {
-            denseCount = 1;
-            denseItems = new T[length];
-            sparseItems = new int[length];
-            recycledItems = new int[length];
+            _denseCount = 1;
+            _denseItems = new T[length];
+            _sparseItems = new int[length];
+            _recycledItems = new int[length];
         }
 
         public void Set(int entityId, in T component)
         {
-            var idx = sparseItems[entityId];
+            var idx = _sparseItems[entityId];
 
             if(idx == 0)
             {
-                if (recycledCount > 0)
+                if (_recycledCount > 0)
                 {
-                    idx = recycledItems[--recycledCount];
+                    idx = _recycledItems[--_recycledCount];
                 }
                 else
                 {
-                    if (denseCount == denseItems.Length)
+                    if (_denseCount == _denseItems.Length)
                     {
-                        Array.Resize(ref denseItems, denseCount << 1);
+                        Array.Resize(ref _denseItems, _denseCount << 1);
                     }
 
-                    idx = denseCount++;
+                    idx = _denseCount++;
                 }
 
-                sparseItems[entityId] = idx;
+                _sparseItems[entityId] = idx;
             }
             
-            denseItems[idx] = component;
+            _denseItems[idx] = component;
         }
-        
+
         public ref T Get(int entityId)
         {
-            return ref denseItems[sparseItems[entityId]];
+            return ref _denseItems[_sparseItems[entityId]];
         }
 
         public void Remove(int id)
         {
             if (!Has(id))
                 return;
-            if (recycledItems.Length == recycledCount)
+            if (_recycledItems.Length == _recycledCount)
             {
-                Array.Resize(ref recycledItems, recycledCount << 1);
+                Array.Resize(ref _recycledItems, _recycledCount << 1);
             }
 
-            var idx = sparseItems[id];
-            sparseItems[id] = 0;
-            recycledItems[recycledCount++] = idx;
-            denseItems[sparseItems[id]] = default;
+            var idx = _sparseItems[id];
+            _sparseItems[id] = 0;
+            _recycledItems[_recycledCount++] = idx;
+            _denseItems[_sparseItems[id]] = default;
         }
 
         public bool Has(int id)
         {
-            return sparseItems[id] > 0;
+            return _sparseItems[id] > 0;
         }
 
         public void Resize(int capacity)
         {
-            Array.Resize(ref sparseItems, capacity); 
+            Array.Resize(ref _sparseItems, capacity); 
         }
     }
 }

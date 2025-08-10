@@ -10,8 +10,10 @@ namespace SelfishFramework.Src.Unity
     {
         private SManager _sManager;
         
+
         private event Action OnUpdate;
         private event Action OnFixedUpdate;
+        private event Action OnLateUpdate;
         private event Action OnGlobalStart;
         
         private void Awake()
@@ -36,6 +38,12 @@ namespace SelfishFramework.Src.Unity
         private void Update()
         {
             OnUpdate?.Invoke();
+        }
+
+        private void LateUpdate()
+        {
+            OnLateUpdate?.Invoke();
+            _sManager.World.Commit();
         }
 
         private void FixedUpdate()

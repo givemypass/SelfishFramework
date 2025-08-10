@@ -17,7 +17,6 @@ namespace SelfishFramework.Tests.EditMode
         {
             _sManager?.Dispose();
             _sManager = new();
-            SManager.Default.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             _actor = new GameObject().AddComponent<Actor>();
             _actor.Init(SManager.Default);
         }

@@ -9,29 +9,49 @@ namespace SelfishFramework.Src.Core
 {
     public class World : IDisposable
     {
-        private readonly Dictionary<int, IComponentPool> _componentPools = new();
         private readonly Queue<int> _recycledIndices = new(Constants.START_ENTITY_COUNT);
         private readonly Dictionary<int, ISystemPool> _systemPools = new();
 
-        internal readonly HashSet<int> dirtyEntities = new(Constants.START_ENTITY_COUNT);
+        internal readonly HashSet<Entity> dirtyEntities = new(Constants.START_ENTITY_COUNT);
 
         internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
 
         public readonly SystemModuleRegistry SystemModuleRegistry = new();
+        
+        private IComponentPool[] _componentPools = new IComponentPool[32];
 
         internal int entitiesCapacity = Constants.START_ENTITY_COUNT;
         internal int entitiesCount;
         internal int[] entitiesGenerations = new int[Constants.START_ENTITY_COUNT];
 
-        public FilterBuilder Filter => FilterBuilder.Create(this);
-
         public World()
         {
-            SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());     
+            SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             SystemModuleRegistry.RegisterModule(new FixedUpdateModule());
             SystemModuleRegistry.RegisterModule(new GlobalStartModule());
         }
-        
+
+        public FilterBuilder Filter => FilterBuilder.Create(this);
+
+        public void Dispose()
+        {
+            SystemModuleRegistry.Dispose();
+            //todo dispose all stuff
+        }
+
+        public void Commit()
+        {
+            foreach (var dict in filters.Values)
+            {
+                foreach (var filter in dict.Values)
+                {
+                    filter.UpdateFilter(dirtyEntities);
+                }
+            }
+
+            dirtyEntities.Clear();
+        }
+
         /// <summary>
         ///     Registers a new entity in the system.
         /// </summary>
@@ -48,9 +68,15 @@ namespace SelfishFramework.Src.Core
             {
                 entitiesCapacity = entitiesCount << 1;
                 Array.Resize(ref entitiesGenerations, entitiesCapacity);
-                foreach (var componentPool in _componentPools) componentPool.Value.Resize(entitiesCapacity);
+                foreach (var componentPool in _componentPools)
+                {
+                    componentPool.Resize(entitiesCapacity);
+                }
 
-                foreach (var systemPool in _systemPools) systemPool.Value.Resize(entitiesCapacity);
+                foreach (var systemPool in _systemPools)
+                {
+                    systemPool.Value.Resize(entitiesCapacity);
+                }
             }
 
             var entity = new Entity(index, (ushort)entitiesGenerations[index]);
@@ -64,19 +90,44 @@ namespace SelfishFramework.Src.Core
         public void UnregisterEntity(Entity entity)
         {
             _recycledIndices.Enqueue(entity.Id);
+            dirtyEntities.Add(entity);
             entitiesGenerations[entity.Id]++;
             entitiesCount--;
         }
 
         public ComponentPool<T> GetComponentPool<T>() where T : struct, IComponent
         {
+            //todo set index in constructor and increment by using pools count
             var index = ComponentPool<T>.Info.Index;
-            if (_componentPools.TryGetValue(index, out var rawPool))
-                return (ComponentPool<T>)rawPool;
+            var capacity = _componentPools.Length;
+            while (index >= capacity)
+            {
+                capacity *= 2;
+            }
+            
+            if (_componentPools.Length != capacity)
+            {
+                Array.Resize(ref _componentPools, capacity);
+            }
+
+            var rawPool = _componentPools[index];
+            if (rawPool != null)
+                return (ComponentPool<T>) rawPool;
 
             var pool = new ComponentPool<T>(entitiesCapacity);
-            _componentPools.Add(index, pool);
+            _componentPools[index] = pool;
             return pool;
+        }
+
+        public bool TryGetComponentPool(int index, out IComponentPool pool)
+        {
+            if(index < 0 || index >= _componentPools.Length)
+            {
+                pool = null;
+                return false;
+            }
+            pool = _componentPools[index];
+            return pool != null;
         }
 
         public SystemPool<T> GetSystemPool<T>() where T : BaseSystem, new()
@@ -88,12 +139,6 @@ namespace SelfishFramework.Src.Core
             var pool = new SystemPool<T>();
             _systemPools.Add(index, pool);
             return pool;
-        }
-
-        public void Dispose()
-        {
-            SystemModuleRegistry.Dispose();
-            //todo dispose all stuff
         }
     }
 }

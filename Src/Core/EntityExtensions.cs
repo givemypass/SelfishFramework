@@ -29,7 +29,7 @@ namespace SelfishFramework.Src.Core
             var world = SManager.Default;
             var pool = world.GetComponentPool<T>();
             pool.Set(entity.Id, component);
-            world.dirtyEntities.Add(entity.Id);
+            world.dirtyEntities.Add(entity);
         } 
         /// <summary>
         /// Get a component of type T to the specified entity.
@@ -63,7 +63,7 @@ namespace SelfishFramework.Src.Core
             var world = SManager.Default;
             var pool = world.GetComponentPool<T>();
             pool.Remove(entity.Id);
-            world.dirtyEntities.Add(entity.Id);
+            world.dirtyEntities.Add(entity);
         } 
 #endregion
 

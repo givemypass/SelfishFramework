@@ -32,6 +32,7 @@ namespace SelfishFramework.Src.Core.SystemModules
             {
                 return;
             }
+            
             if (_isGlobalStarted)
             {
                 globalStart.GlobalStart();
