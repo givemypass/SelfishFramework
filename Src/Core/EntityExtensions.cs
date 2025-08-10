@@ -26,8 +26,10 @@ namespace SelfishFramework.Src.Core
         /// <returns>A reference to the set component.</returns>
         public static void Set<T>(this Entity entity, in T component) where T : struct, IComponent
         {
-            var pool = SManager.Default.GetComponentPool<T>();
+            var world = SManager.Default;
+            var pool = world.GetComponentPool<T>();
             pool.Set(entity.Id, component);
+            world.dirtyEntities.Add(entity.Id);
         } 
         /// <summary>
         /// Get a component of type T to the specified entity.
@@ -58,8 +60,10 @@ namespace SelfishFramework.Src.Core
         /// <param name="entity">The entity to remove the component from. </param>
         public static void Remove<T>(this Entity entity) where T : struct, IComponent
         {
-            var pool = SManager.Default.GetComponentPool<T>();
+            var world = SManager.Default;
+            var pool = world.GetComponentPool<T>();
             pool.Remove(entity.Id);
+            world.dirtyEntities.Add(entity.Id);
         } 
 #endregion
 

@@ -13,14 +13,14 @@ namespace SelfishFramework.Src.Unity.CustomUpdate
         void CustomUpdate();
     }
     
-    public class CustomUpdateModule : ISystemModule<ICustomUpdatable>
+    public class CoroutineUpdateModule : ISystemModule<ICustomUpdatable>
     {
         private readonly Dictionary<ICustomUpdatable, Coroutine> _coroutines = new(8);
         private readonly MonoBehaviour _runner;
 
         public int Priority { get; } = 1000;
         
-        public CustomUpdateModule(MonoBehaviour runner)
+        public CoroutineUpdateModule(MonoBehaviour runner)
         {
             _runner = runner;  
         }

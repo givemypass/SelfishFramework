@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SelfishFramework.Src.Core.Collections;
 using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.Core.SystemModules;
@@ -14,7 +13,7 @@ namespace SelfishFramework.Src.Core
         private readonly Queue<int> _recycledIndices = new(Constants.START_ENTITY_COUNT);
         private readonly Dictionary<int, ISystemPool> _systemPools = new();
 
-        internal readonly FastList<int> dirtyEntities = new(Constants.START_ENTITY_COUNT);
+        internal readonly HashSet<int> dirtyEntities = new(Constants.START_ENTITY_COUNT);
 
         internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
 
@@ -26,12 +25,13 @@ namespace SelfishFramework.Src.Core
 
         public FilterBuilder Filter => FilterBuilder.Create(this);
 
-        public void Dispose()
+        public World()
         {
-            SystemModuleRegistry.Dispose();
+            SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());     
+            SystemModuleRegistry.RegisterModule(new FixedUpdateModule());
+            SystemModuleRegistry.RegisterModule(new GlobalStartModule());
         }
-
-
+        
         /// <summary>
         ///     Registers a new entity in the system.
         /// </summary>
@@ -88,6 +88,12 @@ namespace SelfishFramework.Src.Core
             var pool = new SystemPool<T>();
             _systemPools.Add(index, pool);
             return pool;
+        }
+
+        public void Dispose()
+        {
+            SystemModuleRegistry.Dispose();
+            //todo dispose all stuff
         }
     }
 }

@@ -23,7 +23,7 @@ namespace SelfishFramework.Tests.PlayMode
             _sManager.World.SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             var gameObject = new GameObject();
             _coroutineRunner = gameObject.AddComponent<Actor>();
-            var customUpdateModule = new CustomUpdateModule(_coroutineRunner);
+            var customUpdateModule = new CoroutineUpdateModule(_coroutineRunner);
             SManager.Default.SystemModuleRegistry.RegisterModule(customUpdateModule);
             _actor = new GameObject().AddComponent<Actor>();
             _actor.InitMode.InitWhen = InitModule.InitWhenMode.Manually;

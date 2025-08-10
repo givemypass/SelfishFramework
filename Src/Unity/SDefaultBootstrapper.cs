@@ -19,20 +19,13 @@ namespace SelfishFramework.Src.Unity
             _sManager = new SManager();
 
             var world = _sManager.World;
-            var updateDefaultModule = new UpdateDefaultModule();
-            OnUpdate += updateDefaultModule.UpdateAll;
-            world.SystemModuleRegistry.RegisterModule(updateDefaultModule);
             
-            var fixedUpdateModule = new FixedUpdateModule();
-            OnFixedUpdate += fixedUpdateModule.UpdateAll;
-            world.SystemModuleRegistry.RegisterModule(fixedUpdateModule);
+            OnUpdate += world.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll;
+            OnFixedUpdate += world.SystemModuleRegistry.GetModule<FixedUpdateModule>().UpdateAll;
+            OnGlobalStart += world.SystemModuleRegistry.GetModule<GlobalStartModule>().GlobalStartAll;
             
-            var customUpdateModule = new CustomUpdateModule(this);
-            world.SystemModuleRegistry.RegisterModule(customUpdateModule);
-            
-            var globalStartModule = new GlobalStartModule();
-            OnGlobalStart += globalStartModule.GlobalStartAll;
-            world.SystemModuleRegistry.RegisterModule(globalStartModule);
+            var coroutineUpdateModule = new CoroutineUpdateModule(this);
+            world.SystemModuleRegistry.RegisterModule(coroutineUpdateModule);
         }
 
         private void Start()
