@@ -10,6 +10,8 @@ namespace SelfishFramework.Src.Core.Filter
         private World _world;
         private LongHash _includesHash;
         private LongHash _excludesHash;
+        private int _includesCount;
+        private int _excludesCount;
         private int[] _includedComponents;
         private int[] _excludedComponents;
 
@@ -20,6 +22,8 @@ namespace SelfishFramework.Src.Core.Filter
                 _world = world,
                 _includesHash = default,
                 _excludesHash = default,
+                _includesCount = 0,
+                _excludesCount = 0,
                 _includedComponents = ArrayPool<int>.Shared.Rent(Constants.MAX_INCLUDES),
                 _excludedComponents = ArrayPool<int>.Shared.Rent(Constants.MAX_EXCLUDES),
             };
@@ -27,13 +31,21 @@ namespace SelfishFramework.Src.Core.Filter
 
         public FilterBuilder With<T>() where T : struct, IComponent
         {
-            Validate<T>();
-
+            if (_includesCount >= Constants.MAX_INCLUDES)
+            {
+                throw new InvalidOperationException($"Cannot include more than {Constants.MAX_INCLUDES} components in a filter.");
+            }
+            
+            var componentId = _world.GetComponentPool<T>().GetId();
+            CheckDuplicates(componentId);
+            _includedComponents[_includesCount++] = componentId;
             return new FilterBuilder
             {
                 _world = _world,
                 _includesHash = LongHash.Combine(_includesHash, ComponentPool<T>.Info.Hash),
                 _excludesHash = _excludesHash,
+                _includesCount = _includesCount,
+                _excludesCount = _excludesCount,
                 _includedComponents = _includedComponents,
                 _excludedComponents = _excludedComponents,
             };
@@ -41,13 +53,21 @@ namespace SelfishFramework.Src.Core.Filter
 
         public FilterBuilder Without<T>() where T : struct, IComponent
         {
-            Validate<T>();
+            if (_excludesCount >= Constants.MAX_EXCLUDES)
+            {
+                throw new InvalidOperationException($"Cannot exclude more than {Constants.MAX_EXCLUDES} components from a filter.");
+            }
             
+            var componentId = _world.GetComponentPool<T>().GetId();
+            CheckDuplicates(componentId);
+            _excludedComponents[_excludesCount++] = componentId;
             return new FilterBuilder
             {
                 _world = _world,
                 _includesHash = _includesHash,
                 _excludesHash = LongHash.Combine(_excludesHash, ComponentPool<T>.Info.Hash),
+                _includesCount = _includesCount,
+                _excludesCount = _excludesCount,
                 _includedComponents = _includedComponents,
                 _excludedComponents = _excludedComponents,
             };
@@ -62,7 +82,7 @@ namespace SelfishFramework.Src.Core.Filter
             }
             if(!excludesFilters.TryGetValue(_excludesHash.Value, out var filter))
             {
-                filter = new Filter(_world, _includedComponents, _excludedComponents);
+                filter = new Filter(_world, _includedComponents, _excludedComponents, _includesCount, _excludesCount);
                 //todo fill by entities
                 excludesFilters.Add(_excludesHash.Value, filter);
             }
@@ -72,10 +92,9 @@ namespace SelfishFramework.Src.Core.Filter
             return filter;
         }
 
-        private void Validate<T>() where T : struct, IComponent
+        private void CheckDuplicates(int componentId)
         {
-            var componentId = _world.GetComponentPool<T>().GetId();
-            for (int i = 0; i < Constants.MAX_INCLUDES; i++)
+            for (int i = 0; i < _includesCount; i++)
             {
                 if (_includedComponents[i] == componentId)
                 {
@@ -83,7 +102,7 @@ namespace SelfishFramework.Src.Core.Filter
                 }
             }
 
-            for (int i = 0; i < Constants.MAX_EXCLUDES; i++)
+            for (int i = 0; i < _excludesCount; i++)
             {
                 if (_excludedComponents[i] == componentId)
                 {

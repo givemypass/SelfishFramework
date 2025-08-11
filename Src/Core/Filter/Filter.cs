@@ -15,18 +15,18 @@ namespace SelfishFramework.Src.Core.Filter
         
         public int Count => _entities.Count;
 
-        public Filter(World world, int[] includes, int[] excludes)
+        public Filter(World world, int[] includes, int[] excludes, int includesCount, int excludesCount)
         {
             _world = world;
             _includes = new FastList<int>(includes.Length);
-            foreach (var include in includes)
+            for (var i = 0; i < includesCount; i++)
             {
-                _includes.Add(include);
+                _includes.Add(includes[i]);
             }
             _excludes = new FastList<int>(excludes.Length);
-            foreach (var exclude in excludes)
+            for (var i = 0; i < excludesCount; i++)
             {
-                _excludes.Add(exclude);
+                _excludes.Add(excludes[i]);
             }
         }
 

@@ -105,12 +105,12 @@ namespace SelfishFramework.Src.Core
                 return _componentPools[index] as ComponentPool<T>;
             }
             
-            if(_componentPoolsCount >= _componentPools.Length)
+            if(++_componentPoolsCount >= _componentPools.Length)
             {
                 Array.Resize(ref _componentPools, _componentPools.Length << 1);
             }
             
-            index = _componentPoolsCount++;
+            index = _componentPoolsCount;
             var pool = new ComponentPool<T>(index, entitiesCapacity);
             _componentPools[index] = pool;
             _componentPoolsMap.Add(hash, index);
