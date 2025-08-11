@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace SelfishFramework.Src.Core
 {
-    public struct LongHash : IEquatable<LongHash>
+    public readonly struct LongHash : IEquatable<LongHash>
     {
         private readonly long _value;
 

@@ -35,7 +35,7 @@ namespace SelfishFramework.Src.Core.Filter
                 _includesHash = LongHash.Combine(_includesHash, ComponentPool<T>.Info.Hash),
                 _excludesHash = _excludesHash,
                 _includedComponents = _includedComponents,
-                _excludedComponents = _excludedComponents
+                _excludedComponents = _excludedComponents,
             };
         }
 
@@ -63,6 +63,7 @@ namespace SelfishFramework.Src.Core.Filter
             if(!excludesFilters.TryGetValue(_excludesHash.Value, out var filter))
             {
                 filter = new Filter(_world, _includedComponents, _excludedComponents);
+                //todo fill by entities
                 excludesFilters.Add(_excludesHash.Value, filter);
             }
             
@@ -73,7 +74,7 @@ namespace SelfishFramework.Src.Core.Filter
 
         private void Validate<T>() where T : struct, IComponent
         {
-            var componentId = ComponentPool<T>.Info.Index;
+            var componentId = _world.GetComponentPool<T>().GetId();
             for (int i = 0; i < Constants.MAX_INCLUDES; i++)
             {
                 if (_includedComponents[i] == componentId)

@@ -9,7 +9,6 @@ namespace SelfishFramework.Src.Unity
     public class SDefaultBootstrapper : MonoBehaviour
     {
         private SManager _sManager;
-        
 
         private event Action OnUpdate;
         private event Action OnFixedUpdate;

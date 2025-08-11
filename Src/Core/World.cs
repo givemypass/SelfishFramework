@@ -19,6 +19,8 @@ namespace SelfishFramework.Src.Core
         public readonly SystemModuleRegistry SystemModuleRegistry = new();
         
         private IComponentPool[] _componentPools = new IComponentPool[32];
+        private int _componentPoolsCount;
+        private readonly Dictionary<LongHash, int> _componentPoolsMap = new(32);
 
         internal int entitiesCapacity = Constants.START_ENTITY_COUNT;
         internal int entitiesCount;
@@ -97,25 +99,21 @@ namespace SelfishFramework.Src.Core
 
         public ComponentPool<T> GetComponentPool<T>() where T : struct, IComponent
         {
-            //todo set index in constructor and increment by using pools count
-            var index = ComponentPool<T>.Info.Index;
-            var capacity = _componentPools.Length;
-            while (index >= capacity)
+            var hash = ComponentPool<T>.Info.Hash;
+            if(_componentPoolsMap.TryGetValue(hash, out var index))
             {
-                capacity *= 2;
+                return _componentPools[index] as ComponentPool<T>;
             }
             
-            if (_componentPools.Length != capacity)
+            if(_componentPoolsCount >= _componentPools.Length)
             {
-                Array.Resize(ref _componentPools, capacity);
+                Array.Resize(ref _componentPools, _componentPools.Length << 1);
             }
-
-            var rawPool = _componentPools[index];
-            if (rawPool != null)
-                return (ComponentPool<T>) rawPool;
-
-            var pool = new ComponentPool<T>(entitiesCapacity);
+            
+            index = _componentPoolsCount++;
+            var pool = new ComponentPool<T>(index, entitiesCapacity);
             _componentPools[index] = pool;
+            _componentPoolsMap.Add(hash, index);
             return pool;
         }
 

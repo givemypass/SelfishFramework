@@ -22,11 +22,10 @@ namespace SelfishFramework.Tests.EditMode
             _sManager?.Dispose();
         }
 
-        // A Test behaves as an ordinary method
         [Test]
         public void AddGetHasRemove()
         {
-            var pool = new ComponentPool<TestComponentA>(32);
+            var pool = _sManager.World.GetComponentPool<TestComponentA>();
             var entityId = 1;
             pool.Set(entityId, new TestComponentA
             {

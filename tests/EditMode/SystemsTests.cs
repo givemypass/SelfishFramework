@@ -2,6 +2,7 @@ using NUnit.Framework;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Unity;
+using SelfishFramework.Tests.EditMode.TestComponents;
 using SelfishFramework.Tests.EditMode.TestSystems;
 using UnityEngine;
 
@@ -55,6 +56,40 @@ namespace SelfishFramework.Tests.EditMode
             _actor.Entity.AddSystem<TestSystemA>();
             _actor.Entity.RemoveSystem<TestSystemA>();
             Assert.False(_actor.Entity.TryGetSystem<TestSystemA>(out _));
+        }
+        
+        [Test]
+        [Order(3)]
+        public void FilterCache()
+        {
+            var filter1 = _sManager.World.Filter.With<TestComponentA>().Build();
+            var filter2 = _sManager.World.Filter.With<TestComponentA>().Build();
+            Assert.True(filter1 == filter2);
+        }
+
+        [Test]
+        [Order(4)]
+        public void IterateFilter()
+        {
+            _actor.Entity.Set(new TestComponentA { TestInt = 1 });
+            _actor.Entity.AddSystem<TestFilterSystem>();
+            SManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
+            var val = _actor.Entity.Get<TestComponentA>().TestInt;
+            Assert.True(val == 1);
+        }
+
+        [Test]
+        [Order(5)]
+        public void BuildFilter()
+        {
+            var filter = _sManager.World.Filter
+                .With<TestComponentA>()
+                .Without<TestComponentB>()
+                .Build();
+            
+            _actor.Entity.Set(new TestComponentA { TestInt = 1 });
+            filter.ForceUpdate();
+            Assert.True(filter.Count == 1);
         }
     }
 }

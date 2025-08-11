@@ -81,6 +81,7 @@ namespace SelfishFramework.Src.Core
             system.Owner = entity;
             world.SystemModuleRegistry.Register(system);
             entity.Systems.Add(SystemPool<T>.Index);
+            system.InitSystem();
         }
 
         /// <summary>

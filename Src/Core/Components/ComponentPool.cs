@@ -6,6 +6,8 @@ namespace SelfishFramework.Src.Core.Components
     {
         public static readonly ComponentInfo Info = ComponentInfo.Create<T>();
         
+        private readonly int _id;
+        
         private T[] _denseItems;
         private int _denseCount;
         private int[] _sparseItems;
@@ -13,12 +15,17 @@ namespace SelfishFramework.Src.Core.Components
         private int[] _recycledItems;
         private int _recycledCount;
 
-        public ComponentPool(int length)
+        public ComponentPool(int id, int length)
         {
+            _id = id;
             _denseCount = 1;
             _denseItems = new T[length];
             _sparseItems = new int[length];
             _recycledItems = new int[length];
+        }
+        public int GetId()
+        {
+            return _id;
         }
 
         public void Set(int entityId, in T component)
