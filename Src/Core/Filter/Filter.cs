@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using SelfishFramework.Src.Core.Collections;
+using UnityEngine;
 
 namespace SelfishFramework.Src.Core.Filter
 {
-    public class Filter
+    public sealed class Filter
     {
         private readonly World _world;
         private readonly FastList<int> _includes;
@@ -27,6 +28,11 @@ namespace SelfishFramework.Src.Core.Filter
             }
         }
 
+        public void ForceUpdate()
+        {
+            UpdateFilter(_world.dirtyEntities);
+        }
+        
         public void UpdateFilter(HashSet<Entity> dirtyEntities)
         {
             foreach (var dirtyEntity in dirtyEntities)
@@ -78,6 +84,41 @@ namespace SelfishFramework.Src.Core.Filter
             }
 
             return true; 
+        }
+
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(_world, _entities);
+        }
+
+        public struct Enumerator
+        {
+            private readonly World _world;
+            private readonly FastList<Entity> _entities;
+            private int _currentIndex;
+
+            public Enumerator(World world, FastList<Entity> entities)
+            {
+                _world = world;
+                _entities = entities;
+                _currentIndex = 0;
+            }
+
+            public Entity Current => _entities[_currentIndex];
+
+            public bool MoveNext()
+            {
+                while (++_currentIndex < _entities.Count)
+                {
+                    if (_world.IsDisposed(_entities[_currentIndex]))
+                    {
+                        continue;
+                    }
+
+                    return true;
+                }
+                return false; 
+            }
         }
     }
 }
