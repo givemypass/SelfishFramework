@@ -106,5 +106,22 @@ namespace SelfishFramework.Tests.EditMode
             Assert.True(filter.Count == 1);
             _sManager.World.DelEntity(entity);
         }
+
+        [Test]
+        [Order(6)]
+        public void FilterTestWithout()
+        {
+            var entity = _sManager.World.NewEntity();
+            entity.Set(new TestComponentA { TestInt = 1 });
+            entity.Set(new TestComponentB { TestInt = 1 });
+
+            var filter = _sManager.World.Filter
+                .With<TestComponentA>()
+                .Without<TestComponentB>()
+                .Build();
+            
+            Assert.True(filter.Count == 0);
+            _sManager.World.DelEntity(entity);
+        }
     }
 }

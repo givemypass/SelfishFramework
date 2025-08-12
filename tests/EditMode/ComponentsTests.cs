@@ -60,5 +60,21 @@ namespace SelfishFramework.Tests.EditMode
             _actor.Entity.Remove<TestComponentA>();
             Assert.False(_actor.Entity.Has<TestComponentA>());
         }
+
+        [Test]
+        [Order(4)]
+        public void AddDuplicateComponent()
+        {
+            _actor.Entity.Set(new TestComponentA
+            {
+                TestInt = 1,
+            });
+            _actor.Entity.Set(new TestComponentA
+            {
+                TestInt = 2,
+            });
+            ref var component = ref _actor.Entity.Get<TestComponentA>();
+            Assert.True(component.TestInt == 2);
+        }
     }
 }
