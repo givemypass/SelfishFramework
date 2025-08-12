@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SelfishFramework.Src.Core
 {
     public class SManager : IDisposable
     {
+        private const int START_WORLDS = 1;
+
         private static SManager instance;
 
-        public static World Default => instance.World;
+        public static World World => instance.Worlds[0];
 
-        public readonly World World;
+        public readonly List<World> Worlds = new();
 
         public SManager()
         {
@@ -18,13 +21,25 @@ namespace SelfishFramework.Src.Core
             }
             
             instance = this;
-            World = new World(0);
+            for (int i = 0; i < START_WORLDS; i++)
+            {
+                var world = new World((ushort)i);
+                Worlds.Add(world); 
+            }
+        }
+
+        public static World GetWorld(int index)
+        {
+            return instance.Worlds[index];
         }
 
         public void Dispose()
         {
             instance = null;
-            World.Dispose();
+            foreach (var world in Worlds)
+            {
+                world.Dispose();
+            }
         }
     }
 }

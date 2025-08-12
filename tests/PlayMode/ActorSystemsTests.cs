@@ -23,16 +23,16 @@ namespace SelfishFramework.Tests.PlayMode
             var gameObject = new GameObject();
             _coroutineRunner = gameObject.AddComponent<Actor>();
             var customUpdateModule = new CoroutineUpdateModule(_coroutineRunner);
-            SManager.Default.SystemModuleRegistry.RegisterModule(customUpdateModule);
+            SManager.World.SystemModuleRegistry.RegisterModule(customUpdateModule);
             _actor = new GameObject().AddComponent<Actor>();
             _actor.InitMode.InitWhen = InitModule.InitWhenMode.Manually;
-            _actor.Init(SManager.Default);
+            _actor.Init(SManager.World);
         }
 
         [TearDown]
         public void TearDown()
         {
-            SManager.Default.Dispose();
+            SManager.World.Dispose();
             if (_actor != null) Object.DestroyImmediate(_actor.gameObject);
             if (_coroutineRunner != null) Object.DestroyImmediate(_coroutineRunner.gameObject);
         }

@@ -19,14 +19,15 @@ namespace SelfishFramework.Src.Unity
         {
             _sManager = new SManager();
 
-            var world = _sManager.World;
-            
-            OnUpdate += world.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll;
-            OnFixedUpdate += world.SystemModuleRegistry.GetModule<FixedUpdateModule>().UpdateAll;
-            OnGlobalStart += world.SystemModuleRegistry.GetModule<GlobalStartModule>().GlobalStartAll;
-            
-            var coroutineUpdateModule = new CoroutineUpdateModule(this);
-            world.SystemModuleRegistry.RegisterModule(coroutineUpdateModule);
+            foreach (var world in _sManager.Worlds)
+            {
+                OnUpdate += world.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll;
+                OnFixedUpdate += world.SystemModuleRegistry.GetModule<FixedUpdateModule>().UpdateAll;
+                OnGlobalStart += world.SystemModuleRegistry.GetModule<GlobalStartModule>().GlobalStartAll;
+
+                var coroutineUpdateModule = new CoroutineUpdateModule(this);
+                world.SystemModuleRegistry.RegisterModule(coroutineUpdateModule);
+            }
         }
 
         private void Start()
@@ -42,7 +43,10 @@ namespace SelfishFramework.Src.Unity
         private void LateUpdate()
         {
             OnLateUpdate?.Invoke();
-            _sManager.World.Commit();
+            foreach (var world in _sManager.Worlds)
+            {
+                world.Commit();
+            }
         }
 
         private void FixedUpdate()

@@ -20,9 +20,9 @@ namespace SelfishFramework.Src.Unity
 
         public void Dispose()
         {
-            if (!SManager.Default.IsDisposed(_entity))
+            if (!_entity.GetWorld().IsDisposed(_entity))
             {
-                SManager.Default.DelEntity(_entity);
+                SManager.World.DelEntity(_entity);
                 _entity = default;
             }
         }
@@ -43,7 +43,7 @@ namespace SelfishFramework.Src.Unity
 
         private void TryInitialize()
         {
-            var world = SManager.Default;
+            var world = SManager.World;
             if (world.IsDisposed(_entity))
             {
                 Init(world);

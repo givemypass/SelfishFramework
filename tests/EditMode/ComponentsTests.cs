@@ -17,7 +17,7 @@ namespace SelfishFramework.Tests.EditMode
             _sManager?.Dispose();
             _sManager = new SManager();
             _actor = new GameObject().AddComponent<Actor>();
-            _actor.Init(SManager.Default);
+            _actor.Init(SManager.World);
         }
 
         [TearDown]
@@ -31,7 +31,7 @@ namespace SelfishFramework.Tests.EditMode
         [Order(0)]
         public void InitEntity()
         {
-            Assert.True(!_sManager.World.IsDisposed(_actor.Entity));  
+            Assert.True(!_sManager.Worlds[0].IsDisposed(_actor.Entity));  
         }
         
         [Test]

@@ -20,7 +20,7 @@ namespace SelfishFramework.Src.StateMachine
         public StateMachine(Entity owner)
         {
             _owner = owner;
-            SManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().Register(this);
+            _owner.GetWorld().SystemModuleRegistry.GetModule<UpdateDefaultModule>().Register(this);
         }
 
         public int CurrentState => _currentState;
@@ -139,7 +139,7 @@ namespace SelfishFramework.Src.StateMachine
 
         public void Dispose()
         {
-            SManager.Default.SystemModuleRegistry.GetModule<UpdateDefaultModule>().Unregister(this);
+            _owner.GetWorld().SystemModuleRegistry.GetModule<UpdateDefaultModule>().Unregister(this);
             foreach (var state in _states.Values)
             {
                 state.Dispose();
