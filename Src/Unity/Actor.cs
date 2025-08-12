@@ -22,7 +22,7 @@ namespace SelfishFramework.Src.Unity
         {
             if (!SManager.Default.IsDisposed(_entity))
             {
-                SManager.Default.UnregisterEntity(_entity);
+                SManager.Default.DelEntity(_entity);
                 _entity = default;
             }
         }

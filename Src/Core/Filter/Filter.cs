@@ -35,17 +35,17 @@ namespace SelfishFramework.Src.Core.Filter
             UpdateFilter(_world.dirtyEntities);
         }
         
-        public void UpdateFilter(HashSet<Entity> dirtyEntities)
+        public void UpdateFilter(HashSet<Entity> entities)
         {
-            foreach (var dirtyEntity in dirtyEntities)
+            foreach (var entity in entities)
             {
-                if (_world.IsDisposed(dirtyEntity) || !MatchFilter(dirtyEntity))
+                if (_world.IsDisposed(entity) || !MatchFilter(entity))
                 {
-                    _check.Remove(dirtyEntity);
+                    _check.Remove(entity);
                 }
                 else
                 {
-                    _check.Add(dirtyEntity);
+                    _check.Add(entity);
                 }
             } 
             

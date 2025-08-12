@@ -24,6 +24,7 @@ namespace SelfishFramework.Src.Core
 
         internal int entitiesCapacity = Constants.START_ENTITY_COUNT;
         internal int entitiesCount;
+        internal readonly HashSet<Entity> entities = new(Constants.START_ENTITY_COUNT);
         internal int[] entitiesGenerations = new int[Constants.START_ENTITY_COUNT];
 
         public World()
@@ -82,6 +83,7 @@ namespace SelfishFramework.Src.Core
             }
 
             var entity = new Entity(index, (ushort)entitiesGenerations[index]);
+            entities.Add(entity);
             return entity;
         }
 
@@ -89,12 +91,13 @@ namespace SelfishFramework.Src.Core
         ///     Unregisters an entity in the system.
         /// </summary>
         /// <param name="entity">The entity to unregister.</param>
-        public void UnregisterEntity(Entity entity)
+        public void DelEntity(Entity entity)
         {
             _recycledIndices.Enqueue(entity.Id);
             dirtyEntities.Add(entity);
             entitiesGenerations[entity.Id]++;
             entitiesCount--;
+            entities.Remove(entity);
         }
 
         public ComponentPool<T> GetComponentPool<T>() where T : struct, IComponent

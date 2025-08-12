@@ -80,7 +80,7 @@ namespace SelfishFramework.Tests.EditMode
 
         [Test]
         [Order(5)]
-        public void BuildFilter()
+        public void BuildFilter1()
         {
             var filter = _sManager.World.Filter
                 .With<TestComponentA>()
@@ -90,6 +90,21 @@ namespace SelfishFramework.Tests.EditMode
             _actor.Entity.Set(new TestComponentA { TestInt = 1 });
             filter.ForceUpdate();
             Assert.True(filter.Count == 1);
+        }
+        
+        [Test]
+        [Order(6)]
+        public void BuildFilter2()
+        {
+            var entity = _sManager.World.NewEntity();
+            entity.Set(new TestComponentA { TestInt = 1 });
+            
+            var filter = _sManager.World.Filter
+                .With<TestComponentA>()
+                .Without<TestComponentB>()
+                .Build();
+            Assert.True(filter.Count == 1);
+            _sManager.World.DelEntity(entity);
         }
     }
 }
