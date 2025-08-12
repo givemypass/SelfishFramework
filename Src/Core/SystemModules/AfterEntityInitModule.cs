@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using SelfishFramework.Src.Core.Systems;
-using UnityEngine.UIElements;
 
 namespace SelfishFramework.Src.Core.SystemModules
 {
@@ -11,8 +10,7 @@ namespace SelfishFramework.Src.Core.SystemModules
 
     public class AfterEntityInitModule : ISystemModule<IAfterEntityInit>
     {
-        private readonly HashSet<Entity> _entities = new();
-        public int Priority { get; } = 100;
+        public int Priority => 100;
 
         public void TryRegister(ISystem system)
         {
@@ -21,23 +19,31 @@ namespace SelfishFramework.Src.Core.SystemModules
                 return;
             }
 
-            // if (system.Owner.IsInitted)
-            // {
-            //     afterEntityInit.AfterEntityInit();
-            //     return;
-            // }
-
-            // Register(system.Owner.Id);
+            if (system.Owner.IsInitialized())
+            {
+                afterEntityInit.AfterEntityInit();
+            }
         }
 
         public void TryUnregister(ISystem system)
         {
-            if (system is not IAfterEntityInit afterEntityInit)
+        }
+
+        public void Run(Entity entity)
+        {
+            var world = entity.GetWorld();
+            foreach (var system in entity.Systems)
             {
-                return;
+                if (!world.TryGetSystemPool(system, out var pool))
+                {
+                    throw new Exception("System pool not found for system: " + system);
+                }
+
+                if (pool.Has(entity.Id))
+                {
+                    ((IAfterEntityInit)pool.GetRaw(entity.Id)).AfterEntityInit();
+                }
             }
-            
-            Unregister(afterEntityInit);
         }
 
         public void Register(IAfterEntityInit system)

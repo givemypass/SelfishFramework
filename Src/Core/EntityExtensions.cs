@@ -1,5 +1,7 @@
 ﻿using SelfishFramework.Src.Core.Components;
+using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.Systems;
+using SelfishFramework.Src.SLogs;
 
 namespace SelfishFramework.Src.Core
 {
@@ -13,6 +15,34 @@ namespace SelfishFramework.Src.Core
             return entity.Id <= 0 ||
                    entity.Id >= world.entitiesCapacity ||
                    world.entitiesGenerations[entity.Id] != entity.Generation;
+        }
+
+        public static World GetWorld(this Entity entity)
+        {
+            var world = SManager.Default;
+            return world;
+        }
+        
+        public static bool IsInitialized(this Entity entity)
+        {
+            var world = entity.GetWorld();
+            if (world.IsDisposed(entity) || !world.entitiesInitStatus[entity.Id])
+            {
+                return false;
+            }
+            return true;
+        }
+        
+        public static void Init(this Entity entity)
+        {
+            var world = entity.GetWorld();
+            if (world.IsDisposed(entity))
+            {
+                SLog.LogError($"Entity {entity.Id} is disposed and cannot be initialized.");
+                return;
+            }
+            world.SystemModuleRegistry.GetModule<AfterEntityInitModule>().Run(entity);
+            world.entitiesInitStatus[entity.Id] = true;
         }
         
 #region Components
@@ -80,7 +110,7 @@ namespace SelfishFramework.Src.Core
             var system = world.GetSystemPool<T>().Add(entity.Id);
             system.Owner = entity;
             world.SystemModuleRegistry.Register(system);
-            entity.Systems.Add(SystemPool<T>.Index);
+            entity.Systems.Add(SystemPool<T>.TypeId);
             system.InitSystem();
         }
 
@@ -114,7 +144,7 @@ namespace SelfishFramework.Src.Core
             var system = systemPool.Get(entity.Id);
             systemPool.Remove(entity.Id); 
             SManager.Default.SystemModuleRegistry.Unregister(system);
-            entity.Systems.Remove(SystemPool<T>.Index);
+            entity.Systems.Remove(SystemPool<T>.TypeId);
         }
 #endregion
     }

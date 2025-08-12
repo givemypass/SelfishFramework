@@ -9,6 +9,9 @@ namespace SelfishFramework.Src.Core
 {
     public class World : IDisposable
     {
+        private readonly ushort _index;
+
+        //todo polish fields when understand how to use them properly
         private readonly Queue<int> _recycledIndices = new(Constants.START_ENTITY_COUNT);
         private readonly Dictionary<int, ISystemPool> _systemPools = new();
 
@@ -26,14 +29,19 @@ namespace SelfishFramework.Src.Core
         internal int entitiesCount;
         internal readonly HashSet<Entity> entities = new(Constants.START_ENTITY_COUNT);
         internal int[] entitiesGenerations = new int[Constants.START_ENTITY_COUNT];
+        internal bool[] entitiesInitStatus = new bool[Constants.START_ENTITY_COUNT];
 
-        public World()
+        public World(ushort index)
         {
+            _index = index;
             SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             SystemModuleRegistry.RegisterModule(new FixedUpdateModule());
             SystemModuleRegistry.RegisterModule(new GlobalStartModule());
+            SystemModuleRegistry.RegisterModule(new AfterEntityInitModule());
         }
 
+        public int Index => _index;
+        
         public FilterBuilder Filter => FilterBuilder.Create(this);
 
         public void Dispose()
@@ -71,6 +79,7 @@ namespace SelfishFramework.Src.Core
             {
                 entitiesCapacity = entitiesCount << 1;
                 Array.Resize(ref entitiesGenerations, entitiesCapacity);
+                Array.Resize(ref entitiesInitStatus, entitiesCapacity);
                 foreach (var componentPool in _componentPools)
                 {
                     componentPool.Resize(entitiesCapacity);
@@ -82,7 +91,7 @@ namespace SelfishFramework.Src.Core
                 }
             }
 
-            var entity = new Entity(index, (ushort)entitiesGenerations[index]);
+            var entity = new Entity(index, (ushort)entitiesGenerations[index], _index);
             entities.Add(entity);
             return entity;
         }
@@ -96,6 +105,7 @@ namespace SelfishFramework.Src.Core
             _recycledIndices.Enqueue(entity.Id);
             dirtyEntities.Add(entity);
             entitiesGenerations[entity.Id]++;
+            entitiesInitStatus[entity.Id] = false;
             entitiesCount--;
             entities.Remove(entity);
         }
@@ -133,13 +143,23 @@ namespace SelfishFramework.Src.Core
 
         public SystemPool<T> GetSystemPool<T>() where T : BaseSystem, new()
         {
-            var index = SystemPool<T>.Index;
-            if (_systemPools.TryGetValue(index, out var rawPool))
+            var typeId = SystemPool<T>.TypeId;
+            if (_systemPools.TryGetValue(typeId, out var rawPool))
                 return (SystemPool<T>)rawPool;
 
             var pool = new SystemPool<T>();
-            _systemPools.Add(index, pool);
+            _systemPools.Add(typeId, pool);
             return pool;
+        }
+
+        public bool TryGetSystemPool(int typeId, out ISystemPool pool)
+        {
+            if (_systemPools.TryGetValue(typeId, out pool))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

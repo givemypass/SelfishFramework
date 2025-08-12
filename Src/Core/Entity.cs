@@ -11,19 +11,25 @@ namespace SelfishFramework.Src.Core
         //todo move to custom storage with allocator
         public readonly HashSet<int> Systems;
         
-        public Entity(int id, ushort generation)
+        public Entity(int id, ushort generation, ushort worldId)
         {
-            _value = ((id & 0xFFFFFFFFL) << 16) | (generation & 0xFFFFL);
+            _value = ((id & 0xFFFFFFFFL) << 32) | (generation & 0xFFFFL) << 16 | (worldId & 0xFFFFL);
             Systems = new();
         }
 
         public int Id
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (int)((_value >> 16) & 0xFFFFFFFFL);
+            get => (int)((_value >> 32) & 0xFFFFFFFFL);
         }
 
         public ushort Generation
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (ushort)(_value >> 16 & 0xFFFFL);
+        }
+        
+        public ushort WorldId
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (ushort)(_value & 0xFFFFL);

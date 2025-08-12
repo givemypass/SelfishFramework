@@ -18,7 +18,7 @@ namespace SelfishFramework.Src.Core
             }
             
             instance = this;
-            World = new World();
+            World = new World(0);
         }
 
         public void Dispose()

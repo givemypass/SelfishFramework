@@ -123,5 +123,17 @@ namespace SelfishFramework.Tests.EditMode
             Assert.True(filter.Count == 0);
             _sManager.World.DelEntity(entity);
         }
+        
+        [Test]
+        [Order(7)]
+        public void AfterEntityInit()
+        {
+            var entity = _sManager.World.NewEntity();
+            entity.AddSystem<TestSystemAfterEntityInit>();
+            Assert.True(!entity.IsInitialized() && entity.TryGetSystem(out TestSystemAfterEntityInit system) && system.TestValue == 0);
+            entity.Init();
+            Assert.True(entity.IsInitialized() && entity.TryGetSystem(out system) && system.TestValue == 1);
+            _sManager.World.DelEntity(entity);
+        }
     }
 }

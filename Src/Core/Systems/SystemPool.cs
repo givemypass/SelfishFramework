@@ -6,7 +6,7 @@ namespace SelfishFramework.Src.Core.Systems
     {
         private T[] denseItems = new T[Constants.START_ENTITY_COUNT];
 
-        public static readonly int Index = IndexGenerator.GetIndexForType<T>();
+        public static readonly int TypeId = IndexGenerator.GetIndexForType<T>();
 
         public T Add(int entityId)
         {
@@ -31,6 +31,11 @@ namespace SelfishFramework.Src.Core.Systems
         public bool Has(int id)
         {
             return denseItems[id] != null;
+        }
+
+        public ISystem GetRaw(int entityId)
+        {
+            return denseItems[entityId];
         }
 
         public void Resize(int newSize)

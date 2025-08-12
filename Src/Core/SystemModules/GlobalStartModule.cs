@@ -14,7 +14,7 @@ namespace SelfishFramework.Src.Core.SystemModules
         private readonly HashSet<IGlobalStart> _globalStarts = new();
         private bool _isGlobalStarted;
 
-        public int Priority => 100;
+        public int Priority => 200;
         
         public void GlobalStartAll()
         {
