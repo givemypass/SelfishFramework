@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SelfishFramework.Src.Unity
 {
-    public class Actor : MonoBehaviour, IDisposable
+    public abstract class Actor : MonoBehaviour, IDisposable
     {
         private Entity _entity;
         public readonly InitModule InitMode = new();
@@ -16,6 +16,8 @@ namespace SelfishFramework.Src.Unity
         public void Init([NotNull]World world)
         {
             _entity = world.NewEntity();
+            SetComponents();
+            SetSystems();
         }
 
         public void Dispose()
@@ -52,6 +54,9 @@ namespace SelfishFramework.Src.Unity
 
             SLog.LogError("Entity already initialized");
         }
+
+        protected abstract void SetComponents();
+        protected abstract void SetSystems();
 
         private void OnDestroy()
         {
