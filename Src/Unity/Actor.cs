@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.SLogs;
+using SelfishFramework.Src.Unity.Components;
 using UnityEngine;
 
 namespace SelfishFramework.Src.Unity
@@ -55,8 +56,17 @@ namespace SelfishFramework.Src.Unity
             SLog.LogError("Entity already initialized");
         }
 
-        protected abstract void SetComponents();
-        protected abstract void SetSystems();
+        protected virtual void SetComponents()
+        {
+            _entity.Set(new ActorProviderComponent
+            {
+                Actor = this,
+            }); 
+        }
+
+        protected virtual void SetSystems()
+        {
+        }
 
         private void OnDestroy()
         {
