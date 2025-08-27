@@ -10,6 +10,7 @@ namespace SelfishFramework.Src.Unity
     {
         private SManager _sManager;
 
+        private event Action OnPreUpdate;
         private event Action OnUpdate;
         private event Action OnFixedUpdate;
         private event Action OnLateUpdate;
@@ -23,6 +24,7 @@ namespace SelfishFramework.Src.Unity
 
             foreach (var world in _sManager.Worlds)
             {
+                OnPreUpdate += world.SystemModuleRegistry.GetModule<PreUpdateModule>().UpdateAll;
                 OnUpdate += world.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll;
                 OnFixedUpdate += world.SystemModuleRegistry.GetModule<FixedUpdateModule>().UpdateAll;
                 OnGlobalStart += world.SystemModuleRegistry.GetModule<GlobalStartModule>().GlobalStartAll;
@@ -45,6 +47,7 @@ namespace SelfishFramework.Src.Unity
 
         private void Update()
         {
+            OnPreUpdate?.Invoke();
             OnUpdate?.Invoke();
         }
 

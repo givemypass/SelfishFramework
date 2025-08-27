@@ -1,6 +1,8 @@
-﻿namespace SelfishFramework.Src.Core.Systems
+﻿using System;
+
+namespace SelfishFramework.Src.Core.Systems
 {
-    public interface ISystem
+    public interface ISystem : IDisposable
     {
         public Entity Owner { get; set; }
         public void InitSystem();
@@ -11,5 +13,6 @@
     {
         public Entity Owner { get; set; }
         public abstract void InitSystem();
+        public virtual void Dispose() { }
     }
 }

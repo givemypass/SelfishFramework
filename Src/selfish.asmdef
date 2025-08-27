@@ -2,7 +2,8 @@
     "name": "asmdef",
     "rootNamespace": "",
     "references": [
-        "TriInspector"
+        "TriInspector",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

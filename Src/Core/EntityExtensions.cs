@@ -159,6 +159,7 @@ namespace SelfishFramework.Src.Core
             systemPool.Remove(entity.Id); 
             world.SystemModuleRegistry.Unregister(system);
             entity.Systems.Remove(SystemPool<T>.TypeId);
+            system.Dispose();
         }
 #endregion
     }

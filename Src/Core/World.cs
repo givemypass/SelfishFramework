@@ -35,6 +35,7 @@ namespace SelfishFramework.Src.Core
         public World(ushort index)
         {
             _index = index;
+            SystemModuleRegistry.RegisterModule(new PreUpdateModule());
             SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             SystemModuleRegistry.RegisterModule(new FixedUpdateModule());
             SystemModuleRegistry.RegisterModule(new GlobalStartModule());

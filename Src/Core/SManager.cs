@@ -32,6 +32,10 @@ namespace SelfishFramework.Src.Core
         {
             return instance.Worlds[index];
         }
+        public static IEnumerable<World> GetWorlds()
+        {
+            return instance.Worlds;
+        }
 
         public void Dispose()
         {
