@@ -14,6 +14,8 @@ namespace SelfishFramework.Src.Unity
         private event Action OnFixedUpdate;
         private event Action OnLateUpdate;
         private event Action OnGlobalStart;
+
+        [SerializeField] private Actor[] _actorPrefabs;
         
         private void Awake()
         {
@@ -27,6 +29,12 @@ namespace SelfishFramework.Src.Unity
 
                 var coroutineUpdateModule = new CoroutineUpdateModule(this);
                 world.SystemModuleRegistry.RegisterModule(coroutineUpdateModule);
+            }
+            
+            foreach (var prefab in _actorPrefabs)
+            {
+                var actor = Instantiate(prefab);
+                actor.Init(SManager.World);
             }
         }
 
