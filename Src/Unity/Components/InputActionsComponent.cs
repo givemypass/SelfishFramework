@@ -20,8 +20,7 @@ namespace SelfishFramework.Src.Unity.Components
         [SerializeField, ListDrawerSettings]
         private List<InputActionSettings> _inputActionSettings;
 
-        public InputActionAsset Actions=> _actions;
-        public List<InputActionSettings> InputActionSettings;
+        public InputActionAsset Actions => _actions;
 
         public bool TryGetInputAction(string name, out InputAction inputAction)
         {
@@ -43,7 +42,7 @@ namespace SelfishFramework.Src.Unity.Components
 
         public bool TryGetInputAction(int index, out InputAction inputAction)
         {
-            var actionSetting = InputActionSettings.FirstOrDefault(x => x.Identifier.Id == index);
+            var actionSetting = _inputActionSettings.FirstOrDefault(x => x.Identifier.Id == index);
             if (actionSetting == null)
             {
                 inputAction = null;
@@ -64,6 +63,14 @@ namespace SelfishFramework.Src.Unity.Components
 
             inputAction = null;
             return false;
+        }
+        public int GetInputActionIndex(string name)
+        {
+            var actionSetting = _inputActionSettings.FirstOrDefault(x => x.ActionName == name);
+            if (actionSetting == null)
+                return -1;
+
+            return actionSetting.Identifier.Id;
         }
 
         #region UnityEditor

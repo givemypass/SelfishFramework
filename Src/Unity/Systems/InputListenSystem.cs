@@ -35,9 +35,9 @@ namespace SelfishFramework.Src.Unity.Systems
 
             foreach (var action in defaultActionMap.actions)
             {
-                var neededIndex = actionsComponent.InputActionSettings.FirstOrDefault(x => x.ActionName == action.name);
+                var neededIndex = actionsComponent.GetInputActionIndex(action.name);
                 action.Enable();
-                var updateableAction = new UpdatableAction(neededIndex.Identifier.Id, action);
+                var updateableAction = new UpdatableAction(neededIndex, action);
                 updateableAction.OnStart += OnActionStart;
                 updateableAction.OnEnd += OnActionEnd;
                 updateableAction.OnUpdate += OnActionUpdate;
