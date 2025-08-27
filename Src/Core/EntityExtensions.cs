@@ -1,5 +1,7 @@
-﻿using SelfishFramework.Src.Core.Components;
+﻿using SelfishFramework.Src.Core.CommandBus;
+using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Src.Core.SystemModules;
+using SelfishFramework.Src.Core.SystemModules.CommandBusModule;
 using SelfishFramework.Src.Core.Systems;
 using SelfishFramework.Src.SLogs;
 
@@ -43,6 +45,17 @@ namespace SelfishFramework.Src.Core
             }
             world.SystemModuleRegistry.GetModule<AfterEntityInitModule>().Run(entity);
             world.entitiesInitStatus[entity.Id] = true;
+        }
+        
+        public static void Command<T>(this Entity entity, in T command) where T : struct, ICommand
+        {
+            var world = entity.GetWorld();
+            if (world.IsDisposed(entity))
+            {
+                SLog.LogError($"Entity {entity.Id} is disposed and cannot execute commands.");
+                return;
+            }
+            world.SystemModuleRegistry.GetModule<LocalCommandModule>().Invoke(entity, command);
         }
         
 #region Components

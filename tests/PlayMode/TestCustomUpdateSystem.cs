@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SelfishFramework.Tests.PlayMode
 {
-    public class TestCustomUpdateSystem : BaseSystem, ICustomUpdatable
+    public partial class TestCustomUpdateSystem : BaseSystem, ICustomUpdatable
     {
         public int TestValue { get; set; }
 

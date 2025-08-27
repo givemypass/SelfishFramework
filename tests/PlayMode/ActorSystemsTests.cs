@@ -1,7 +1,6 @@
 using System.Collections;
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
-using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Unity;
 using SelfishFramework.Src.Unity.CustomUpdate;
 using UnityEngine;

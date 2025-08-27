@@ -3,7 +3,7 @@ using SelfishFramework.Src.Core.Systems;
 
 namespace SelfishFramework.Tests.EditMode.TestSystems
 {
-    public class TestSystemAfterEntityInit : BaseSystem, IAfterEntityInit
+    public partial class TestSystemAfterEntityInit : BaseSystem, IAfterEntityInit
     {
         public int TestValue { get; set; }
         public void Update()

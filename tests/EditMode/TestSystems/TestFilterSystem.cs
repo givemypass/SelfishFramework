@@ -6,7 +6,7 @@ using SelfishFramework.Tests.EditMode.TestComponents;
 
 namespace SelfishFramework.Tests.EditMode.TestSystems
 {
-    public class TestFilterSystem : BaseSystem, IUpdatable
+    public partial class TestFilterSystem : BaseSystem, IUpdatable
     {
         private Filter _filter;
 

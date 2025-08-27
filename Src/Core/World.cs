@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.Core.SystemModules;
+using SelfishFramework.Src.Core.SystemModules.CommandBusModule;
 using SelfishFramework.Src.Core.Systems;
 
 namespace SelfishFramework.Src.Core
@@ -38,6 +39,8 @@ namespace SelfishFramework.Src.Core
             SystemModuleRegistry.RegisterModule(new FixedUpdateModule());
             SystemModuleRegistry.RegisterModule(new GlobalStartModule());
             SystemModuleRegistry.RegisterModule(new AfterEntityInitModule());
+            SystemModuleRegistry.RegisterModule(new LocalCommandModule());
+            SystemModuleRegistry.RegisterModule(new GlobalCommandModule());
         }
 
         public int Index => _index;

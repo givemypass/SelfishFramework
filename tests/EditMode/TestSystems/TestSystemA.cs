@@ -5,7 +5,7 @@ using SelfishFramework.Tests.EditMode.TestComponents;
 
 namespace SelfishFramework.Tests.EditMode.TestSystems
 {
-    public class TestSystemA : BaseSystem, IUpdatable
+    public partial class TestSystemA : BaseSystem, IUpdatable
     {
         public int TestValue { get; set; }
         public void Update()
