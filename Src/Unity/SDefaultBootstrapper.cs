@@ -15,6 +15,7 @@ namespace SelfishFramework.Src.Unity
         private event Action OnFixedUpdate;
         private event Action OnLateUpdate;
         private event Action OnGlobalStart;
+        private event Action OnLateStart;
 
         [SerializeField] private Actor[] _actorPrefabs;
         
@@ -28,6 +29,7 @@ namespace SelfishFramework.Src.Unity
                 OnUpdate += world.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll;
                 OnFixedUpdate += world.SystemModuleRegistry.GetModule<FixedUpdateModule>().UpdateAll;
                 OnGlobalStart += world.SystemModuleRegistry.GetModule<GlobalStartModule>().GlobalStartAll;
+                OnLateStart += world.SystemModuleRegistry.GetModule<LateStartModule>().LateStartAll;
 
                 var coroutineUpdateModule = new CoroutineUpdateModule(this);
                 world.SystemModuleRegistry.RegisterModule(coroutineUpdateModule);
@@ -43,6 +45,7 @@ namespace SelfishFramework.Src.Unity
         private void Start()
         {
             OnGlobalStart?.Invoke();
+            OnLateStart?.Invoke();
         }
 
         private void Update()

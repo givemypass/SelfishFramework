@@ -10,7 +10,7 @@ namespace SelfishFramework.Src.Unity
     public abstract class Actor : MonoBehaviour, IDisposable
     {
         private Entity _entity;
-        public readonly InitModule InitMode = new();
+        public InitModule InitMode = new();
 
         public Entity Entity => _entity;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SelfishFramework.Src.Core.CommandBus;
 using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.Core.SystemModules;
@@ -39,6 +40,7 @@ namespace SelfishFramework.Src.Core
             SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
             SystemModuleRegistry.RegisterModule(new FixedUpdateModule());
             SystemModuleRegistry.RegisterModule(new GlobalStartModule());
+            SystemModuleRegistry.RegisterModule(new LateStartModule());
             SystemModuleRegistry.RegisterModule(new AfterEntityInitModule());
             SystemModuleRegistry.RegisterModule(new LocalCommandModule());
             SystemModuleRegistry.RegisterModule(new GlobalCommandModule());
@@ -164,6 +166,11 @@ namespace SelfishFramework.Src.Core
             }
 
             return false;
+        }
+
+        public void Command<T>(T command) where T : IGlobalCommand
+        {
+            SystemModuleRegistry.GetModule<GlobalCommandModule>().Invoke(command);
         }
     }
 }
