@@ -39,6 +39,7 @@ namespace SelfishFramework.Src.Unity
             {
                 var actor = Instantiate(prefab);
                 actor.Init(SManager.World);
+                actor.InitSystems();
             }
         }
 

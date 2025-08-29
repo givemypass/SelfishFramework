@@ -18,6 +18,7 @@ namespace SelfishFramework.Tests.EditMode
             _sManager = new SManager();
             _actor = new GameObject().AddComponent<Actor>();
             _actor.Init(SManager.World);
+            _actor.InitSystems();
         }
 
         [TearDown]

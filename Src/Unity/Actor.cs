@@ -18,6 +18,10 @@ namespace SelfishFramework.Src.Unity
         {
             _entity = world.NewEntity();
             SetComponents();
+        }
+
+        public void InitSystems()
+        {
             SetSystems();
         }
 
@@ -50,6 +54,7 @@ namespace SelfishFramework.Src.Unity
             if (world.IsDisposed(_entity))
             {
                 Init(world);
+                InitSystems();
                 return;
             }
 

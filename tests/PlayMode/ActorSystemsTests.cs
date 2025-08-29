@@ -26,6 +26,7 @@ namespace SelfishFramework.Tests.PlayMode
             _actor = new GameObject().AddComponent<Actor>();
             _actor.InitMode.InitWhen = InitModule.InitWhenMode.Manually;
             _actor.Init(SManager.World);
+            _actor.InitSystems();
         }
 
         [TearDown]
