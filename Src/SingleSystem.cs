@@ -4,7 +4,7 @@ using SelfishFramework.Src.Core.Systems;
 
 namespace SelfishFramework.Src
 {
-    public struct SingleSystem<T, TSystem> where T : struct, IComponent
+    public class SingleSystem<T, TSystem> where T : struct, IComponent
         where TSystem : BaseSystem, new()
     {
         private Entity _entity;
@@ -13,7 +13,6 @@ namespace SelfishFramework.Src
         public SingleSystem(World world)
         {
             _single = new Single<T>(world);
-            _entity = default;
         }
 
         public TSystem Get()
