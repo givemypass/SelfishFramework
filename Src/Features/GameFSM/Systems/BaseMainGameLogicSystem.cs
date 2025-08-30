@@ -5,6 +5,7 @@ using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.Systems;
 using SelfishFramework.Src.Features.GameFSM.Commands;
 using SelfishFramework.Src.Features.GameFSM.Components;
+using SelfishFramework.Src.SLogs;
 
 namespace SelfishFramework.Src.Features.GameFSM.Systems
 {
@@ -57,6 +58,7 @@ namespace SelfishFramework.Src.Features.GameFSM.Systems
         
         protected void ChangeGameState(int to)
         {
+            SLog.Log("Changing game state to: " + to);
             ref var gameStateComponent = ref Owner.Get<GameStateComponent>();
             var from = gameStateComponent.CurrentState;
             ChangeGameState(from, to);

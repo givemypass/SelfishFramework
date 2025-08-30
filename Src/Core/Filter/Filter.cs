@@ -103,7 +103,7 @@ namespace SelfishFramework.Src.Core.Filter
             {
                 _world = world;
                 _entities = entities;
-                _currentIndex = 0;
+                _currentIndex = -1;
             }
 
             public Entity Current => _entities[_currentIndex];

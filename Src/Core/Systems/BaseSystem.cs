@@ -14,5 +14,7 @@ namespace SelfishFramework.Src.Core.Systems
         public Entity Owner { get; set; }
         public abstract void InitSystem();
         public virtual void Dispose() { }
+        public abstract void RegisterCommands();
+        public abstract void UnregisterCommands();
     }
 }

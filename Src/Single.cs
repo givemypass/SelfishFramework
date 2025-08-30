@@ -1,4 +1,5 @@
-﻿using SelfishFramework.Src.Core;
+﻿using System;
+using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.SLogs;
@@ -47,7 +48,7 @@ namespace SelfishFramework.Src
                 return ref entity.Get<T>();
             }
 
-            return ref ComponentPool<T>.Default;
+            throw new Exception("Component of type " + typeof(T).Name + " not found in the world.");
         }
 
         public Entity GetEnt()

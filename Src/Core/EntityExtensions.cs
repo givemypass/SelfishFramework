@@ -125,6 +125,7 @@ namespace SelfishFramework.Src.Core
             world.SystemModuleRegistry.Register(system);
             entity.Systems.Add(SystemPool<T>.TypeId);
             system.InitSystem();
+            system.RegisterCommands();
         }
 
         /// <summary>
@@ -160,6 +161,7 @@ namespace SelfishFramework.Src.Core
             world.SystemModuleRegistry.Unregister(system);
             entity.Systems.Remove(SystemPool<T>.TypeId);
             system.Dispose();
+            system.UnregisterCommands();
         }
 #endregion
     }
