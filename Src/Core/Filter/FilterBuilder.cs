@@ -85,11 +85,11 @@ namespace SelfishFramework.Src.Core.Filter
                 filter = new Filter(_world, _includedComponents, _excludedComponents, _includesCount, _excludesCount);
                 //todo fill by entities
                 excludesFilters.Add(_excludesHash.Value, filter);
-                // Span<int> toChech = stackalloc int[_world.entities.Count];
+                // Span<int> toCache = stackalloc int[_world.entities.Count];
                 // int i = 0;
                 // foreach (var entity in _world.entities)
                 // {
-                //     toChech[i++] = entity.Id;
+                //     toCache[i++] = entity.Id;
                 // }
                 filter.UpdateFilter(_world.entities);
             }

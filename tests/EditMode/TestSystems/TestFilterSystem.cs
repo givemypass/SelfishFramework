@@ -12,7 +12,7 @@ namespace SelfishFramework.Tests.EditMode.TestSystems
 
         public override void InitSystem()
         {
-            _filter = SManager.World.Filter
+            _filter = Owner.GetWorld().Filter
                 .With<TestComponentA>()
                 .Build();
         }
