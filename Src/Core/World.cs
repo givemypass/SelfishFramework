@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SelfishFramework.Src.Core.CommandBus;
 using SelfishFramework.Src.Core.Components;
+using SelfishFramework.Src.Core.Dependency;
 using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.SystemModules.CommandBusModule;
@@ -21,6 +22,7 @@ namespace SelfishFramework.Src.Core
 
         internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
 
+        public readonly DependencyContainer DependencyContainer = new();
         public readonly SystemModuleRegistry SystemModuleRegistry = new();
         
         private IComponentPool[] _componentPools = new IComponentPool[32];
