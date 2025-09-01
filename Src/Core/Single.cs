@@ -1,14 +1,12 @@
 ﻿using System;
-using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.Components;
-using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.SLogs;
 
-namespace SelfishFramework.Src
+namespace SelfishFramework.Src.Core
 {
     public class Single<T> where T : struct, IComponent
     {
-        private readonly Filter _filter;
+        private readonly Filter.Filter _filter;
 
         public Single(World world)
         {

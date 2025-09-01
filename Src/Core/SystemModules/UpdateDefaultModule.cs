@@ -5,7 +5,7 @@ namespace SelfishFramework.Src.Core.SystemModules
         void Update();
     }
     
-    public class UpdateDefaultModule : BaseSystemModule<IUpdatable>
+    public class UpdateDefaultModule : BaseModule<IUpdatable>
     {
         public override int Priority => 500;
 

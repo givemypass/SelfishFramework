@@ -3,7 +3,7 @@ using SelfishFramework.Src.Core.Systems;
 
 namespace SelfishFramework.Src.Core.SystemModules
 {
-    public abstract class BaseSystemModule<T> : ISystemModule<T> where T : ISystemAction
+    public abstract class BaseModule<T> : IModule<T> where T : ISystemAction
     {
         protected readonly HashSet<T> executors = new();
 
@@ -19,18 +19,17 @@ namespace SelfishFramework.Src.Core.SystemModules
             executors.Remove(executor); 
         }
 
-
-        public void TryRegister(ISystem system)
+        public void TryRegister(object consumer)
         {
-            if (system is T executor)
+            if (consumer is T executor)
             {
                 executors.Add(executor);
             }
         }
 
-        public void TryUnregister(ISystem system)
+        public void TryUnregister(object consumer)
         {
-            if(system is T executor)
+            if(consumer is T executor)
             {
                 executors.Remove(executor);
             }

@@ -5,17 +5,17 @@ using SelfishFramework.Src.Core.Systems;
 
 namespace SelfishFramework.Src.Core.SystemModules.CommandBusModule
 {
-    public class GlobalCommandModule : ISystemModule
+    public class GlobalCommandModule : IModule
     {
         private readonly Dictionary<Type, HashSet<ISystem>> _buses = new();
         
         public int Priority => 0;
 
-        public void TryRegister(ISystem system)
+        public void TryRegister(object consumer)
         {
         }
 
-        public void TryUnregister(ISystem system)
+        public void TryUnregister(object consumer)
         {
         }
         

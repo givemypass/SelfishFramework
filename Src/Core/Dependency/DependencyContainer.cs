@@ -22,7 +22,7 @@ namespace SelfishFramework.Src.Core.Dependency
             throw new InvalidOperationException($"No known dependency of type = {type}");             
         }
 
-        public void Registry<T>(T instance) where T : class
+        public void Register<T>(T instance) where T : class
         {
             var type = typeof(T);
             if (!_registry.TryAdd(type, instance))

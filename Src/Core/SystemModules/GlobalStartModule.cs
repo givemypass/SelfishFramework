@@ -9,7 +9,7 @@ namespace SelfishFramework.Src.Core.SystemModules
         void GlobalStart();
     }
     
-    public class GlobalStartModule : ISystemModule<IGlobalStart>
+    public class GlobalStartModule : IModule<IGlobalStart>
     {
         private readonly HashSet<IGlobalStart> _globalStarts = new();
         private bool _isGlobalStarted;
@@ -26,9 +26,9 @@ namespace SelfishFramework.Src.Core.SystemModules
             _isGlobalStarted = true;
         }
         
-        public void TryRegister(ISystem system)
+        public void TryRegister(object consumer)
         {
-            if (system is not IGlobalStart globalStart)
+            if (consumer is not IGlobalStart globalStart)
             {
                 return;
             }
@@ -41,9 +41,9 @@ namespace SelfishFramework.Src.Core.SystemModules
             Register(globalStart);
         }
 
-        public void TryUnregister(ISystem system)
+        public void TryUnregister(object consumer)
         {
-            if (system is not IGlobalStart globalStart)
+            if (consumer is not IGlobalStart globalStart)
             {
                 return;
             }

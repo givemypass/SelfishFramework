@@ -23,7 +23,7 @@ namespace SelfishFramework.Src.Core
         internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
 
         public readonly DependencyContainer DependencyContainer = new();
-        public readonly SystemModuleRegistry SystemModuleRegistry = new();
+        public readonly ModuleRegistry ModuleRegistry = new();
         
         private IComponentPool[] _componentPools = new IComponentPool[32];
         private int _componentPoolsCount;
@@ -38,14 +38,14 @@ namespace SelfishFramework.Src.Core
         public World(ushort index)
         {
             _index = index;
-            SystemModuleRegistry.RegisterModule(new PreUpdateModule());
-            SystemModuleRegistry.RegisterModule(new UpdateDefaultModule());
-            SystemModuleRegistry.RegisterModule(new FixedUpdateModule());
-            SystemModuleRegistry.RegisterModule(new GlobalStartModule());
-            SystemModuleRegistry.RegisterModule(new LateStartModule());
-            SystemModuleRegistry.RegisterModule(new AfterEntityInitModule());
-            SystemModuleRegistry.RegisterModule(new LocalCommandModule());
-            SystemModuleRegistry.RegisterModule(new GlobalCommandModule());
+            ModuleRegistry.RegisterModule(new PreUpdateModule());
+            ModuleRegistry.RegisterModule(new UpdateDefaultModule());
+            ModuleRegistry.RegisterModule(new FixedUpdateModule());
+            ModuleRegistry.RegisterModule(new GlobalStartModule());
+            ModuleRegistry.RegisterModule(new LateStartModule());
+            ModuleRegistry.RegisterModule(new AfterEntityInitModule());
+            ModuleRegistry.RegisterModule(new LocalCommandModule());
+            ModuleRegistry.RegisterModule(new GlobalCommandModule());
         }
 
         public int Index => _index;
@@ -54,7 +54,7 @@ namespace SelfishFramework.Src.Core
 
         public void Dispose()
         {
-            SystemModuleRegistry.Dispose();
+            ModuleRegistry.Dispose();
             //todo dispose all stuff
         }
 
@@ -172,7 +172,7 @@ namespace SelfishFramework.Src.Core
 
         public void Command<T>(T command) where T : IGlobalCommand
         {
-            SystemModuleRegistry.GetModule<GlobalCommandModule>().Invoke(command);
+            ModuleRegistry.GetModule<GlobalCommandModule>().Invoke(command);
         }
     }
 }

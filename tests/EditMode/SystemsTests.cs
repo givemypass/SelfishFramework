@@ -43,7 +43,7 @@ namespace SelfishFramework.Tests.EditMode
         {
             var entity = _sManager.Worlds[0].NewEntity();
             entity.AddSystem<TestSystemA>();
-            _sManager.Worlds[0].SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
+            _sManager.Worlds[0].ModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
             entity.TryGetSystem(out TestSystemA system);
             Assert.True(system.TestValue > 0);
         }
@@ -74,7 +74,7 @@ namespace SelfishFramework.Tests.EditMode
             var entity = _sManager.Worlds[0].NewEntity();
             entity.Set(new TestComponentA { TestInt = 0 });
             entity.AddSystem<TestFilterSystem>();
-            _sManager.Worlds[0].SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
+            _sManager.Worlds[0].ModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
             var val = entity.Get<TestComponentA>().TestInt;
             Assert.True(val == 1);
         }

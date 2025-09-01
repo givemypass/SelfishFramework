@@ -8,7 +8,6 @@ namespace SelfishFramework.Src.Core.Systems
         public void InitSystem();
     }
 
-    //todo codegen this part
     public abstract class BaseSystem : ISystem
     {
         public Entity Owner { get; set; }

@@ -26,14 +26,14 @@ namespace SelfishFramework.Src.Unity
 
             foreach (var world in _sManager.Worlds)
             {
-                OnPreUpdate += world.SystemModuleRegistry.GetModule<PreUpdateModule>().UpdateAll;
-                OnUpdate += world.SystemModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll;
-                OnFixedUpdate += world.SystemModuleRegistry.GetModule<FixedUpdateModule>().UpdateAll;
-                OnGlobalStart += world.SystemModuleRegistry.GetModule<GlobalStartModule>().GlobalStartAll;
-                OnLateStart += world.SystemModuleRegistry.GetModule<LateStartModule>().LateStartAll;
+                OnPreUpdate += world.ModuleRegistry.GetModule<PreUpdateModule>().UpdateAll;
+                OnUpdate += world.ModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll;
+                OnFixedUpdate += world.ModuleRegistry.GetModule<FixedUpdateModule>().UpdateAll;
+                OnGlobalStart += world.ModuleRegistry.GetModule<GlobalStartModule>().GlobalStartAll;
+                OnLateStart += world.ModuleRegistry.GetModule<LateStartModule>().LateStartAll;
 
                 var coroutineUpdateModule = new CoroutineUpdateModule(this);
-                world.SystemModuleRegistry.RegisterModule(coroutineUpdateModule);
+                world.ModuleRegistry.RegisterModule(coroutineUpdateModule);
             }
 
             foreach (var register in _dependencyRegisters)

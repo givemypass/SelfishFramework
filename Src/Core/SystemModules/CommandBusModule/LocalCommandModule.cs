@@ -1,22 +1,21 @@
 using System;
 using System.Collections.Generic;
 using SelfishFramework.Src.Core.CommandBus;
-using SelfishFramework.Src.Core.SystemModules.CommandBusModule;
 using SelfishFramework.Src.Core.Systems;
 
 namespace SelfishFramework.Src.Core.SystemModules.CommandBusModule
 {
-    public class LocalCommandModule : ISystemModule
+    public class LocalCommandModule : IModule
     {
         private readonly Dictionary<Type, LocalCommandBus> _buses = new();
             
         public int Priority => 0;
 
-        public void TryRegister(ISystem system)
+        public void TryRegister(object consumer)
         {
         }
 
-        public void TryUnregister(ISystem system)
+        public void TryUnregister(object consumer)
         {
         }
         

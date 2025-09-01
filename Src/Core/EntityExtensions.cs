@@ -43,7 +43,7 @@ namespace SelfishFramework.Src.Core
                 SLog.LogError($"Entity {entity.Id} is disposed and cannot be initialized.");
                 return;
             }
-            world.SystemModuleRegistry.GetModule<AfterEntityInitModule>().Run(entity);
+            world.ModuleRegistry.GetModule<AfterEntityInitModule>().Run(entity);
             world.entitiesInitStatus[entity.Id] = true;
         }
         
@@ -55,7 +55,7 @@ namespace SelfishFramework.Src.Core
                 SLog.LogError($"Entity {entity.Id} is disposed and cannot execute commands.");
                 return;
             }
-            world.SystemModuleRegistry.GetModule<LocalCommandModule>().Invoke(entity, command);
+            world.ModuleRegistry.GetModule<LocalCommandModule>().Invoke(entity, command);
         }
         
 #region Components
@@ -122,7 +122,7 @@ namespace SelfishFramework.Src.Core
             var world = entity.GetWorld();
             var system = world.GetSystemPool<T>().Add(entity.Id);
             system.Owner = entity;
-            world.SystemModuleRegistry.Register(system);
+            world.ModuleRegistry.Register(system);
             entity.Systems.Add(SystemPool<T>.TypeId);
             system.InitSystem();
             system.RegisterCommands();
@@ -158,7 +158,7 @@ namespace SelfishFramework.Src.Core
             var systemPool = world.GetSystemPool<T>();
             var system = systemPool.Get(entity.Id);
             systemPool.Remove(entity.Id); 
-            world.SystemModuleRegistry.Unregister(system);
+            world.ModuleRegistry.Unregister(system);
             entity.Systems.Remove(SystemPool<T>.TypeId);
             system.Dispose();
             system.UnregisterCommands();

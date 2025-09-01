@@ -5,7 +5,7 @@ namespace SelfishFramework.Src.Core.SystemModules
         void PreUpdate();
     }
     
-    public class PreUpdateModule : BaseSystemModule<IPreUpdatable>
+    public class PreUpdateModule : BaseModule<IPreUpdatable>
     {
         public override int Priority => 400;
 

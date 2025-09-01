@@ -7,29 +7,29 @@ namespace SelfishFramework.Src.Core.SystemModules
 {
     public interface ISystemAction { }
 
-    public interface ISystemModule : IDisposable
+    public interface IModule : IDisposable
     {
         int Priority { get; }
-        void TryRegister(ISystem system);
-        void TryUnregister(ISystem system);
+        void TryRegister(object consumer);
+        void TryUnregister(object consumer);
     }
     
-    public interface ISystemModule<in T> : ISystemModule where T : ISystemAction
+    public interface IModule<in T> : IModule where T : ISystemAction
     {
         void Register(T system);
         void Unregister(T system);
     }
     
-    public class SystemModuleRegistry : IDisposable
+    public class ModuleRegistry : IDisposable
     {
         private readonly List<int> _modulesRegistrationOrder = new();
-        private readonly Dictionary<int, ISystemModule> _systemModules = new();
+        private readonly Dictionary<int, IModule> _modules = new();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RegisterModule<T>(T module) where T : ISystemModule
+        public void RegisterModule<T>(T module) where T : IModule
         {
-            var moduleIndex = SystemModuleIndex<T>.Index;
-            if(!_systemModules.TryAdd(moduleIndex, module))
+            var moduleIndex = ModuleIndex<T>.Index;
+            if(!_modules.TryAdd(moduleIndex, module))
             {
                 throw new InvalidOperationException($"Module for type {typeof(T)} is already registered.");
             }
@@ -47,41 +47,41 @@ namespace SelfishFramework.Src.Core.SystemModules
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Register(ISystem system)
+        public void Register(object consumer)
         {
             foreach (var moduleIndex in _modulesRegistrationOrder)
             {
-                if (_systemModules.TryGetValue(moduleIndex, out var module))
+                if (_modules.TryGetValue(moduleIndex, out var module))
                 {
-                    module.TryRegister(system);
+                    module.TryRegister(consumer);
                 }
             }
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Unregister(ISystem system)
+        public void Unregister(object consumer)
         {
             foreach (var moduleIndex in _modulesRegistrationOrder)
             {
-                if (_systemModules.TryGetValue(moduleIndex, out var module))
+                if (_modules.TryGetValue(moduleIndex, out var module))
                 {
-                    module.TryRegister(system);
+                    module.TryRegister(consumer);
                 }
             }
 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetModule<T>() where T : ISystemModule
+        public T GetModule<T>() where T : IModule
         {
-            var index = SystemModuleIndex<T>.Index;
+            var index = ModuleIndex<T>.Index;
             return (T)GetModule(index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ISystemModule GetModule(int index)
+        private IModule GetModule(int index)
         {
-            if (_systemModules.TryGetValue(index, out var module))
+            if (_modules.TryGetValue(index, out var module))
                 return module;
             
             throw new InvalidOperationException($"No module registered for type {index}.");
@@ -89,11 +89,11 @@ namespace SelfishFramework.Src.Core.SystemModules
         
         public void Dispose()
         {
-            foreach (var module in _systemModules.Values)
+            foreach (var module in _modules.Values)
             {
                 module.Dispose(); 
             }
-            _systemModules.Clear();     
+            _modules.Clear();     
         }
     }
 }

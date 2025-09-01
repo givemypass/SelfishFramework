@@ -8,7 +8,7 @@ namespace SelfishFramework.Src.Core.SystemModules
         public void LateStart();
     }
     
-    public class LateStartModule : ISystemModule<ILateStart>
+    public class LateStartModule : IModule<ILateStart>
     {
         private readonly HashSet<ILateStart> _systems = new();
         private bool _isLateStarted;
@@ -25,9 +25,9 @@ namespace SelfishFramework.Src.Core.SystemModules
             _isLateStarted = true;
         }
          
-        public void TryRegister(ISystem system)
+        public void TryRegister(object consumer)
         {
-            if (system is not ILateStart lateStart)
+            if (consumer is not ILateStart lateStart)
             {
                 return;
             }
@@ -40,9 +40,9 @@ namespace SelfishFramework.Src.Core.SystemModules
             Register(lateStart);
         }
  
-        public void TryUnregister(ISystem system)
+        public void TryUnregister(object consumer)
         {
-            if (system is not ILateStart lateStart)
+            if (consumer is not ILateStart lateStart)
             {
                 return;
             }

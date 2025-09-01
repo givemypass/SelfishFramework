@@ -13,7 +13,7 @@ namespace SelfishFramework.Src.Unity.CustomUpdate
         void CustomUpdate();
     }
     
-    public class CoroutineUpdateModule : ISystemModule<ICustomUpdatable>
+    public class CoroutineUpdateModule : IModule<ICustomUpdatable>
     {
         private readonly Dictionary<ICustomUpdatable, Coroutine> _coroutines = new(8);
         private readonly MonoBehaviour _runner;
@@ -34,17 +34,17 @@ namespace SelfishFramework.Src.Unity.CustomUpdate
             }
         }
 
-        public void TryRegister(ISystem system)
+        public void TryRegister(object consumer)
         {
-            if (system is ICustomUpdatable executor)
+            if (consumer is ICustomUpdatable executor)
             {
                 Register(executor); 
             }
         }
 
-        public void TryUnregister(ISystem system)
+        public void TryUnregister(object consumer)
         {
-            if (system is ICustomUpdatable executor)
+            if (consumer is ICustomUpdatable executor)
             {
                 Unregister(executor); 
             }

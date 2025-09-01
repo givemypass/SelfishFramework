@@ -8,13 +8,13 @@ namespace SelfishFramework.Src.Core.SystemModules
         void AfterEntityInit();
     }
 
-    public class AfterEntityInitModule : ISystemModule<IAfterEntityInit>
+    public class AfterEntityInitModule : IModule<IAfterEntityInit>
     {
         public int Priority => 100;
 
-        public void TryRegister(ISystem system)
+        public void TryRegister(object consumer)
         {
-            if (system is not IAfterEntityInit afterEntityInit)
+            if (consumer is not (ISystem system and IAfterEntityInit afterEntityInit))
             {
                 return;
             }
@@ -25,7 +25,7 @@ namespace SelfishFramework.Src.Core.SystemModules
             }
         }
 
-        public void TryUnregister(ISystem system)
+        public void TryUnregister(object consumer)
         {
         }
 
