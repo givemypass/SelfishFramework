@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace SelfishFramework.Src.Unity.Components
+namespace SelfishFramework.Src.Unity.Features.InputFeature.Components
 {
     [Serializable]
     public struct InputActionsComponent : IComponent

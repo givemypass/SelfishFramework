@@ -3,7 +3,11 @@
     "rootNamespace": "",
     "references": [
         "TriInspector",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "UniTask",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "UniTask.Addressables"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

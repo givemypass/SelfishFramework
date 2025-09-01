@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.CommandBus;
 using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.Systems;
-using SelfishFramework.Src.Unity.Commands;
-using SelfishFramework.Src.Unity.Components;
+using SelfishFramework.Src.Unity.Features.InputFeature.Commands;
+using SelfishFramework.Src.Unity.Features.InputFeature.Components;
 using UnityEngine.InputSystem;
 
-namespace SelfishFramework.Src.Unity.Systems
+namespace SelfishFramework.Src.Unity.Features.InputFeature.Systems
 {
     public sealed partial class InputListenSystem : BaseSystem, IPreUpdatable
     {
