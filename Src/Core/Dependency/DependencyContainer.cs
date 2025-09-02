@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.SLogs;
 
 namespace SelfishFramework.Src.Core.Dependency
@@ -10,6 +11,12 @@ namespace SelfishFramework.Src.Core.Dependency
     public class DependencyContainer
     {
         private readonly Dictionary<Type, object> _registry = new();
+        private readonly ModuleRegistry _moduleRegistry;
+
+        public DependencyContainer(ModuleRegistry moduleRegistry)
+        {
+            _moduleRegistry = moduleRegistry;
+        }
 
         public T Get<T>() where T : class
         {
@@ -29,6 +36,7 @@ namespace SelfishFramework.Src.Core.Dependency
             {
                 SLog.LogError($"[DI] Dependency of type = {type} already exist");
             }
+            _moduleRegistry.Register(instance);
         }
     }
 }

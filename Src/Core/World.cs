@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using SelfishFramework.Src.Core.CommandBus;
 using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Src.Core.Dependency;
@@ -22,7 +23,7 @@ namespace SelfishFramework.Src.Core
 
         internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
 
-        public readonly DependencyContainer DependencyContainer = new();
+        public DependencyContainer DependencyContainer;
         public readonly ModuleRegistry ModuleRegistry = new();
         
         private IComponentPool[] _componentPools = new IComponentPool[32];
@@ -38,6 +39,7 @@ namespace SelfishFramework.Src.Core
         public World(ushort index)
         {
             _index = index;
+            DependencyContainer = new DependencyContainer(ModuleRegistry);
             ModuleRegistry.RegisterModule(new PreUpdateModule());
             ModuleRegistry.RegisterModule(new UpdateDefaultModule());
             ModuleRegistry.RegisterModule(new FixedUpdateModule());

@@ -4,7 +4,7 @@ using SelfishFramework.Src.SLogs;
 
 namespace SelfishFramework.Src.Core
 {
-    public class Single<T> where T : struct, IComponent
+    public readonly struct Single<T> where T : struct, IComponent
     {
         private readonly Filter.Filter _filter;
 

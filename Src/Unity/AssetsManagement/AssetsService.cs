@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 namespace AssetsManagement
 {
     [Serializable]
-    public sealed class AssetsManager
+    public sealed class AssetsService
     {
         private const int MAX_RETRY_DELAY = 60;
 
