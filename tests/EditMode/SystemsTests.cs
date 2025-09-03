@@ -1,11 +1,9 @@
 using NUnit.Framework;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.SystemModules;
-using SelfishFramework.Src.Unity;
 using SelfishFramework.Tests.EditMode.Commands;
 using SelfishFramework.Tests.EditMode.TestComponents;
 using SelfishFramework.Tests.EditMode.TestSystems;
-using UnityEngine;
 
 namespace SelfishFramework.Tests.EditMode
 {
@@ -156,6 +154,43 @@ namespace SelfishFramework.Tests.EditMode
             entity.AddSystem<TestCommandSystem>(); 
             entity.Command(new TestLocalCommand());
             Assert.True(entity.TryGetSystem(out TestCommandSystem system) && system.IsLocalReacted);
+        }
+        
+        [Test]
+        [Order(10)]
+        public void DisposeSystemOnRemove()
+        {
+            var entity = _sManager.Worlds[0].NewEntity();
+            entity.AddSystem<TestSystemA>();
+            Assert.True(entity.TryGetSystem<TestSystemA>(out var system));
+            Assert.True(system != null);
+            entity.RemoveSystem<TestSystemA>();
+            Assert.True(system.Disposed);
+        }
+
+        [Test]
+        [Order(11)]
+        public void DisposeSystemOnWorldDispose()
+        {
+            var entity = _sManager.Worlds[0].NewEntity();
+            entity.AddSystem<TestSystemA>();
+            Assert.True(entity.TryGetSystem<TestSystemA>(out var system));
+            Assert.True(system != null);
+            _sManager.Dispose();
+            _sManager = null;
+            Assert.True(system.Disposed);
+        }
+
+        [Test]
+        [Order(12)]
+        public void DisposeSystemOnEntityDelete()
+        {
+            var entity = _sManager.Worlds[0].NewEntity();
+            entity.AddSystem<TestSystemA>();
+            Assert.True(entity.TryGetSystem<TestSystemA>(out var system));
+            Assert.True(system != null);
+            _sManager.Worlds[0].DelEntity(entity);
+            Assert.True(system.Disposed);
         }
     }
 }

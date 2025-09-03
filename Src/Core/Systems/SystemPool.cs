@@ -4,7 +4,7 @@ namespace SelfishFramework.Src.Core.Systems
 {
     public class SystemPool<T> : ISystemPool where T : BaseSystem, new()
     {
-        private T[] denseItems = new T[Constants.START_ENTITY_COUNT];
+        private T[] _denseItems = new T[Constants.START_ENTITY_COUNT];
 
         public static readonly int TypeId = IndexGenerator.GetIndexForType<T>();
 
@@ -13,34 +13,42 @@ namespace SelfishFramework.Src.Core.Systems
             if(Has(entityId)) throw new Exception("Already added");
 
             var system = new T();
-            denseItems[entityId] = system;
+            _denseItems[entityId] = system;
             
             return system;
         }
         
         public T Get(int entityId)
         {
-            return denseItems[entityId];
+            return _denseItems[entityId];
         }
 
         public void Remove(int entityId)
         {
-            denseItems[entityId] = null;
+            _denseItems[entityId] = null;
         }
 
         public bool Has(int id)
         {
-            return denseItems[id] != null;
+            return _denseItems[id] != null;
         }
 
         public ISystem GetRaw(int entityId)
         {
-            return denseItems[entityId];
+            return _denseItems[entityId];
         }
 
         public void Resize(int newSize)
         {
-            Array.Resize(ref denseItems, newSize);
+            Array.Resize(ref _denseItems, newSize);
+        }
+
+        public void Dispose()
+        {
+            foreach (var system in _denseItems)
+            {
+                system?.Dispose();
+            }
         }
     }
 }

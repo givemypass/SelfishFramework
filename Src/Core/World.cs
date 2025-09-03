@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using SelfishFramework.Src.Core.CommandBus;
 using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Src.Core.Dependency;
@@ -13,26 +13,26 @@ namespace SelfishFramework.Src.Core
 {
     public class World : IDisposable
     {
+        private readonly Dictionary<LongHash, int> _componentPoolsMap = new(32);
         private readonly ushort _index;
 
         //todo polish fields when understand how to use them properly
         private readonly Queue<int> _recycledIndices = new(Constants.START_ENTITY_COUNT);
         private readonly Dictionary<int, ISystemPool> _systemPools = new();
 
+        public readonly DependencyContainer DependencyContainer;
+
         internal readonly HashSet<Entity> dirtyEntities = new(Constants.START_ENTITY_COUNT);
+        internal readonly HashSet<Entity> entities = new(Constants.START_ENTITY_COUNT);
 
         internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
-
-        public DependencyContainer DependencyContainer;
         public readonly ModuleRegistry ModuleRegistry = new();
-        
+
         private IComponentPool[] _componentPools = new IComponentPool[32];
         private int _componentPoolsCount;
-        private readonly Dictionary<LongHash, int> _componentPoolsMap = new(32);
 
         internal int entitiesCapacity = Constants.START_ENTITY_COUNT;
         internal int entitiesCount;
-        internal readonly HashSet<Entity> entities = new(Constants.START_ENTITY_COUNT);
         internal int[] entitiesGenerations = new int[Constants.START_ENTITY_COUNT];
         internal bool[] entitiesInitStatus = new bool[Constants.START_ENTITY_COUNT];
 
@@ -51,24 +51,14 @@ namespace SelfishFramework.Src.Core
         }
 
         public int Index => _index;
-        
-        public FilterBuilder Filter => FilterBuilder.Create(this);
 
-        public void Dispose()
-        {
-            ModuleRegistry.Dispose();
-            //todo dispose all stuff
-        }
+        public FilterBuilder Filter => FilterBuilder.Create(this);
 
         public void Commit()
         {
             foreach (var dict in filters.Values)
-            {
-                foreach (var filter in dict.Values)
-                {
-                    filter.UpdateFilter(dirtyEntities);
-                }
-            }
+            foreach (var filter in dict.Values)
+                filter.UpdateFilter(dirtyEntities);
 
             dirtyEntities.Clear();
         }
@@ -90,15 +80,9 @@ namespace SelfishFramework.Src.Core
                 entitiesCapacity = entitiesCount << 1;
                 Array.Resize(ref entitiesGenerations, entitiesCapacity);
                 Array.Resize(ref entitiesInitStatus, entitiesCapacity);
-                foreach (var componentPool in _componentPools)
-                {
-                    componentPool.Resize(entitiesCapacity);
-                }
+                foreach (var componentPool in _componentPools) componentPool.Resize(entitiesCapacity);
 
-                foreach (var systemPool in _systemPools)
-                {
-                    systemPool.Value.Resize(entitiesCapacity);
-                }
+                foreach (var systemPool in _systemPools) systemPool.Value.Resize(entitiesCapacity);
             }
 
             var entity = new Entity(index, (ushort)entitiesGenerations[index], _index);
@@ -112,6 +96,10 @@ namespace SelfishFramework.Src.Core
         /// <param name="entity">The entity to unregister.</param>
         public void DelEntity(Entity entity)
         {
+            while (entity.Systems.Count > 0)
+            {
+                entity.RemoveSystem(entity.Systems.First()); 
+            }
             _recycledIndices.Enqueue(entity.Id);
             dirtyEntities.Add(entity);
             entitiesGenerations[entity.Id]++;
@@ -123,16 +111,11 @@ namespace SelfishFramework.Src.Core
         public ComponentPool<T> GetComponentPool<T>() where T : struct, IComponent
         {
             var hash = ComponentPool<T>.Info.Hash;
-            if(_componentPoolsMap.TryGetValue(hash, out var index))
-            {
-                return _componentPools[index] as ComponentPool<T>;
-            }
-            
-            if(++_componentPoolsCount >= _componentPools.Length)
-            {
+            if (_componentPoolsMap.TryGetValue(hash, out var index)) return _componentPools[index] as ComponentPool<T>;
+
+            if (++_componentPoolsCount >= _componentPools.Length)
                 Array.Resize(ref _componentPools, _componentPools.Length << 1);
-            }
-            
+
             index = _componentPoolsCount;
             var pool = new ComponentPool<T>(index, entitiesCapacity);
             _componentPools[index] = pool;
@@ -142,11 +125,12 @@ namespace SelfishFramework.Src.Core
 
         public bool TryGetComponentPool(int index, out IComponentPool pool)
         {
-            if(index < 0 || index >= _componentPools.Length)
+            if (index < 0 || index >= _componentPools.Length)
             {
                 pool = null;
                 return false;
             }
+
             pool = _componentPools[index];
             return pool != null;
         }
@@ -164,10 +148,7 @@ namespace SelfishFramework.Src.Core
 
         public bool TryGetSystemPool(int typeId, out ISystemPool pool)
         {
-            if (_systemPools.TryGetValue(typeId, out pool))
-            {
-                return true;
-            }
+            if (_systemPools.TryGetValue(typeId, out pool)) return true;
 
             return false;
         }
@@ -175,6 +156,15 @@ namespace SelfishFramework.Src.Core
         public void Command<T>(T command) where T : IGlobalCommand
         {
             ModuleRegistry.GetModule<GlobalCommandModule>().Invoke(command);
+        }
+
+        public void Dispose()
+        {
+            ModuleRegistry.Dispose();
+            foreach (var systemPool in _systemPools.Values)
+            {
+                systemPool.Dispose();
+            }
         }
     }
 }

@@ -20,15 +20,18 @@ namespace SelfishFramework.Src.Unity.UI.Systems
         [Inject] private AssetsService _assetsService;
         
         private readonly World _world;
-        
         private readonly Single<MainCanvasTagComponent> _mainCanvas;
         private readonly Filter _additionalCanvasFilter;
+        
+        private List<UIBluePrint> _uIBluePrints = new List<UIBluePrint>();
+        
+        private bool _isReady;
 
         public UIService(World world)
         {
-            // _world = world;
-            // _mainCanvas = new Single<MainCanvasTagComponent>(world);
-            // _additionalCanvasFilter = world.Filter.With<MainCanvasTagComponent>().Build();
+            _world = world;
+            _mainCanvas = new Single<MainCanvasTagComponent>(world);
+            _additionalCanvasFilter = world.Filter.With<AdditionalCanvasTagComponent>().Build();
             // Addressables.LoadAssetsAsync<UIBluePrint>(UI_BLUE_PRINT, null).Completed += LoadReact;
         }
 
@@ -39,7 +42,12 @@ namespace SelfishFramework.Src.Unity.UI.Systems
 
         private void LoadReact(AsyncOperationHandle<IList<UIBluePrint>> obj)
         {
-            
+            foreach (var bp in obj.Result)
+            {
+                _uIBluePrints.Add(bp); 
+            }
+
+            _isReady = true;
         }
     }
 }

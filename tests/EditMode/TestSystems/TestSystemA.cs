@@ -7,7 +7,13 @@ namespace SelfishFramework.Tests.EditMode.TestSystems
 {
     public partial class TestSystemA : BaseSystem, IUpdatable
     {
+        public bool Disposed;
         public int TestValue { get; set; }
+
+        public override void InitSystem()
+        {
+        }
+
         public void Update()
         {
             var entity = Owner;
@@ -21,8 +27,10 @@ namespace SelfishFramework.Tests.EditMode.TestSystems
             TestValue++;
         }
 
-        public override void InitSystem()
+        public override void Dispose()
         {
+            base.Dispose();
+            Disposed = true;
         }
     }
 }

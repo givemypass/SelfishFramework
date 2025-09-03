@@ -13,6 +13,8 @@ namespace SelfishFramework.Src.Core
 
         public readonly List<World> Worlds = new();
 
+        public static bool IsAlive => instance != null;
+        
         public SManager()
         {
             if (instance != null)

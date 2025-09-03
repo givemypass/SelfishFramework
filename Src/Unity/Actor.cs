@@ -27,9 +27,9 @@ namespace SelfishFramework.Src.Unity
 
         public void Dispose()
         {
-            if (!_entity.GetWorld().IsDisposed(_entity))
+            if (SManager.IsAlive)
             {
-                SManager.World.DelEntity(_entity);
+                _entity.GetWorld().DelEntity(_entity);
                 _entity = default;
             }
         }

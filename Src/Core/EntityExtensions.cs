@@ -168,6 +168,24 @@ namespace SelfishFramework.Src.Core
             system.Dispose();
             system.UnregisterCommands();
         }
-#endregion
+
+        public static void RemoveSystem(this Entity entity, int systemId)
+        {
+            var world = entity.GetWorld();
+            if (!world.TryGetSystemPool(systemId, out var systemPool))
+            {
+                SLog.LogError($"System with ID {systemId} not found in world {world.Index} for entity {entity.Id}.");
+                return;
+            }
+            
+            var system = systemPool.GetRaw(entity.Id);
+            systemPool.Remove(entity.Id);
+            world.ModuleRegistry.Unregister(system);
+            entity.Systems.Remove(systemId);
+            system.Dispose();
+            system.UnregisterCommands(); 
+        }
+
+        #endregion
     }
 }
