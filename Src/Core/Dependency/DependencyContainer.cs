@@ -31,6 +31,11 @@ namespace SelfishFramework.Src.Core.Dependency
 
         public void Register<T>(T instance) where T : class
         {
+            if(instance is IInjectable injectable)
+            {
+                injectable.ResolveDependencies(this);
+            }
+            
             var type = typeof(T);
             if (!_registry.TryAdd(type, instance))
             {

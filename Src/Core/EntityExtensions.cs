@@ -1,5 +1,6 @@
 ﻿using SelfishFramework.Src.Core.CommandBus;
 using SelfishFramework.Src.Core.Components;
+using SelfishFramework.Src.Core.Dependency;
 using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.SystemModules.CommandBusModule;
 using SelfishFramework.Src.Core.Systems;
@@ -124,6 +125,10 @@ namespace SelfishFramework.Src.Core
             system.Owner = entity;
             world.ModuleRegistry.Register(system);
             entity.Systems.Add(SystemPool<T>.TypeId);
+            if (system is IInjectable injectable)
+            {
+                injectable.ResolveDependencies(world.DependencyContainer);
+            }
             system.InitSystem();
             system.RegisterCommands();
         }
