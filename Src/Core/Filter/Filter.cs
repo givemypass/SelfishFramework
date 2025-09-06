@@ -13,7 +13,24 @@ namespace SelfishFramework.Src.Core.Filter
         private readonly HashSet<Entity> _check = new(32);
         private readonly FastList<Entity> _entities = new(32);
         
-        public int Count => _entities.Count;
+        public bool IsNotEmpty()
+        {
+            foreach (var _ in this)
+            {
+                return true;
+            }
+            return false;
+        }
+        
+        public int SlowCount()
+        {
+            var count = 0;
+            foreach (var _ in this)
+            {
+                count++;
+            }
+            return count;
+        }
 
         public Filter(World world, int[] includes, int[] excludes, int includesCount, int excludesCount)
         {

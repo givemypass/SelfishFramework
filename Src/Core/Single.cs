@@ -15,16 +15,11 @@ namespace SelfishFramework.Src.Core
         
         public bool Exists()
         {
-            return _filter.Count > 0;
+            return _filter.IsNotEmpty();
         }
         
         public ref T Get(out bool exists)
         {
-            if (_filter.Count > 1)
-            {
-                SLog.LogError("There are multiple entities with the same single component type: " + typeof(T).Name);
-            }
-            
             foreach (var entity in _filter)
             {
                 exists = true;
@@ -36,11 +31,6 @@ namespace SelfishFramework.Src.Core
         }
         public ref T Get()
         {
-            if (_filter.Count > 1)
-            {
-                SLog.LogError("There are multiple entities with the same single component type: " + typeof(T).Name);
-            }
-            
             foreach (var entity in _filter)
             {
                 return ref entity.Get<T>();
@@ -51,11 +41,6 @@ namespace SelfishFramework.Src.Core
 
         public Entity GetEnt()
         {
-            if (_filter.Count > 1)
-            {
-                SLog.LogError("There are multiple entities with the same single component type: " + typeof(T).Name);
-            }
-            
             foreach (var entity in _filter)
             {
                 return entity; 

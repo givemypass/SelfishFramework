@@ -89,7 +89,7 @@ namespace SelfishFramework.Tests.EditMode
             
             entity.Set(new TestComponentA { TestInt = 1 });
             filter.ForceUpdate();
-            Assert.True(filter.Count == 1);
+            Assert.True(filter.SlowCount() == 1);
         }
         
         [Test]
@@ -103,7 +103,7 @@ namespace SelfishFramework.Tests.EditMode
                 .With<TestComponentA>()
                 .Without<TestComponentB>()
                 .Build();
-            Assert.True(filter.Count == 1);
+            Assert.True(filter.SlowCount() == 1);
             _sManager.Worlds[0].DelEntity(entity);
         }
 
@@ -120,7 +120,7 @@ namespace SelfishFramework.Tests.EditMode
                 .Without<TestComponentB>()
                 .Build();
             
-            Assert.True(filter.Count == 0);
+            Assert.True(filter.SlowCount() == 0);
             _sManager.Worlds[0].DelEntity(entity);
         }
         
