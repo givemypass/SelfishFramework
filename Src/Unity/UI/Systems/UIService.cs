@@ -15,7 +15,7 @@ namespace SelfishFramework.Src.Unity.UI.Systems
     [Injectable]
     public sealed partial class UIService
     {
-        private const string UI_BLUE_PRINT = "UIBluePrint";
+        public const string UI_BLUE_PRINT = "UIBluePrint";
         
         [Inject] private AssetsService _assetsService;
         
