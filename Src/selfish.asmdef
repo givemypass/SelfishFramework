@@ -7,7 +7,8 @@
         "UniTask",
         "Unity.Addressables",
         "Unity.ResourceManager",
-        "UniTask.Addressables"
+        "UniTask.Addressables",
+        "Unity.Addressables.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
