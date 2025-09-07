@@ -48,5 +48,10 @@ namespace SelfishFramework.Src.Core
 
             return default;
         }
+
+        public void ForceUpdate()
+        {
+            _filter.ForceUpdate();
+        }
     }
 }

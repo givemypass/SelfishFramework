@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
+using AssetsManagement;
 using Cysharp.Threading.Tasks;
 using SelfishFramework.Src.SLogs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Object = UnityEngine.Object;
 
-namespace AssetsManagement
+namespace SelfishFramework.Src.Unity.AssetsManagement
 {
-    [Serializable]
     public sealed class AssetsService
     {
         private const int MAX_RETRY_DELAY = 60;

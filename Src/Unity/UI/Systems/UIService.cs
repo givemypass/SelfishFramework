@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using AssetsManagement;
+﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.Attributes;
 using SelfishFramework.Src.Core.Filter;
+using SelfishFramework.Src.SLogs;
+using SelfishFramework.Src.Unity.AssetsManagement;
 using SelfishFramework.Src.Unity.UI.Actors;
 using SelfishFramework.Src.Unity.UI.Components;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -17,7 +18,7 @@ namespace SelfishFramework.Src.Unity.UI.Systems
     {
         public const string UI_BLUE_PRINT = "UIBluePrint";
         
-        [Inject] private AssetsService _assetsService;
+        [Inject] private ActorPoolingService _actorPoolingService;
         
         private readonly World _world;
         private readonly Single<MainCanvasTagComponent> _mainCanvas;
@@ -35,9 +36,59 @@ namespace SelfishFramework.Src.Unity.UI.Systems
             Addressables.LoadAssetsAsync<UIBluePrint>(UI_BLUE_PRINT, null).Completed += LoadReact;
         }
 
-        public async UniTask<UIActor> CreateUIAsync(int uiType, bool init = true, bool initSystems = true, int additionalCanvas = 0)
+        public async UniTask<UIActor> ShowUIAsync(int uiType, bool initSystems = true, int additionalCanvas = 0)
         {
-            throw new NotImplementedException();
+            if (!_isReady)
+            {
+                await UniTask.WaitUntil(this, IsReadyPredicate);
+            }
+
+            var uIBluePrint = _uIBluePrints.Find(x => x.UIType == uiType);
+            if (uIBluePrint == null)
+            {
+                SLog.LogError($"UI BluePrint with type {uiType} not found.");
+                return null;
+            }
+
+            Transform canvas = null;
+            if (additionalCanvas == 0)
+            {
+                _mainCanvas.ForceUpdate();
+                canvas = _mainCanvas.Get().Value.transform;
+            }
+            else
+            {
+                _additionalCanvasFilter.ForceUpdate();
+                foreach (var entity in _additionalCanvasFilter)
+                {
+                    var additionalCanvasComponent = entity.Get<AdditionalCanvasTagComponent>();
+                    if (additionalCanvasComponent.Identifier == additionalCanvas)
+                    {
+                        canvas = additionalCanvasComponent.Value.transform;
+                        break;
+                    }
+                }
+            }
+            
+            if(canvas == null)
+            {
+                SLog.LogError($"Canvas for {uiType} not found.");
+                return null;
+            }
+
+            var actor = await _actorPoolingService.GetActorAsync<UIActor>(uIBluePrint.UIActor, initSystems, canvas, _world.Index);
+            return actor;
+        }
+        
+        public void CloseUI(UIActor actor)
+        {
+            if (actor == null)
+            {
+                SLog.LogError("Cannot close null UI actor.");
+                return;
+            }
+            
+            _actorPoolingService.ReleaseActor(actor);
         }
 
         private void LoadReact(AsyncOperationHandle<IList<UIBluePrint>> obj)
@@ -49,5 +100,10 @@ namespace SelfishFramework.Src.Unity.UI.Systems
 
             _isReady = true;
         }
+        
+        private static bool IsReadyPredicate(UIService state)
+        {
+            return state._isReady;
+        } 
     }
 }

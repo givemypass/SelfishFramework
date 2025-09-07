@@ -25,12 +25,26 @@ namespace AssetsManagement
             instances.Add(instance);
             return instance;
         }
+        
+        public async UniTask<GameObject> CreateInstance(Transform parent = null)
+        {
+            var instance = await Addressables.InstantiateAsync(reference, parent);
+            instances.Add(instance);
+            return instance;
+        }
 
         public async UniTask<TComponent> CreateInstanceForComponent<TComponent>(Vector3 pos = default,
             Quaternion rot = default,
             Transform parent = null) where TComponent : Component
         {
             var instance = await CreateInstance(pos, rot, parent);
+            return instance != null ? instance.GetComponent<TComponent>() : null;
+        }
+        
+        public async UniTask<TComponent> CreateInstanceForComponent<TComponent>(Transform parent = null)
+            where TComponent : Component
+        {
+            var instance = await CreateInstance(parent);
             return instance != null ? instance.GetComponent<TComponent>() : null;
         }
 
