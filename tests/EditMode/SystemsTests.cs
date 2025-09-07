@@ -30,6 +30,7 @@ namespace SelfishFramework.Tests.EditMode
         {
             var entity = _sManager.Worlds[0].NewEntity();
             entity.AddSystem<TestSystemA>();
+            entity.Init();
             Assert.True(entity.TryGetSystem<TestSystemA>(out var system));
             Assert.True(system != null);
             Assert.True(system.Owner == entity);
@@ -41,6 +42,7 @@ namespace SelfishFramework.Tests.EditMode
         {
             var entity = _sManager.Worlds[0].NewEntity();
             entity.AddSystem<TestSystemA>();
+            entity.Init();
             _sManager.Worlds[0].ModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
             entity.TryGetSystem(out TestSystemA system);
             Assert.True(system.TestValue > 0);
@@ -53,6 +55,7 @@ namespace SelfishFramework.Tests.EditMode
             var entity = _sManager.Worlds[0].NewEntity();
             entity.AddSystem<TestSystemA>();
             entity.RemoveSystem<TestSystemA>();
+            entity.Init();
             Assert.False(entity.TryGetSystem<TestSystemA>(out _));
         }
         
@@ -72,6 +75,7 @@ namespace SelfishFramework.Tests.EditMode
             var entity = _sManager.Worlds[0].NewEntity();
             entity.Set(new TestComponentA { TestInt = 0 });
             entity.AddSystem<TestFilterSystem>();
+            entity.Init();
             _sManager.Worlds[0].ModuleRegistry.GetModule<UpdateDefaultModule>().UpdateAll();
             var val = entity.Get<TestComponentA>().TestInt;
             Assert.True(val == 1);
@@ -88,6 +92,7 @@ namespace SelfishFramework.Tests.EditMode
                 .Build();
             
             entity.Set(new TestComponentA { TestInt = 1 });
+            entity.Init();
             filter.ForceUpdate();
             Assert.True(filter.SlowCount() == 1);
         }
@@ -98,6 +103,7 @@ namespace SelfishFramework.Tests.EditMode
         {
             var entity = _sManager.Worlds[0].NewEntity();
             entity.Set(new TestComponentA { TestInt = 1 });
+            entity.Init();
             
             var filter = _sManager.Worlds[0].Filter
                 .With<TestComponentA>()
@@ -112,6 +118,7 @@ namespace SelfishFramework.Tests.EditMode
         public void FilterTestWithout()
         {
             var entity = _sManager.Worlds[0].NewEntity();
+            entity.Init();
             entity.Set(new TestComponentA { TestInt = 1 });
             entity.Set(new TestComponentB { TestInt = 1 });
 
@@ -142,6 +149,7 @@ namespace SelfishFramework.Tests.EditMode
         {
             var entity = _sManager.Worlds[0].NewEntity();
             entity.AddSystem<TestCommandSystem>(); 
+            entity.Init();
             _sManager.Worlds[0].Command(new TestGlobalCommand());
             Assert.True(entity.TryGetSystem(out TestCommandSystem system) && system.IsGlobalReacted);
         }
@@ -152,6 +160,7 @@ namespace SelfishFramework.Tests.EditMode
         {
             var entity = _sManager.Worlds[0].NewEntity();
             entity.AddSystem<TestCommandSystem>(); 
+            entity.Init();
             entity.Command(new TestLocalCommand());
             Assert.True(entity.TryGetSystem(out TestCommandSystem system) && system.IsLocalReacted);
         }
@@ -162,6 +171,7 @@ namespace SelfishFramework.Tests.EditMode
         {
             var entity = _sManager.Worlds[0].NewEntity();
             entity.AddSystem<TestSystemA>();
+            entity.Init();
             Assert.True(entity.TryGetSystem<TestSystemA>(out var system));
             Assert.True(system != null);
             entity.RemoveSystem<TestSystemA>();
@@ -174,6 +184,7 @@ namespace SelfishFramework.Tests.EditMode
         {
             var entity = _sManager.Worlds[0].NewEntity();
             entity.AddSystem<TestSystemA>();
+            entity.Init();
             Assert.True(entity.TryGetSystem<TestSystemA>(out var system));
             Assert.True(system != null);
             _sManager.Dispose();
@@ -187,6 +198,7 @@ namespace SelfishFramework.Tests.EditMode
         {
             var entity = _sManager.Worlds[0].NewEntity();
             entity.AddSystem<TestSystemA>();
+            entity.Init();
             Assert.True(entity.TryGetSystem<TestSystemA>(out var system));
             Assert.True(system != null);
             _sManager.Worlds[0].DelEntity(entity);

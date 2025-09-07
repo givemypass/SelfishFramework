@@ -44,6 +44,7 @@ namespace SelfishFramework.Src.Core
                 SLog.LogError($"Entity {entity.Id} is disposed and cannot be initialized.");
                 return;
             }
+            entity.InitSystems();
             world.ModuleRegistry.GetModule<AfterEntityInitModule>().Run(entity);
             world.entitiesInitStatus[entity.Id] = true;
         }
@@ -123,16 +124,29 @@ namespace SelfishFramework.Src.Core
             var world = entity.GetWorld();
             var system = world.GetSystemPool<T>().Add(entity.Id);
             system.Owner = entity;
-            world.ModuleRegistry.Register(system);
             entity.Systems.Add(SystemPool<T>.TypeId);
             if (system is IInjectable injectable)
             {
                 injectable.ResolveDependencies(world.DependencyContainer);
             }
-            system.InitSystem();
-            system.RegisterCommands();
         }
 
+        public static void InitSystems(this Entity entity)
+        {
+            var world = entity.GetWorld();
+            foreach (var systemId in entity.Systems)
+            {
+                if (!world.TryGetSystemPool(systemId, out var pool))
+                {
+                    SLog.LogError("System pool not found for ID: " + systemId);
+                    continue;
+                }
+                var system = pool.GetRaw(entity.Id);
+                system.InitSystem();
+                world.ModuleRegistry.Register(system);
+                system.RegisterCommands();
+            }
+        }
         /// <summary>
         /// Try get a system of type T to the specified entity.
         /// </summary>

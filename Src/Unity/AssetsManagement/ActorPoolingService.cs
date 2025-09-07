@@ -20,14 +20,14 @@ namespace SelfishFramework.Src.Unity.AssetsManagement
             var container = await _assetsService.GetContainer<AssetReference, GameObject>(reference);
             var actor = await container.CreateInstanceForComponent<TActor>(parent);
             _assetsService.ReleaseContainer(container);
-            actor.Init(SManager.GetWorld(worldId));
+            actor.SetEntity(SManager.GetWorld(worldId));
             actor.Entity.Set(new AssetReferenceComponent
             {
                 Reference = reference,
             });
             if (initSystems)
             {
-                actor.InitSystems();
+                actor.InitEntity();
             }
             return actor;
         }

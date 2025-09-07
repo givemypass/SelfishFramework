@@ -14,15 +14,16 @@ namespace SelfishFramework.Src.Unity
 
         public Entity Entity => _entity;
 
-        public void Init([NotNull]World world)
+        public void SetEntity([NotNull]World world)
         {
             _entity = world.NewEntity();
             SetComponents();
+            SetSystems();
         }
 
-        public void InitSystems()
+        public void InitEntity()
         {
-            SetSystems();
+            _entity.Init();
         }
 
         public void Dispose()
@@ -53,8 +54,8 @@ namespace SelfishFramework.Src.Unity
             var world = SManager.World;
             if (world.IsDisposed(_entity))
             {
-                Init(world);
-                InitSystems();
+                SetEntity(world);
+                InitEntity();
                 return;
             }
 

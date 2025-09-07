@@ -25,8 +25,8 @@ namespace SelfishFramework.Tests.PlayMode
             SManager.World.ModuleRegistry.RegisterModule(customUpdateModule);
             _actor = new GameObject().AddComponent<Actor>();
             _actor.InitMode.InitWhen = InitModule.InitWhenMode.Manually;
-            _actor.Init(SManager.World);
-            _actor.InitSystems();
+            _actor.SetEntity(SManager.World);
+            _actor.InitEntity();
         }
 
         [TearDown]

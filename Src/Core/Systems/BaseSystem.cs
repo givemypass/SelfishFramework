@@ -7,6 +7,7 @@ namespace SelfishFramework.Src.Core.Systems
         public Entity Owner { get; set; }
         public void InitSystem();
         void UnregisterCommands();
+        void RegisterCommands();
     }
 
     public abstract class BaseSystem : ISystem
