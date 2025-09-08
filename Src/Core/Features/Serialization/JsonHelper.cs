@@ -2,7 +2,7 @@
 
 namespace SelfishFramework.Src.Core.Features.Serialization
 {
-    public class JsonSave
+    public class JsonHelper
     {
         public static bool TryLoadJson(string path, out string json)
         {
