@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using SelfishFramework.Src.Core;
-using SelfishFramework.Src.Core.Dependency.Attributes;
+using SelfishFramework.Src.Core.Attributes;
 using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.SLogs;
 using SelfishFramework.Src.Unity.AssetsManagement;
