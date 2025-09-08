@@ -4,5 +4,6 @@ namespace SelfishFramework.Src.Core.Components
     {
         void Resize(int capacity);
         bool Has(int entityId);
+        void Remove(int entityId);
     }
 }

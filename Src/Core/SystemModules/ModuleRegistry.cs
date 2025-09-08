@@ -65,7 +65,7 @@ namespace SelfishFramework.Src.Core.SystemModules
             {
                 if (_modules.TryGetValue(moduleIndex, out var module))
                 {
-                    module.TryRegister(consumer);
+                    module.TryUnregister(consumer);
                 }
             }
 

@@ -1,8 +1,6 @@
 ﻿using NUnit.Framework;
 using SelfishFramework.Src.Core;
-using SelfishFramework.Src.Unity;
 using SelfishFramework.Tests.EditMode.TestComponents;
-using UnityEngine;
 
 namespace SelfishFramework.Tests.EditMode
 {
@@ -76,6 +74,21 @@ namespace SelfishFramework.Tests.EditMode
             });
             ref var component = ref entity.Get<TestComponentA>();
             Assert.True(component.TestInt == 2);
+        }
+
+        [Test]
+        [Order(5)]
+        public void DeleteEntity()
+        {
+            var entity = _sManager.Worlds[0].NewEntity();
+            entity.Set(new TestComponentA());
+            entity.Init();
+            var id = entity.Id;
+            Assert.True(!_sManager.Worlds[0].IsDisposed(entity));
+            _sManager.Worlds[0].DelEntity(entity);
+            Assert.True(_sManager.Worlds[0].IsDisposed(entity));
+            Assert.False(entity.Has<TestComponentA>());
+            Assert.False(_sManager.Worlds[0].GetComponentPool<TestComponentA>().Has(id));
         }
     }
 }

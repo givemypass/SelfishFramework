@@ -24,6 +24,7 @@ namespace SelfishFramework.Src.Core
 
         internal readonly HashSet<Entity> dirtyEntities = new(Constants.START_ENTITY_COUNT);
         internal readonly HashSet<Entity> entities = new(Constants.START_ENTITY_COUNT);
+        internal EntityData[] entitiesData = new EntityData[Constants.START_ENTITY_COUNT]; 
 
         internal readonly Dictionary<long, Dictionary<long, Filter.Filter>> filters = new();
         public readonly ModuleRegistry ModuleRegistry = new();
@@ -39,6 +40,11 @@ namespace SelfishFramework.Src.Core
         public World(ushort index)
         {
             _index = index;
+            for (var i = 0; i < entitiesData.Length; i++)
+            {
+                entitiesData[i].Initialize();
+            }
+
             DependencyContainer = new DependencyContainer(ModuleRegistry);
             ModuleRegistry.RegisterModule(new PreUpdateModule());
             ModuleRegistry.RegisterModule(new UpdateDefaultModule());
@@ -77,7 +83,13 @@ namespace SelfishFramework.Src.Core
 
             if (entitiesCapacity <= entitiesCount)
             {
+                var oldCapacity = entitiesCapacity;
                 entitiesCapacity = entitiesCount << 1;
+                Array.Resize(ref entitiesData, entitiesCapacity);
+                for (int i = oldCapacity; i < entitiesCapacity; i++)
+                {
+                    entitiesData[i].Initialize(); 
+                }
                 Array.Resize(ref entitiesGenerations, entitiesCapacity);
                 Array.Resize(ref entitiesInitStatus, entitiesCapacity);
                 foreach (var componentPool in _componentPools) componentPool.Resize(entitiesCapacity);
@@ -96,9 +108,14 @@ namespace SelfishFramework.Src.Core
         /// <param name="entity">The entity to unregister.</param>
         public void DelEntity(Entity entity)
         {
-            while (entity.Systems.Count > 0)
+            ref var entityData = ref entitiesData[entity.Id];
+            while (entityData.systemCount > 0)
             {
-                entity.RemoveSystem(entity.Systems.First()); 
+                entity.RemoveSystem(entityData.systems[0]); 
+            }
+            while (entityData.componentCount > 0)
+            {
+                entity.Remove(entityData.components[0]); 
             }
             _recycledIndices.Enqueue(entity.Id);
             dirtyEntities.Add(entity);

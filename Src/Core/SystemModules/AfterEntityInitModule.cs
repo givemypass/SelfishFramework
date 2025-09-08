@@ -32,18 +32,21 @@ namespace SelfishFramework.Src.Core.SystemModules
         public void Run(Entity entity)
         {
             var world = entity.GetWorld();
-            foreach (var systemId in entity.Systems)
+            ref var entityData = ref world.entitiesData[entity.Id];
+            for (var i = 0; i < entityData.systemCount; i++)
             {
+                var systemId = entityData.systems[i];
                 if (!world.TryGetSystemPool(systemId, out var pool))
                 {
                     throw new Exception("System pool not found for system: " + systemId);
                 }
 
                 var system = pool.GetRaw(entity.Id);
-                if(system is not IAfterEntityInit afterEntityInit)
+                if (system is not IAfterEntityInit afterEntityInit)
                 {
                     continue;
                 }
+
                 afterEntityInit.AfterEntityInit();
             }
         }

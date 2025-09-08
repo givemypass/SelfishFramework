@@ -1,4 +1,5 @@
-﻿using SelfishFramework.Src.Core.CommandBus;
+﻿using System;
+using SelfishFramework.Src.Core.CommandBus;
 using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Src.Core.Dependency;
 using SelfishFramework.Src.Core.SystemModules;
@@ -75,7 +76,11 @@ namespace SelfishFramework.Src.Core
             var pool = world.GetComponentPool<T>();
             pool.Set(entity.Id, component);
             world.dirtyEntities.Add(entity);
+            ref var entityData = ref world.entitiesData[entity.Id];
+            Array.Resize(ref entityData.components, entityData.components.Length << 1);
+            entityData.components[entityData.componentCount++] = pool.GetId();
         } 
+        
         /// <summary>
         /// Get a component of type T to the specified entity.
         /// </summary>
@@ -87,6 +92,7 @@ namespace SelfishFramework.Src.Core
             var pool = entity.GetWorld().GetComponentPool<T>();
             return ref pool.Get(entity.Id);
         } 
+        
         /// <summary>
         /// Check if the specified entity has a component of type T.
         /// </summary>
@@ -98,6 +104,7 @@ namespace SelfishFramework.Src.Core
             var pool = entity.GetWorld().GetComponentPool<T>();
             return pool.Has(entity.Id);
         } 
+        
         /// <summary>
         /// Remove a component of type T from the specified entity.
         /// </summary>
@@ -109,8 +116,42 @@ namespace SelfishFramework.Src.Core
             var pool = world.GetComponentPool<T>();
             pool.Remove(entity.Id);
             world.dirtyEntities.Add(entity);
-        } 
-#endregion
+            var typeId = ComponentPool<T>.Info.TypeId;
+            RemoveComponentFromEntityData(entity, world, typeId);
+        }
+
+        /// <summary>
+        /// Remove a component of typeId from the specified entity.
+        /// </summary>
+        /// <param name="entity">The entity to remove the component from. </param>
+        /// <param name="poolIndex">index of component pool</param>
+        public static void Remove(this Entity entity, int poolIndex)
+        {
+            var world = entity.GetWorld();
+            if (!world.TryGetComponentPool(poolIndex, out var pool))
+            {
+                SLog.LogError($"Component pool not found for ID: {poolIndex}");
+                return;
+            }
+            pool.Remove(entity.Id);
+            world.dirtyEntities.Add(entity);
+            RemoveComponentFromEntityData(entity, world, poolIndex);
+        }
+
+        private static void RemoveComponentFromEntityData(Entity entity, World world, int poolIndex)
+        {
+            ref var entityData = ref world.entitiesData[entity.Id];
+            for (int i = entityData.componentCount - 1; i >= 0; i--)
+            {
+                if (entityData.components[i] == poolIndex)
+                {
+                    entityData.components[i] = entityData.components[--entityData.componentCount];
+                    break;
+                }
+            }
+        }
+
+        #endregion
 
 #region Systems
         /// <summary>
@@ -124,23 +165,31 @@ namespace SelfishFramework.Src.Core
             var world = entity.GetWorld();
             var system = world.GetSystemPool<T>().Add(entity.Id);
             system.Owner = entity;
-            entity.Systems.Add(SystemPool<T>.TypeId);
+            ref var entityData = ref world.entitiesData[entity.Id];
+            if (entityData.systemCount >= entityData.systems.Length)
+            {
+                Array.Resize(ref entityData.systems, entityData.systems.Length << 1);
+            }
+            entityData.systems[entityData.systemCount++] = SystemPool<T>.TypeId;
             if (system is IInjectable injectable)
             {
                 injectable.ResolveDependencies(world.DependencyContainer);
             }
         }
 
-        public static void InitSystems(this Entity entity)
+        private static void InitSystems(this Entity entity)
         {
             var world = entity.GetWorld();
-            foreach (var systemId in entity.Systems)
+            ref var entityData = ref world.entitiesData[entity.Id];
+            for (var i = 0; i < entityData.systemCount; i++)
             {
+                var systemId = entityData.systems[i];
                 if (!world.TryGetSystemPool(systemId, out var pool))
                 {
                     SLog.LogError("System pool not found for ID: " + systemId);
                     continue;
                 }
+
                 var system = pool.GetRaw(entity.Id);
                 system.InitSystem();
                 world.ModuleRegistry.Register(system);
@@ -178,11 +227,17 @@ namespace SelfishFramework.Src.Core
             var system = systemPool.Get(entity.Id);
             systemPool.Remove(entity.Id); 
             world.ModuleRegistry.Unregister(system);
-            entity.Systems.Remove(SystemPool<T>.TypeId);
+            var typeId = SystemPool<T>.TypeId;
             system.Dispose();
             system.UnregisterCommands();
+            RemoveSystemFromEntityData(entity, world, typeId);
         }
 
+        /// <summary>
+        /// Remove a system of type T from the specified entity.
+        /// </summary>
+        /// <param name="entity">The entity to remove the system from.</param>
+        /// <param name="systemId">typeId of system</param>
         public static void RemoveSystem(this Entity entity, int systemId)
         {
             var world = entity.GetWorld();
@@ -195,9 +250,22 @@ namespace SelfishFramework.Src.Core
             var system = systemPool.GetRaw(entity.Id);
             systemPool.Remove(entity.Id);
             world.ModuleRegistry.Unregister(system);
-            entity.Systems.Remove(systemId);
             system.Dispose();
             system.UnregisterCommands(); 
+            RemoveSystemFromEntityData(entity, world, systemId);
+        }
+
+        private static void RemoveSystemFromEntityData(Entity entity, World world, int typeId)
+        {
+            ref var entityData = ref world.entitiesData[entity.Id];
+            for (int i = entityData.systemCount - 1; i >= 0; i--)
+            {
+                if (entityData.systems[i] == typeId)
+                {
+                    entityData.systems[i] = entityData.systems[--entityData.systemCount];
+                    break;
+                }
+            }
         }
 
         #endregion
