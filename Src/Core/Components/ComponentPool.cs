@@ -2,7 +2,7 @@ using System;
 
 namespace SelfishFramework.Src.Core.Components
 {
-    public class ComponentPool<T> : IComponentPool where T : struct, IComponent
+    public partial class ComponentPool<T> : IComponentPool where T : struct, IComponent
     {
         public static readonly ComponentInfo Info = ComponentInfo.Create<T>();
         public static T Default = default;
