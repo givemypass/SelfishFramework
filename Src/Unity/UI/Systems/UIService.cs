@@ -23,8 +23,9 @@ namespace SelfishFramework.Src.Unity.UI.Systems
         private readonly World _world;
         private readonly Single<MainCanvasTagComponent> _mainCanvas;
         private readonly Filter _additionalCanvasFilter;
+        private readonly Filter _currentUIFilter;
         
-        private List<UIBluePrint> _uIBluePrints = new List<UIBluePrint>();
+        private readonly List<UIBluePrint> _uIBluePrints = new();
         
         private bool _isReady;
 
@@ -32,21 +33,22 @@ namespace SelfishFramework.Src.Unity.UI.Systems
         {
             _world = world;
             _mainCanvas = new Single<MainCanvasTagComponent>(world);
+            _currentUIFilter = world.Filter.With<UITagComponent>().Build();
             _additionalCanvasFilter = world.Filter.With<AdditionalCanvasTagComponent>().Build();
             Addressables.LoadAssetsAsync<UIBluePrint>(UI_BLUE_PRINT, null).Completed += LoadReact;
         }
 
-        public async UniTask<UIActor> ShowUIAsync(int uiType, bool initSystems = true, int additionalCanvas = 0)
+        public async UniTask<UIActor> ShowUIAsync(int uiId, bool initSystems = true, int additionalCanvas = 0)
         {
             if (!_isReady)
             {
                 await UniTask.WaitUntil(this, IsReadyPredicate);
             }
 
-            var uIBluePrint = _uIBluePrints.Find(x => x.UIType == uiType);
+            var uIBluePrint = _uIBluePrints.Find(x => x.UIType == uiId);
             if (uIBluePrint == null)
             {
-                SLog.LogError($"UI BluePrint with type {uiType} not found.");
+                SLog.LogError($"UI BluePrint with type {uiId} not found.");
                 return null;
             }
 
@@ -72,11 +74,15 @@ namespace SelfishFramework.Src.Unity.UI.Systems
             
             if(canvas == null)
             {
-                SLog.LogError($"Canvas for {uiType} not found.");
+                SLog.LogError($"Canvas for {uiId} not found.");
                 return null;
             }
 
             var actor = await _actorPoolingService.GetActorAsync<UIActor>(uIBluePrint.UIActor, initSystems, canvas, _world.Index);
+            actor.Entity.Set(new UITagComponent
+            {
+                ID = uiId,
+            });
             return actor;
         }
         
@@ -91,6 +97,19 @@ namespace SelfishFramework.Src.Unity.UI.Systems
             _actorPoolingService.ReleaseActor(actor);
         }
 
+        public void CloseUI(int uiId)
+        {
+            _currentUIFilter.ForceUpdate();
+            foreach (var entity in _currentUIFilter)
+            {
+                if (entity.Get<UITagComponent>().ID != uiId) 
+                    continue;
+                
+                var actor = (UIActor)entity.AsActor();
+                CloseUI(actor);
+            }
+        }
+
         private void LoadReact(AsyncOperationHandle<IList<UIBluePrint>> obj)
         {
             foreach (var bp in obj.Result)
@@ -100,10 +119,10 @@ namespace SelfishFramework.Src.Unity.UI.Systems
 
             _isReady = true;
         }
-        
+
         private static bool IsReadyPredicate(UIService state)
         {
             return state._isReady;
-        } 
+        }
     }
 }

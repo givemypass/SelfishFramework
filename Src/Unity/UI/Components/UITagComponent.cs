@@ -6,5 +6,6 @@ namespace SelfishFramework.Src.Unity.UI.Components
     [Serializable]
     public struct UITagComponent : IComponent
     {
+        public int ID;
     }
 }
