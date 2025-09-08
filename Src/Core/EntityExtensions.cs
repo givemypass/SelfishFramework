@@ -77,7 +77,10 @@ namespace SelfishFramework.Src.Core
             pool.Set(entity.Id, component);
             world.dirtyEntities.Add(entity);
             ref var entityData = ref world.entitiesData[entity.Id];
-            Array.Resize(ref entityData.components, entityData.components.Length << 1);
+            if (entityData.componentCount >= entityData.components.Length)
+            {
+                Array.Resize(ref entityData.components, entityData.components.Length << 1);
+            }
             entityData.components[entityData.componentCount++] = pool.GetId();
         } 
         
