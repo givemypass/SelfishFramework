@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿#if UNITY_EDITOR
+using System.IO;
 using UnityEngine;
 
 namespace SelfishFramework.Src.Unity.Editor.Helpers
@@ -21,3 +22,4 @@ namespace SelfishFramework.Src.Unity.Editor.Helpers
         }
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 
 namespace SelfishFramework.Src.Unity.Tools
 {
@@ -19,3 +20,4 @@ namespace SelfishFramework.Src.Unity.Tools
         } 
     }
 }
+#endif
