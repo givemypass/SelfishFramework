@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using SelfishFramework.Src.Core;
-using SelfishFramework.Src.Unity.Components;
+using SelfishFramework.Src.Unity.CommonComponents;
 
 namespace SelfishFramework.Src.Unity
 {

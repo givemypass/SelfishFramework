@@ -1,7 +1,7 @@
 ﻿using System;
 using SelfishFramework.Src.Core.Components;
 
-namespace SelfishFramework.Src.Unity.Components
+namespace SelfishFramework.Src.Unity.CommonComponents
 {
     [Serializable]
     public struct ActorProviderComponent : IComponent

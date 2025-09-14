@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.SLogs;
-using SelfishFramework.Src.Unity.Components;
+using SelfishFramework.Src.Unity.CommonComponents;
 using UnityEngine;
 
 namespace SelfishFramework.Src.Unity
@@ -54,6 +54,7 @@ namespace SelfishFramework.Src.Unity
             var world = SManager.World;
             if (world.IsDisposed(_entity))
             {
+                BeforeInitialize();
                 SetEntity(world);
                 InitEntity();
                 return;
@@ -62,6 +63,9 @@ namespace SelfishFramework.Src.Unity
             SLog.LogError("Entity already initialized");
         }
 
+        protected virtual void BeforeInitialize()
+        {
+        }
         protected virtual void SetComponents()
         {
             _entity.Set(new ActorProviderComponent
@@ -69,7 +73,6 @@ namespace SelfishFramework.Src.Unity
                 Actor = this,
             }); 
         }
-
         protected virtual void SetSystems()
         {
         }
