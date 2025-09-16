@@ -45,7 +45,7 @@ namespace SelfishFramework.Src.Features.GameFSM.Systems
         protected virtual void ProcessForceState(ForceGameStateTransitionGlobalCommand command)
         {
             ref var gameStateComponent = ref Owner.Get<GameStateComponent>();
-            Owner.GetWorld().Command(new StopGameStateGlobalCommand(gameStateComponent.CurrentState));
+            World.Command(new StopGameStateGlobalCommand(gameStateComponent.CurrentState));
             ChangeGameState(gameStateComponent.CurrentState, command.GameState);
         }
 
@@ -53,7 +53,7 @@ namespace SelfishFramework.Src.Features.GameFSM.Systems
         {
             ref var gameStateComponent = ref Owner.Get<GameStateComponent>();
             gameStateComponent.SetState(to);
-            Owner.GetWorld().Command(new TransitionGameStateCommand { From = from, To = to });
+            World.Command(new TransitionGameStateCommand { From = from, To = to });
         }
         
         protected void ChangeGameState(int to)

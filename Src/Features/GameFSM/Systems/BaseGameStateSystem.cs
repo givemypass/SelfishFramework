@@ -50,7 +50,7 @@ namespace Systems
                 if (transition.ForceTransitionComplete(Owner, State))
                     return;
 
-            Owner.GetWorld().Command(new EndGameStateCommand(State));
+            World.Command(new EndGameStateCommand(State));
         }
 
         protected virtual void OnExitState()

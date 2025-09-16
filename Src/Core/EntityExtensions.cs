@@ -168,6 +168,7 @@ namespace SelfishFramework.Src.Core
             var world = entity.GetWorld();
             var system = world.GetSystemPool<T>().Add(entity.Id);
             system.Owner = entity;
+            system.World = world;
             ref var entityData = ref world.entitiesData[entity.Id];
             if (entityData.systemCount >= entityData.systems.Length)
             {
