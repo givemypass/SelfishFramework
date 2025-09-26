@@ -38,6 +38,7 @@ namespace SelfishFramework.Src.Unity.Editor.Helpers
             CheckFolder(Path.Combine(DataPath, BLUE_PRINTS));
             CheckFolder(Path.Combine(DataPath, BLUE_PRINTS, IDENTIFIERS));
             CheckFolder(Path.Combine(DataPath, BLUE_PRINTS, UI_BLUE_PRINTS));
+            CheckFolder(Path.Combine(DataPath, BLUE_PRINTS, IDENTIFIERS, UI_IDENTIFIERS));
         }
         
         public static void CheckFolder(string path)

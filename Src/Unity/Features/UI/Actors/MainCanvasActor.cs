@@ -1,9 +1,17 @@
 ﻿using SelfishFramework.Src.Unity.UI.Components;
+using UnityEngine;
 
-namespace SelfishFramework.Src.Unity.UI.Actors
+namespace SelfishFramework.Src.Unity.Features.UI.Actors
 {
     public partial class MainCanvasActor : Actor
     {
-        public MainCanvasTagComponent MainCanvasTagComponent; 
+        [HideInInspector]
+        public MainCanvasTagComponent MainCanvasTagComponent;
+
+        protected override void BeforeInitialize()
+        {
+            base.BeforeInitialize();
+            MainCanvasTagComponent.Value = GetComponent<Canvas>();
+        }
     }
 }
