@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Codice.Client.GameUI.Checkin;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.Collections;
 using SelfishFramework.Src.Core.SystemModules;
+using SelfishFramework.Src.SLogs;
 
 namespace SelfishFramework.Src.StateMachine
 {
@@ -106,7 +108,7 @@ namespace SelfishFramework.Src.StateMachine
                 }
             }
          
-            ChangeState(_states[_currentState].NextStateID);
+            SLog.LogError("No valid transition found from state " + _currentState);
         }
 
         public void AddState(BaseFSMState state)
@@ -151,7 +153,6 @@ namespace SelfishFramework.Src.StateMachine
     public abstract class BaseFSMState : IDisposable
     {
         public abstract int StateID { get; }
-        public abstract int NextStateID { get; }
 
         protected StateMachine stateMachine;
 
@@ -193,5 +194,20 @@ namespace SelfishFramework.Src.StateMachine
     {
         int ToState { get; }
         bool IsReady(Entity entity);
+    }
+    
+    public class DefaultTransition : ITransition
+    {
+        public int ToState { get; }
+
+        public DefaultTransition(int toState)
+        {
+            ToState = toState;
+        }
+
+        public bool IsReady(Entity entity)
+        {
+            return true;
+        }
     }
 }
