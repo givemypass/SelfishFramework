@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace SelfishFramework.Src.Unity.Features.InputFeature.Commands
 {
-    public struct InputStartedCommand : ICommand, IGlobalCommand
+    public struct InputStartedCommand : ICommand
     {
         public int Index;
         public InputAction.CallbackContext Context;

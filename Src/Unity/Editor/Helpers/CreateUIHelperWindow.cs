@@ -59,10 +59,9 @@ namespace SelfishFramework.Src.Unity.Editor.Helpers
             [Button]
             public void CreateUI()
             {
-                var pathBluePrints = InstallSelfish.DataPath + InstallSelfish.BLUE_PRINTS +
-                                     InstallSelfish.UI_BLUE_PRINTS;
-                var pathUIIdentifiers = InstallSelfish.DataPath + InstallSelfish.BLUE_PRINTS +
-                                        InstallSelfish.IDENTIFIERS + InstallSelfish.UI_IDENTIFIERS;
+                var pathBluePrints = Path.Combine(InstallSelfish.DataPath, InstallSelfish.BLUE_PRINTS, InstallSelfish.UI_BLUE_PRINTS);
+                var pathUIIdentifiers = Path.Combine(InstallSelfish.DataPath, InstallSelfish.BLUE_PRINTS, InstallSelfish.IDENTIFIERS, InstallSelfish.UI_IDENTIFIERS);
+                
                 InstallSelfish.CheckFolder(pathBluePrints);
                 InstallSelfish.CheckFolder(pathUIIdentifiers);
 

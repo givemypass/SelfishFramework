@@ -69,7 +69,7 @@ namespace SelfishFramework.Src.Unity.Features.InputFeature.Systems
             SendCommandToAllListeners(command);
         }
 
-        private void SendCommandToAllListeners<T>(T command) where T : struct, IGlobalCommand
+        private void SendCommandToAllListeners<T>(T command) where T : struct, ICommand
         {
             foreach (var w in SManager.GetWorlds())
             {

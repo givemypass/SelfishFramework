@@ -5,6 +5,7 @@ using SelfishFramework.Src.Core.Attributes;
 using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.SLogs;
 using SelfishFramework.Src.Unity.AssetsManagement;
+using SelfishFramework.Src.Unity.Features.UI.Actors;
 using SelfishFramework.Src.Unity.UI.Actors;
 using SelfishFramework.Src.Unity.UI.Components;
 using UnityEngine;
