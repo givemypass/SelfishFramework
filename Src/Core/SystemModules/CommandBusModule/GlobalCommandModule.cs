@@ -7,7 +7,7 @@ namespace SelfishFramework.Src.Core.SystemModules.CommandBusModule
 {
     public class GlobalCommandModule : IModule
     {
-        private readonly Dictionary<Type, HashSet<ISystem>> _buses = new();
+        private readonly Dictionary<Type, HashSet<object>> _buses = new();
         
         public int Priority => 0;
 
@@ -19,7 +19,7 @@ namespace SelfishFramework.Src.Core.SystemModules.CommandBusModule
         {
         }
         
-        public void Register<T>(ISystem system) where T : IGlobalCommand
+        public void Register<T>(object system) where T : IGlobalCommand
         {
             var type = typeof(T);
             if (!_buses.ContainsKey(type))
@@ -27,7 +27,7 @@ namespace SelfishFramework.Src.Core.SystemModules.CommandBusModule
             _buses[type].Add(system);
         }
         
-        public void Unregister<T>(ISystem system) where T : IGlobalCommand
+        public void Unregister<T>(object system) where T : IGlobalCommand
         {
             var type = typeof(T);
             _buses[type].Remove(system);

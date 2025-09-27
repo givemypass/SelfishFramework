@@ -28,6 +28,7 @@ namespace SelfishFramework.Src.Core
             exists = false;
             return ref ComponentPool<T>.Default;
         }
+        
         public ref T Get()
         {
             foreach (var entity in _filter)

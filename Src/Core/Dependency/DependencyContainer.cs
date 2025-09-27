@@ -29,12 +29,17 @@ namespace SelfishFramework.Src.Core.Dependency
             throw new InvalidOperationException($"No known dependency of type = {type}");             
         }
 
-        public void Register<T>(T instance) where T : class
+        public void Resolve<T>(T instance) where T : class
         {
             if(instance is IInjectable injectable)
             {
                 injectable.ResolveDependencies(this);
             }
+        }
+
+        public void Register<T>(T instance) where T : class
+        {
+            Resolve(instance);
             
             var type = typeof(T);
             if (!_registry.TryAdd(type, instance))

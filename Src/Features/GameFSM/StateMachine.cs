@@ -26,6 +26,7 @@ namespace SelfishFramework.Src.StateMachine
         public int CurrentState => _currentState;
         public int PreviousState => _previousState;
         public bool IsPaused => _isPaused;
+        public World World => _owner.GetWorld();
 
         public void Update()
         {
