@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SelfishFramework.Src.Unity.CommonComponents
 {
     [Serializable]
-    public struct MainCameraTagComponent : IComponent
+    public struct CameraProviderComponent : IComponent
     {
         public Camera Camera;
     }

@@ -50,7 +50,7 @@ namespace SelfishFramework.Src.Unity
             TryInitialize();
         }
 
-        private void TryInitialize()
+        public void TryInitialize()
         {
             var world = SManager.World;
             if (world.IsDisposed(_entity))

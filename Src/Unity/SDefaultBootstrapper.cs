@@ -43,8 +43,7 @@ namespace SelfishFramework.Src.Unity
             foreach (var prefab in _actorPrefabs)
             {
                 var actor = Instantiate(prefab);
-                actor.SetEntity(SManager.World);
-                actor.InitEntity();
+                actor.TryInitialize();
             }
         }
 

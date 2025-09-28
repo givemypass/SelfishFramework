@@ -6,12 +6,12 @@ namespace SelfishFramework.Src.Unity.CommonActors
 {
     public partial class MainCameraActor : Actor
     {
-        private MainCameraTagComponent _mainCameraTagComponent = new();
+        private CameraProviderComponent _cameraProviderComponent = new();
 
         protected override void BeforeInitialize()
         {
             base.BeforeInitialize();
-            _mainCameraTagComponent.Camera = GetComponent<Camera>();
+            _cameraProviderComponent.Camera = GetComponent<Camera>();
         }
     }
 }
