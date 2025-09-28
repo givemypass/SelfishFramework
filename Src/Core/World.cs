@@ -8,6 +8,7 @@ using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.Core.SystemModules;
 using SelfishFramework.Src.Core.SystemModules.CommandBusModule;
 using SelfishFramework.Src.Core.Systems;
+using SelfishFramework.Src.SLogs;
 
 namespace SelfishFramework.Src.Core
 {
@@ -74,12 +75,12 @@ namespace SelfishFramework.Src.Core
         /// </summary>
         public Entity NewEntity()
         {
-            int index;
+            //we need to skip 0 index, because it is reserved for default entity
+            int index = ++entitiesCount;
             if (_recycledIndices.Count > 0)
+            {
                 index = _recycledIndices.Dequeue();
-            else
-                //we need to skip 0 index, because it is reserved for default entity
-                index = ++entitiesCount;
+            }
 
             if (entitiesCapacity <= entitiesCount)
             {

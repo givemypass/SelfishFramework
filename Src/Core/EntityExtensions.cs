@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SelfishFramework.Src.Core.CommandBus;
 using SelfishFramework.Src.Core.Components;
 using SelfishFramework.Src.Core.Dependency;
@@ -273,5 +274,21 @@ namespace SelfishFramework.Src.Core
         }
 
         #endregion
+        
+        public static List<IComponent> DebugAllComponents(this Entity entity)
+        {
+            var world = entity.GetWorld();
+            ref var entityData = ref world.entitiesData[entity.Id];
+            var components = new List<IComponent>(entityData.componentCount);
+            for (int i = 0; i < entityData.componentCount; i++)
+            {
+                if (!world.TryGetComponentPool(entityData.components[i], out var pool))
+                {
+                    throw new Exception("Component pool not found for ID: " + entityData.components[i]);
+                }
+                components.Add(pool.GetRaw(entity.Id));
+            }
+            return components;
+        }
     }
 }

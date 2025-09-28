@@ -5,5 +5,12 @@ namespace SelfishFramework.Src.Core.Components
         void Resize(int capacity);
         bool Has(int entityId);
         void Remove(int entityId);
+
+        /// <summary>
+        /// USE WITH CAUTION!
+        /// </summary>
+        /// <param name="entityId"></param>
+        /// <returns></returns>
+        IComponent GetRaw(int entityId);
     }
 }

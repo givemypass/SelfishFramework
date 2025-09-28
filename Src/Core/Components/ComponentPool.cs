@@ -75,6 +75,11 @@ namespace SelfishFramework.Src.Core.Components
             _denseItems[_sparseItems[id]] = default;
         }
 
+        public IComponent GetRaw(int entityId)
+        {
+            return _denseItems[_sparseItems[entityId]]; 
+        }
+
         public bool Has(int id)
         {
             return _sparseItems[id] > 0;
