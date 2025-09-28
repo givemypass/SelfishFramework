@@ -17,6 +17,7 @@ namespace SelfishFramework.Src.Unity
         public void SetEntity([NotNull]World world)
         {
             _entity = world.NewEntity();
+            SetActorComponent();
             SetComponents();
             SetSystems();
         }
@@ -73,6 +74,8 @@ namespace SelfishFramework.Src.Unity
                 Actor = this,
             }); 
         }
+
+        protected abstract void SetActorComponent();
         protected virtual void SetSystems()
         {
         }
