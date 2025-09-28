@@ -7,9 +7,24 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Object = UnityEngine.Object;
 
-namespace SelfishFramework.Src.Unity.AssetsManagement
+namespace SelfishFramework.Src.Unity.Features.AssetsManagement
 {
-    public sealed class AssetsService
+    public interface IAssetsService
+    {
+        UniTask<AssetRefContainer<TRef, TObject>> GetContainer<TRef, TObject>(TRef reference)
+            where TRef : AssetReference
+            where TObject : Object;
+
+        bool TryGetContainerFast<TRef, TObject>(TRef reference, out AssetRefContainer<TRef, TObject> container)
+            where TRef : AssetReference
+            where TObject : Object;
+
+        void ReleaseContainer<TRef, TObject>(AssetRefContainer<TRef, TObject> refContainer)
+            where TRef : AssetReference
+            where TObject : Object;
+    }
+
+    public sealed class AssetsService : IAssetsService
     {
         private const int MAX_RETRY_DELAY = 60;
 

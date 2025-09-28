@@ -1,6 +1,7 @@
 ﻿using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Unity.AssetsManagement;
-using SelfishFramework.Src.Unity.UI.Systems;
+using SelfishFramework.Src.Unity.Features.AssetsManagement;
+using SelfishFramework.Src.Unity.Features.UI.Systems;
 
 namespace SelfishFramework.Src.Unity
 {
@@ -10,9 +11,9 @@ namespace SelfishFramework.Src.Unity
 
         public override void Register()
         {
-            Container.Register(new AssetsService());
-            Container.Register(new ActorPoolingService());
-            Container.Register(new UIService(World));
+            Container.Register<IAssetsService>(new AssetsService());
+            Container.Register<IActorPoolingService>(new ActorPoolingService());
+            Container.Register<IUIService>(new UIService(World));
         }       
     }
 }

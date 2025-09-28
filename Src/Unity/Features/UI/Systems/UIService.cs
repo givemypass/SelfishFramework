@@ -6,20 +6,27 @@ using SelfishFramework.Src.Core.Filter;
 using SelfishFramework.Src.SLogs;
 using SelfishFramework.Src.Unity.AssetsManagement;
 using SelfishFramework.Src.Unity.Features.UI.Actors;
-using SelfishFramework.Src.Unity.UI.Actors;
+using SelfishFramework.Src.Unity.UI;
 using SelfishFramework.Src.Unity.UI.Components;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace SelfishFramework.Src.Unity.UI.Systems
+namespace SelfishFramework.Src.Unity.Features.UI.Systems
 {
+    public interface IUIService
+    {
+        UniTask<UIActor> ShowUIAsync(int uiId, bool initSystems = true, int additionalCanvas = 0);
+        void CloseUI(UIActor actor);
+        void CloseUI(int uiId);
+    }
+
     [Injectable]
-    public sealed partial class UIService
+    public sealed partial class UIService : IUIService
     {
         public const string UI_BLUE_PRINT = "UIBluePrint";
         
-        [Inject] private ActorPoolingService _actorPoolingService;
+        [Inject] private IActorPoolingService _actorPoolingService;
         
         private readonly World _world;
         private readonly Single<MainCanvasTagComponent> _mainCanvas;

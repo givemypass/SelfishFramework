@@ -3,16 +3,26 @@ using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.Attributes;
 using SelfishFramework.Src.SLogs;
 using SelfishFramework.Src.Unity.AssetsManagement.Components;
+using SelfishFramework.Src.Unity.Features.AssetsManagement;
 using SelfishFramework.Src.Unity.UI.Actors;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace SelfishFramework.Src.Unity.AssetsManagement
 {
-    [Injectable]
-    public sealed partial class ActorPoolingService
+    public interface IActorPoolingService
     {
-        [Inject] private AssetsService _assetsService;
+        UniTask<TActor> GetActorAsync<TActor>(AssetReference reference, bool initSystems = true, Transform parent = null, int worldId = 0)
+            where TActor : Actor;
+
+        void ReleaseActor<TActor>(TActor actor)
+            where TActor : Actor;
+    }
+
+    [Injectable]
+    public sealed partial class ActorPoolingService : IActorPoolingService
+    {
+        [Inject] private IAssetsService _assetsService;
         
         public async UniTask<TActor> GetActorAsync<TActor>(AssetReference reference, bool initSystems = true, Transform parent = null, int worldId = 0)
             where TActor : Actor

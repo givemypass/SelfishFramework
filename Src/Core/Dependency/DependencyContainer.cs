@@ -37,16 +37,21 @@ namespace SelfishFramework.Src.Core.Dependency
             }
         }
 
-        public void Register<T>(T instance) where T : class
+        public void Register<T1, T>(T instance) where T : class, T1
         {
             Resolve(instance);
             
-            var type = typeof(T);
+            var type = typeof(T1);
             if (!_registry.TryAdd(type, instance))
             {
                 SLog.LogError($"[DI] Dependency of type = {type} already exist");
             }
             _moduleRegistry.Register(instance);
+        }
+
+        public void Register<T>(T instance) where T : class
+        {
+            Register<T, T>(instance);
         }
     }
 }
