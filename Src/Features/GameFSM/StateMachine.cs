@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Codice.Client.GameUI.Checkin;
 using SelfishFramework.Src.Core;
 using SelfishFramework.Src.Core.Collections;
 using SelfishFramework.Src.Core.SystemModules;
