@@ -24,7 +24,7 @@ namespace SelfishFramework.Tests.EditMode.JsonPoly
     {
         public string ValueB;
     }
-
+    
     [JsonObject]
     [Serializable]
     public class TestJsonPolySerializable

@@ -7,5 +7,11 @@ namespace SelfishFramework.Src.Unity.Features.TemperatureWeightedRandomFeature
     {
         public T Item;
         public int Weight;
+
+        public WeightedItem(T item, int weight)
+        {
+            Item = item;
+            Weight = weight;
+        }
     }
 }

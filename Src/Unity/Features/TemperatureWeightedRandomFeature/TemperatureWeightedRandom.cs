@@ -8,6 +8,7 @@ namespace SelfishFramework.Src.Unity.Features.TemperatureWeightedRandomFeature
     {
         private readonly WeightedItem<T>[] _items;
         private float[] _recalculatedWeights;
+        private float _temperature;
 
         public TemperatureWeightedRandom(WeightedItem<T>[] items, bool initialize = true, float initializeTemperature = 1)
         {
@@ -15,15 +16,43 @@ namespace SelfishFramework.Src.Unity.Features.TemperatureWeightedRandomFeature
             if (initialize)
             {
                 CalculateProbabilities(initializeTemperature);
+                _temperature = initializeTemperature;
             }
         }
+        
+        public float Temperature
+        {
+            get => _temperature;
+            set => CalculateProbabilities(value);
+        }
 
-        public void CalculateProbabilities(float temperature)
+        public T Next()
+        {
+            if(_items.Length == 0)
+                throw new Exception("No items to sample from.");
+            if (_recalculatedWeights == null)
+                throw new Exception($"Probabilities not calculated. Call {nameof(CalculateProbabilities)} first.");
+            
+            var totalWeight = _recalculatedWeights.Sum();
+            var randomValue = UnityEngine.Random.Range(0, totalWeight);
+            for (var i = 0; i < _items.Length; i++)
+            {
+                randomValue -= _recalculatedWeights[i];
+                if (randomValue <= 0)
+                {
+                    return _items[i].Item;
+                }
+            }
+            return _items[^1].Item;
+        }
+
+        private void CalculateProbabilities(float temperature)
         {
             if (temperature < 0)
                 throw new ArgumentOutOfRangeException(nameof(temperature), "Temperature must be non-negative.");
             if (_items.Length == 0)
                 throw new Exception("No items to sample from.");
+            _temperature = temperature;
             _recalculatedWeights ??= new float[_items.Length];
             var maxWeight = _items.Max(a => a.Weight);
             if (temperature == 0)
@@ -48,26 +77,6 @@ namespace SelfishFramework.Src.Unity.Features.TemperatureWeightedRandomFeature
             {
                 _recalculatedWeights[i] = Mathf.Exp(_recalculatedWeights[i] - maxRecalculatedWeight); 
             }
-        }
-        
-        public T Next()
-        {
-            if(_items.Length == 0)
-                throw new Exception("No items to sample from.");
-            if (_recalculatedWeights == null)
-                throw new Exception($"Probabilities not calculated. Call {nameof(CalculateProbabilities)} first.");
-            
-            var totalWeight = _recalculatedWeights.Sum();
-            var randomValue = UnityEngine.Random.Range(0, totalWeight);
-            for (var i = 0; i < _items.Length; i++)
-            {
-                randomValue -= _recalculatedWeights[i];
-                if (randomValue <= 0)
-                {
-                    return _items[i].Item;
-                }
-            }
-            return _items[^1].Item;
         }
     }
 }

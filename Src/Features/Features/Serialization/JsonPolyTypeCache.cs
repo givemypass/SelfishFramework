@@ -24,6 +24,11 @@ namespace SelfishFramework.Src.Features.Features.Serialization
             _targetBaseToName = _cache.ToDictionary(pair => (pair.Value, pair.Key.baseType), pair => pair.Key.typeName);
         }
 
+        public static void Prewarm()
+        {
+            // Intentionally left blank. The static constructor will run the first time this class is accessed
+        }
+        
         public static Type FindTargetType(Type baseType, string typeName)
         {
             return _cache.GetValueOrDefault((baseType, typeName));
