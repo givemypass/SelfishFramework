@@ -11,11 +11,8 @@ using UnityEngine.AddressableAssets;
 namespace SelfishFramework.Src.Unity.Editor.Helpers
 {
     [Serializable]
-    public class CreateUIHelperWindow : EditorWindow
+    public class CreateUIHelperWindow : SelfishEditorWindow<CreateUIHelperWindow.SO>
     {
-        private SO _data;
-        private UnityEditor.Editor _editor;
-
         [MenuItem("Selfish/Helpers/Create UI Window")]
         public static void GetWindow()
         {
@@ -23,27 +20,7 @@ namespace SelfishFramework.Src.Unity.Editor.Helpers
             window.Show();
         }
 
-        private void OnEnable()
-        {
-            if (_data == null)
-            {
-                _data = CreateInstance<SO>();
-                _data.EditorWindow = this;
-            }
-
-            _editor = UnityEditor.Editor.CreateEditor(_data);
-        }
-        
-        private void OnGUI()
-        {
-            if (_data == null)
-                return;
-
-            _editor.OnInspectorGUI();
-        }
-
-
-        private class SO : ScriptableObject
+        public class SO : ScriptableObject
         {
             private const string UI_ACTORS = "UI_Actors";
             private const string UI_BLUE_PRINTS = "UI_BluePrints";
