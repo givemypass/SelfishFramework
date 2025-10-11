@@ -19,6 +19,7 @@ namespace SelfishFramework.Src.Unity.Features.UI.Systems
         UniTask<UIActor> ShowUIAsync(int uiId, bool initSystems = true, int additionalCanvas = 0);
         void CloseUI(UIActor actor);
         void CloseUI(int uiId);
+        void CloseAllUI();
     }
 
     [Injectable]
@@ -113,6 +114,16 @@ namespace SelfishFramework.Src.Unity.Features.UI.Systems
                 if (entity.Get<UITagComponent>().ID != uiId) 
                     continue;
                 
+                var actor = (UIActor)entity.AsActor();
+                CloseUI(actor);
+            }
+        }
+        
+        public void CloseAllUI()
+        {
+            _currentUIFilter.ForceUpdate();
+            foreach (var entity in _currentUIFilter)
+            {
                 var actor = (UIActor)entity.AsActor();
                 CloseUI(actor);
             }
