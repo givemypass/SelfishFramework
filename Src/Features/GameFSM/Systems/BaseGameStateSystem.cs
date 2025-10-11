@@ -75,6 +75,12 @@ namespace Systems
             ref var gameStateComponent = ref Owner.Get<GameStateComponent>();
             return from == gameStateComponent.PreviousState && to == gameStateComponent.CurrentState;
         }
+        
+        protected bool IsNeededStates()
+        {
+            ref var gameStateComponent = ref Owner.Get<GameStateComponent>();
+            return State == gameStateComponent.CurrentState;
+        }
 
         /// <summary>
         ///     u should override at child this method, for implementation of stoping state
