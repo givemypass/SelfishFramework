@@ -7,5 +7,6 @@ namespace SelfishFramework.Src.Unity.UI.Components
     public struct UITagComponent : IComponent
     {
         public int ID;
+        public int GroupID;
     }
 }

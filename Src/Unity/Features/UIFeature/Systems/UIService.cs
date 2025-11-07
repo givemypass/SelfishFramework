@@ -16,10 +16,11 @@ namespace SelfishFramework.Src.Unity.Features.UI.Systems
 {
     public interface IUIService
     {
-        UniTask<UIActor> ShowUIAsync(int uiId, bool initSystems = true, int additionalCanvas = 0);
+        UniTask<UIActor> ShowUIAsync(int uiId, bool initSystems = true, int additionalCanvas = 0, int groupId = 0);
         void CloseUI(UIActor actor);
         void CloseUI(int uiId);
         void CloseAllUI();
+        void CloseAllUIGroup(int groupId);
     }
 
     [Injectable]
@@ -47,7 +48,7 @@ namespace SelfishFramework.Src.Unity.Features.UI.Systems
             Addressables.LoadAssetsAsync<UIBluePrint>(UI_BLUE_PRINT, null).Completed += LoadReact;
         }
 
-        public async UniTask<UIActor> ShowUIAsync(int uiId, bool initSystems = true, int additionalCanvas = 0)
+        public async UniTask<UIActor> ShowUIAsync(int uiId, bool initSystems = true, int additionalCanvas = 0, int groupId = 0)
         {
             if (!_isReady)
             {
@@ -91,6 +92,7 @@ namespace SelfishFramework.Src.Unity.Features.UI.Systems
             actor.Entity.Set(new UITagComponent
             {
                 ID = uiId,
+                GroupID = groupId,
             });
             return actor;
         }
@@ -112,6 +114,19 @@ namespace SelfishFramework.Src.Unity.Features.UI.Systems
             foreach (var entity in _currentUIFilter)
             {
                 if (entity.Get<UITagComponent>().ID != uiId) 
+                    continue;
+                
+                var actor = (UIActor)entity.AsActor();
+                CloseUI(actor);
+            }
+        }
+        
+        public void CloseAllUIGroup(int groupId)
+        {
+            _currentUIFilter.ForceUpdate();
+            foreach (var entity in _currentUIFilter)
+            {
+                if (entity.Get<UITagComponent>().GroupID != groupId) 
                     continue;
                 
                 var actor = (UIActor)entity.AsActor();

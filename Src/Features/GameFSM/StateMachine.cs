@@ -155,9 +155,9 @@ namespace SelfishFramework.Src.StateMachine
 
         protected StateMachine stateMachine;
 
-        public abstract void Enter(Entity entity);
-        public abstract void Exit(Entity entity);
-        public abstract void Update(Entity entity);
+        public abstract void Enter(Entity fsmEntity);
+        public abstract void Exit(Entity fsmEntity);
+        public abstract void Update(Entity fsmEntity);
 
         public virtual void Enable(Entity entity)
         {
