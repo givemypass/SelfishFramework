@@ -93,9 +93,14 @@ namespace SelfishFramework.Src.Core
                 }
                 Array.Resize(ref entitiesGenerations, entitiesCapacity);
                 Array.Resize(ref entitiesInitStatus, entitiesCapacity);
-                foreach (var componentPool in _componentPools) componentPool.Resize(entitiesCapacity);
-
-                foreach (var systemPool in _systemPools) systemPool.Value.Resize(entitiesCapacity);
+                foreach (var poolIndex in _componentPoolsMap.Values)
+                {
+                    _componentPools[poolIndex].Resize(entitiesCapacity);
+                }
+                foreach (var systemPool in _systemPools)
+                {
+                    systemPool.Value.Resize(entitiesCapacity);
+                }
             }
 
             var entity = new Entity(index, (ushort)entitiesGenerations[index], _index);
@@ -159,7 +164,7 @@ namespace SelfishFramework.Src.Core
             if (_systemPools.TryGetValue(typeId, out var rawPool))
                 return (SystemPool<T>)rawPool;
 
-            var pool = new SystemPool<T>();
+            var pool = new SystemPool<T>(entitiesCapacity);
             _systemPools.Add(typeId, pool);
             return pool;
         }

@@ -8,7 +8,8 @@ namespace SelfishFramework.Src.Unity
     {
         public static Actor AsActor(this Entity entity)
         {
-            return entity.Get<ActorProviderComponent>().Actor;
+            ref var actorProviderComponent = ref entity.Get<ActorProviderComponent>();
+            return actorProviderComponent.Actor;
         }
         
         public static bool TryGetComponent<T>(this Actor actor, out T component, bool lookInChildsToo = false)

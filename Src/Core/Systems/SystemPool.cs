@@ -4,9 +4,14 @@ namespace SelfishFramework.Src.Core.Systems
 {
     public class SystemPool<T> : ISystemPool where T : BaseSystem, new()
     {
-        private T[] _denseItems = new T[Constants.START_ENTITY_COUNT];
+        private T[] _denseItems;
 
         public static readonly int TypeId = IndexGenerator.GetIndexForType<T>();
+
+        public SystemPool(int capacity)
+        {
+            _denseItems = new T[capacity];
+        }
 
         public T Add(int entityId)
         {
